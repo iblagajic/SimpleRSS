@@ -1,5 +1,5 @@
 //
-//  SMLMasterViewController.h
+//  SMLFeedItemsViewController.h
 //  SimpleRSS
 //
 //  Created by Ivan Blagajić on 16/05/14.
@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SMLMasterViewController : UIViewController
+@interface SMLFeedItemsViewController : UIViewController
+
+@property (nonatomic) NSURL *url;
 
 @end

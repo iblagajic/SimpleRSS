@@ -1,19 +1,19 @@
 //
-//  SMLMasterViewController.m
+//  SMLFeedItemsViewController.m
 //  SimpleRSS
 //
 //  Created by Ivan Blagajić on 16/05/14.
 //  Copyright (c) 2014 Simple. All rights reserved.
 //
 
-#import "SMLMasterViewController.h"
+#import "SMLFeedItemsViewController.h"
 #import "Ono.h"
 #import "SMLRSSItem.h"
 #import "UIViewController+ScrollingNavbar.h"
 
 #define kCellPadding 10.0
 
-@interface SMLMasterViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface SMLFeedItemsViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic) ONOXMLDocument *parser;
@@ -24,7 +24,7 @@
 
 @end
 
-@implementation SMLMasterViewController
+@implementation SMLFeedItemsViewController
 
 
 #pragma mark - UIVIewController
@@ -89,12 +89,11 @@
 }
 
 
-#pragma mark - parser
+#pragma mark - SMLMasterViewController
 
 - (void)parse {
     
-    NSURL *url = [NSURL URLWithString:@"http://images.apple.com/main/rss/hotnews/hotnews.rss"];
-    NSData *data = [NSData dataWithContentsOfURL:url];
+    NSData *data = [NSData dataWithContentsOfURL:self.url];
     NSError *err;
     self.parser = [ONOXMLDocument XMLDocumentWithData:data
                                                 error:&err];
@@ -105,14 +104,11 @@
     for (ONOXMLElement *element in items) {
         SMLRSSItem *item = [SMLRSSItem itemWithXMLElement:element];
         [self.items addObject:item];
-        NSLog(@"%@ - %@", item.title, item.pubDate);
+//        NSLog(@"%@ - %@", item.title, item.pubDate);
     }
     
     [self.tableView reloadData];
 }
-
-
-#pragma mark - SMLMasterViewController
 
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath*)indexPath {
     

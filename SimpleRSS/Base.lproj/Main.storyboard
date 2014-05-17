@@ -13,17 +13,59 @@
                         <color key="barTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="8aK-lA-r9t" kind="relationship" relationship="rootViewController" id="9eW-sD-Xkz"/>
+                        <segue destination="Tot-oD-V98" kind="relationship" relationship="rootViewController" id="Cdy-cM-DEz"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eq9-QA-ai8" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1" y="64"/>
         </scene>
-        <!--Master View Controller-->
+        <!--Feeds Manager Table View Controller-->
+        <scene sceneID="3lO-Wj-sNm">
+            <objects>
+                <tableViewController id="Tot-oD-V98" customClass="SMLFeedsManagerTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="HFq-ar-3g5">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" textLabel="Eqg-vh-KF0" style="IBUITableViewCellStyleDefault" id="RGa-an-wmu">
+                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="RGa-an-wmu" id="Bmb-iV-jvF">
+                                    <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Apple News" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Eqg-vh-KF0">
+                                            <rect key="frame" x="15" y="0.0" width="270" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" name="TimesNewRomanPSMT" family="Times New Roman" pointSize="18"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="8aK-lA-r9t" kind="push" identifier="PushFeed" id="z4a-cx-l0r"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <sections/>
+                        <connections>
+                            <outlet property="dataSource" destination="Tot-oD-V98" id="smW-tE-lot"/>
+                            <outlet property="delegate" destination="Tot-oD-V98" id="dnX-WS-K4M"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="kkk-80-Btj"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fpp-WV-PpJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="415" y="64"/>
+        </scene>
+        <!--Feed Items View Controller-->
         <scene sceneID="Uza-GN-uiP">
             <objects>
-                <viewController id="8aK-lA-r9t" customClass="SMLMasterViewController" sceneMemberID="viewController">
+                <viewController id="8aK-lA-r9t" customClass="SMLFeedItemsViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="pRq-T3-vi6"/>
                         <viewControllerLayoutGuide type="bottom" id="vh3-mP-qHB"/>
@@ -57,7 +99,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rwS-Ta-njH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="559" y="69"/>
+            <point key="canvasLocation" x="1016" y="64"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
