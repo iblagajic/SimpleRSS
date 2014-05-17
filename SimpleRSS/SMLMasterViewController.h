@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SMLMasterViewController : UITableViewController
+@interface SMLMasterViewController : UIViewController
 
 @end

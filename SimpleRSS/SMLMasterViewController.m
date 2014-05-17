@@ -7,48 +7,47 @@
 //
 
 #import "SMLMasterViewController.h"
+#import "Ono.h"
+#import "SMLRSSItem.h"
+#import "UIViewController+ScrollingNavbar.h"
 
-#import "SMLDetailViewController.h"
+#define kCellPadding 10.0
 
-@interface SMLMasterViewController () {
-    NSMutableArray *_objects;
-}
+@interface SMLMasterViewController () <UITableViewDataSource, UITableViewDelegate>
+
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic) ONOXMLDocument *parser;
+@property (nonatomic) NSMutableArray *items;
+@property (nonatomic) NSMutableString *title;
+@property (nonatomic) NSMutableString *link;
+@property (nonatomic) NSString *element;
+
 @end
 
 @implementation SMLMasterViewController
 
-- (void)awakeFromNib
-{
-    [super awakeFromNib];
-}
+
+#pragma mark - UIVIewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
-
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    self.navigationItem.rightBarButtonItem = addButton;
+    
+    [self followScrollView:self.tableView];
+	
+    self.items = [[NSMutableArray alloc] init];
+    [self parse];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    [self showNavBarAnimated:NO];
 }
 
-- (void)insertNewObject:(id)sender
-{
-    if (!_objects) {
-        _objects = [[NSMutableArray alloc] init];
-    }
-    [_objects insertObject:[NSDate date] atIndex:0];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-}
 
-#pragma mark - Table View
+#pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -57,57 +56,128 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return _objects.count;
+    return self.items.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    SMLRSSItem *item = [self.items objectAtIndex:indexPath.row];
+    return [self heightForCellWithRSSItem:item];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-
-    NSDate *object = _objects[indexPath.row];
-    cell.textLabel.text = [object description];
+    NSString *cellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    [self configureCell:cell atIndexPath:indexPath];
+    
     return cell;
 }
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    SMLRSSItem *item = [self.items objectAtIndex:indexPath.row];
+    NSURL *url = [NSURL URLWithString:item.link];
+    [[UIApplication sharedApplication] openURL:url];
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [_objects removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
+
+#pragma mark - parser
+
+- (void)parse {
+    
+    NSURL *url = [NSURL URLWithString:@"http://images.apple.com/main/rss/hotnews/hotnews.rss"];
+    NSData *data = [NSData dataWithContentsOfURL:url];
+    NSError *err;
+    self.parser = [ONOXMLDocument XMLDocumentWithData:data
+                                                error:&err];
+    ONOXMLElement *channel = [self.parser.rootElement firstChildWithTag:@"channel"];
+    self.title = [[[channel firstChildWithTag:@"title"] stringValue] mutableCopy];
+    
+    NSArray *items = [channel childrenWithTag:@"item"];
+    for (ONOXMLElement *element in items) {
+        SMLRSSItem *item = [SMLRSSItem itemWithXMLElement:element];
+        [self.items addObject:item];
+        NSLog(@"%@ - %@", item.title, item.pubDate);
     }
+    
+    [self.tableView reloadData];
 }
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
 
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
+#pragma mark - SMLMasterViewController
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([[segue identifier] isEqualToString:@"showDetail"]) {
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSDate *object = _objects[indexPath.row];
-        [[segue destinationViewController] setDetailItem:object];
-    }
+- (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath*)indexPath {
+    
+    for (UIView *subview in cell.contentView.subviews)
+         [subview removeFromSuperview];
+    
+    SMLRSSItem *item = [self.items objectAtIndex:indexPath.row];
+    
+    CGFloat height = kCellPadding;
+
+    CGRect titleFrame = CGRectMake(kCellPadding,
+                                   height,
+                                   CGRectGetWidth(self.tableView.frame) - 2*kCellPadding,
+                                   [UILabel heightForTitleLabelWithText:item.title andMaximumSize:self.maximumLabelSize]);
+    UILabel *titleLabel = [UILabel cellTitleLabelWithFrame:titleFrame andText:item.title];
+    height += CGRectGetHeight(titleFrame) + kCellPadding;
+    [cell.contentView addSubview:titleLabel];
+    
+    CGRect descriptionFrame = CGRectMake(kCellPadding,
+                                         height,
+                                         CGRectGetWidth(self.tableView.frame) - 2*kCellPadding,
+                                         [UILabel heightForDescriptionLabelWithText:item.description andMaximumSize:self.maximumLabelSize]);
+    UILabel *descriptionLabel = [UILabel cellDescriptionLabelWithFrame:descriptionFrame andText:item.description];
+    height += CGRectGetHeight(descriptionFrame) + kCellPadding;
+    [cell.contentView addSubview:descriptionLabel];
+    
+    NSString *dateString = [item.pubDate mediumStyleDateString];
+    CGRect dateFrame = CGRectMake(kCellPadding,
+                                  height,
+                                  CGRectGetWidth(self.tableView.frame) - 2*kCellPadding,
+                                  [UILabel heightForDateLabelWithText:dateString andMaximumSize:self.maximumLabelSize]);
+    UILabel *dateLabel = [UILabel cellDateLabelWithFrame:dateFrame andText:dateString];
+    [cell.contentView addSubview:dateLabel];
+    
+    height += CGRectGetHeight(dateFrame) + kCellPadding;
+//    NSLog(@"Cell height: %f", height);
+}
+
+
+#pragma mark - helpers
+
+- (CGFloat)heightForCellWithRSSItem:(SMLRSSItem*)item {
+    
+    CGFloat height = 2*kCellPadding;
+
+    height += [UILabel heightForTitleLabelWithText:item.title andMaximumSize:self.maximumLabelSize];
+    height += kCellPadding;
+    
+    height += [UILabel heightForDescriptionLabelWithText:item.description andMaximumSize:self.maximumLabelSize];
+    height += kCellPadding;
+    
+    height += [UILabel heightForDateLabelWithText:[item.pubDate mediumStyleDateString] andMaximumSize:self.maximumLabelSize];
+    
+//    NSLog(@"Predicted height: %f", height);
+
+    return height;
+}
+
+- (CGSize)maximumLabelSize {
+    
+    CGSize size = self.tableView.frame.size;
+    size.width -= 2*kCellPadding;
+    size.height = MAXFLOAT;
+    
+    return size;
 }
 
 @end
