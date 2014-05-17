@@ -20,10 +20,14 @@
 		1A1BC86A19268BC80080B22C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1BC84919268BC70080B22C /* UIKit.framework */; };
 		1A1BC87219268BC80080B22C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1A1BC87019268BC80080B22C /* InfoPlist.strings */; };
 		1A1BC87419268BC80080B22C /* SimpleRSSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1BC87319268BC80080B22C /* SimpleRSSTests.m */; };
-		1A1BC88A1927494C0080B22C /* SMLRSSItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1BC8891927494C0080B22C /* SMLRSSItem.m */; };
 		1A1BC88F192751360080B22C /* NSDate+SML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1BC88E192751360080B22C /* NSDate+SML.m */; };
 		1A1BC89219276CE80080B22C /* UIFont+SML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1BC89119276CE80080B22C /* UIFont+SML.m */; };
 		1A1BC89519276FF70080B22C /* UILabel+SML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1BC89419276FF70080B22C /* UILabel+SML.m */; };
+		1A1F80671927CB4D004546BA /* SMLRSSItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F80661927CB4D004546BA /* SMLRSSItem.m */; };
+		1A1F806A1927CB62004546BA /* SMLRSSFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F80691927CB62004546BA /* SMLRSSFeed.m */; };
+		1A1F806D1927E0C9004546BA /* SMLAddFeedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F806C1927E0C9004546BA /* SMLAddFeedTableViewController.m */; };
+		1A1F8078192819A0004546BA /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F8075192819A0004546BA /* GTMNSString+HTML.m */; };
+		1A1F8079192819A0004546BA /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F8077192819A0004546BA /* NSString+HTML.m */; };
 		1AF8FF071927A1A80003C313 /* SMLFeedItemsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AF8FF061927A1A80003C313 /* SMLFeedItemsViewController.m */; };
 		1AF8FF0A1927A1F10003C313 /* SMLFeedsManagerTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AF8FF091927A1F10003C313 /* SMLFeedsManagerTableViewController.m */; };
 		6553009E9BCD47CEBDBB0FF8 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D2EFDD8D8D447CA81D53B21 /* libPods.a */; };
@@ -57,14 +61,22 @@
 		1A1BC86F19268BC80080B22C /* SimpleRSSTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SimpleRSSTests-Info.plist"; sourceTree = "<group>"; };
 		1A1BC87119268BC80080B22C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1A1BC87319268BC80080B22C /* SimpleRSSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SimpleRSSTests.m; sourceTree = "<group>"; };
-		1A1BC8881927494C0080B22C /* SMLRSSItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLRSSItem.h; sourceTree = "<group>"; };
-		1A1BC8891927494C0080B22C /* SMLRSSItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLRSSItem.m; sourceTree = "<group>"; };
 		1A1BC88D192751360080B22C /* NSDate+SML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+SML.h"; sourceTree = "<group>"; };
 		1A1BC88E192751360080B22C /* NSDate+SML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+SML.m"; sourceTree = "<group>"; };
 		1A1BC89019276CE80080B22C /* UIFont+SML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+SML.h"; sourceTree = "<group>"; };
 		1A1BC89119276CE80080B22C /* UIFont+SML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+SML.m"; sourceTree = "<group>"; };
 		1A1BC89319276FF70080B22C /* UILabel+SML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+SML.h"; sourceTree = "<group>"; };
 		1A1BC89419276FF70080B22C /* UILabel+SML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+SML.m"; sourceTree = "<group>"; };
+		1A1F80651927CB4D004546BA /* SMLRSSItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLRSSItem.h; sourceTree = "<group>"; };
+		1A1F80661927CB4D004546BA /* SMLRSSItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLRSSItem.m; sourceTree = "<group>"; };
+		1A1F80681927CB62004546BA /* SMLRSSFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLRSSFeed.h; sourceTree = "<group>"; };
+		1A1F80691927CB62004546BA /* SMLRSSFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLRSSFeed.m; sourceTree = "<group>"; };
+		1A1F806B1927E0C9004546BA /* SMLAddFeedTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLAddFeedTableViewController.h; sourceTree = "<group>"; };
+		1A1F806C1927E0C9004546BA /* SMLAddFeedTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLAddFeedTableViewController.m; sourceTree = "<group>"; };
+		1A1F8074192819A0004546BA /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
+		1A1F8075192819A0004546BA /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
+		1A1F8076192819A0004546BA /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
+		1A1F8077192819A0004546BA /* NSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HTML.m"; sourceTree = "<group>"; };
 		1AF8FF051927A1A80003C313 /* SMLFeedItemsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLFeedItemsViewController.h; sourceTree = "<group>"; };
 		1AF8FF061927A1A80003C313 /* SMLFeedItemsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLFeedItemsViewController.m; sourceTree = "<group>"; };
 		1AF8FF081927A1F10003C313 /* SMLFeedsManagerTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLFeedsManagerTableViewController.h; sourceTree = "<group>"; };
@@ -133,13 +145,12 @@
 		1A1BC84B19268BC70080B22C /* SimpleRSS */ = {
 			isa = PBXGroup;
 			children = (
+				1A1F80641927CB4D004546BA /* Objects */,
 				1AF8FF041927A1A80003C313 /* ViewControllers */,
 				1A1BC88B192750E90080B22C /* Extensions */,
 				1A1BC85419268BC70080B22C /* SMLAppDelegate.h */,
 				1A1BC85519268BC70080B22C /* SMLAppDelegate.m */,
 				1A1BC85719268BC70080B22C /* Main.storyboard */,
-				1A1BC8881927494C0080B22C /* SMLRSSItem.h */,
-				1A1BC8891927494C0080B22C /* SMLRSSItem.m */,
 				1A1BC86019268BC80080B22C /* Images.xcassets */,
 				1A1BC84C19268BC70080B22C /* Supporting Files */,
 			);
@@ -178,6 +189,10 @@
 		1A1BC88B192750E90080B22C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				1A1F8074192819A0004546BA /* GTMNSString+HTML.h */,
+				1A1F8075192819A0004546BA /* GTMNSString+HTML.m */,
+				1A1F8076192819A0004546BA /* NSString+HTML.h */,
+				1A1F8077192819A0004546BA /* NSString+HTML.m */,
 				1A1BC88D192751360080B22C /* NSDate+SML.h */,
 				1A1BC88E192751360080B22C /* NSDate+SML.m */,
 				1A1BC89019276CE80080B22C /* UIFont+SML.h */,
@@ -188,6 +203,17 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		1A1F80641927CB4D004546BA /* Objects */ = {
+			isa = PBXGroup;
+			children = (
+				1A1F80651927CB4D004546BA /* SMLRSSItem.h */,
+				1A1F80661927CB4D004546BA /* SMLRSSItem.m */,
+				1A1F80681927CB62004546BA /* SMLRSSFeed.h */,
+				1A1F80691927CB62004546BA /* SMLRSSFeed.m */,
+			);
+			path = Objects;
+			sourceTree = "<group>";
+		};
 		1AF8FF041927A1A80003C313 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -195,6 +221,8 @@
 				1AF8FF061927A1A80003C313 /* SMLFeedItemsViewController.m */,
 				1AF8FF081927A1F10003C313 /* SMLFeedsManagerTableViewController.h */,
 				1AF8FF091927A1F10003C313 /* SMLFeedsManagerTableViewController.m */,
+				1A1F806B1927E0C9004546BA /* SMLAddFeedTableViewController.h */,
+				1A1F806C1927E0C9004546BA /* SMLAddFeedTableViewController.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -334,11 +362,15 @@
 			files = (
 				1A1BC89219276CE80080B22C /* UIFont+SML.m in Sources */,
 				1A1BC85219268BC70080B22C /* main.m in Sources */,
-				1A1BC88A1927494C0080B22C /* SMLRSSItem.m in Sources */,
+				1A1F80671927CB4D004546BA /* SMLRSSItem.m in Sources */,
+				1A1F806A1927CB62004546BA /* SMLRSSFeed.m in Sources */,
+				1A1F8078192819A0004546BA /* GTMNSString+HTML.m in Sources */,
 				1A1BC89519276FF70080B22C /* UILabel+SML.m in Sources */,
 				1AF8FF0A1927A1F10003C313 /* SMLFeedsManagerTableViewController.m in Sources */,
 				1A1BC85619268BC70080B22C /* SMLAppDelegate.m in Sources */,
 				1AF8FF071927A1A80003C313 /* SMLFeedItemsViewController.m in Sources */,
+				1A1F806D1927E0C9004546BA /* SMLAddFeedTableViewController.m in Sources */,
+				1A1F8079192819A0004546BA /* NSString+HTML.m in Sources */,
 				1A1BC88F192751360080B22C /* NSDate+SML.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

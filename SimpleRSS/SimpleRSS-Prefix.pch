@@ -16,4 +16,5 @@
     #import "NSDate+SML.h"
     #import "UIFont+SML.h"
     #import "UILabel+SML.h"
+    #import "NSString+HTML.h"
 #endif
