@@ -12,7 +12,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationController class], nil] setTitleTextAttributes:@{NSFontAttributeName : [UIFont barButtonFont]} forState:UIControlStateNormal];
+//    [[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
     return YES;
 }
 							

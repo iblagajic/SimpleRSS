@@ -12,6 +12,7 @@
 
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSURL *url;
+@property (nonatomic) NSString *contentSnippet;
 
 + (id)itemWithDictionary:(NSDictionary*)dictionary;
 

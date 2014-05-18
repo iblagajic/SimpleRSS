@@ -16,6 +16,7 @@
     item.title = [[dictionary objectForKey:@"title"] stringByConvertingHTMLToPlainText];
     NSString *urlString = [dictionary objectForKey:@"url"];
     item.url = [NSURL URLWithString:urlString];
+    item.contentSnippet = [[dictionary objectForKey:@"contentSnippet"] stringByConvertingHTMLToPlainText];
     return item;
 }
 

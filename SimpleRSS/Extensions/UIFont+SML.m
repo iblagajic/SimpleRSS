@@ -11,15 +11,27 @@
 @implementation UIFont (SML)
 
 + (UIFont*)titleFont {
-    return [UIFont fontWithName:@"Times New Roman" size:14.0];
+    return [self timesNewRomanWithSize:15.0];
 }
 
 + (UIFont*)descriptionFont {
-    return [UIFont fontWithName:@"Times New Roman" size:12.0];
+    return [self timesNewRomanWithSize:13.0];
 }
 
 + (UIFont*)dateFont {
     return [UIFont fontWithName:@"Trebuchet MS" size:11.0];
+}
+
++ (UIFont*)barButtonFont {
+    return [self timesNewRomanWithSize:20.0];
+}
+
++ (UIFont*)barTitleFont {
+    return [self timesNewRomanWithSize:20.0];
+}
+
++ (UIFont*)timesNewRomanWithSize:(CGFloat)size {
+    return [UIFont fontWithName:@"Times New Roman" size:size];
 }
 
 @end

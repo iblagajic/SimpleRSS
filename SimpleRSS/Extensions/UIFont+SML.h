@@ -13,5 +13,7 @@
 + (UIFont*)titleFont;
 + (UIFont*)descriptionFont;
 + (UIFont*)dateFont;
++ (UIFont*)barButtonFont;
++ (UIFont*)barTitleFont;
 
 @end
