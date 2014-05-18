@@ -36,7 +36,21 @@
     [self followScrollView:self.tableView];
 	
     self.items = [[NSMutableArray alloc] init];
-    [self parse];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    [[NSOperationQueue new] addOperationWithBlock:^{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+        [self parse];
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            [self.tableView reloadData];
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        }];
+    }];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

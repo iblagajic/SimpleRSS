@@ -1,12 +1,12 @@
 //
-//  SMLAddFeedTableViewController.m
+//  SMLAddFeedViewController.m
 //  SimpleRSS
 //
 //  Created by Ivan Blagajić on 17/05/14.
 //  Copyright (c) 2014 Simple. All rights reserved.
 //
 
-#import "SMLAddFeedTableViewController.h"
+#import "SMLAddFeedViewController.h"
 #import "SMLRSSFeed.h"
 
 typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
@@ -14,14 +14,15 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     UIAlertViewButtonIndexAdd
 };
 
-@interface SMLAddFeedTableViewController () <UISearchDisplayDelegate ,UISearchBarDelegate, UIAlertViewDelegate>
+@interface SMLAddFeedViewController () <UISearchDisplayDelegate ,UISearchBarDelegate, UIAlertViewDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) NSMutableArray *feeds;
 @property (nonatomic) NSOperationQueue *searchQueue;
+@property (nonatomic) NSIndexPath *selectedIndexPath;
 
 @end
 
-@implementation SMLAddFeedTableViewController
+@implementation SMLAddFeedViewController
 
 
 #pragma mark - UIViewController
@@ -57,7 +58,6 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == self.tableView) return 0;
     return self.feeds.count;
 }
 
@@ -79,6 +79,7 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    self.selectedIndexPath = indexPath;
     SMLRSSFeed *feed = [self.feeds objectAtIndex:indexPath.row];
     UIAlertView *exampleAlert = [[UIAlertView alloc] initWithTitle:@"Add to My Feeds?" message:feed.contentSnippet delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Add", nil];
     [exampleAlert show];
@@ -121,6 +122,11 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     }
 }
 
+- (void)searchDisplayController:(UISearchDisplayController *)controller didShowSearchResultsTableView:(UITableView *)tableView {
+    
+    [self changeSearchDisplayControllerNoResultsStringTo:@"Searching..."];
+}
+
 - (void)searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller {
     
     [self.searchQueue cancelAllOperations];
@@ -132,9 +138,11 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     
+    [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:self.selectedIndexPath animated:YES];
     if (buttonIndex == UIAlertViewButtonIndexAdd) {
         // TODO: Add to My Feeds
     }
+    self.selectedIndexPath = nil;
 }
 
 
@@ -149,7 +157,6 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     NSString *resultString = [NSString stringWithContentsOfURL:requestUrl encoding:NSUTF8StringEncoding error:&err];
     if (err)
         NSLog(@"%@",err);
-    NSParameterAssert(resultString);
     
     NSData *resultData = [resultString dataUsingEncoding:NSUTF8StringEncoding];
     if (!resultData)
@@ -171,18 +178,30 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
         SMLRSSFeed *feed = [SMLRSSFeed itemWithDictionary:entry];
         [self.feeds addObject:feed];
     }
-    [self.tableView reloadData];
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+// This is mostly a hack, but I really really wanted to change that text
+- (void)changeSearchDisplayControllerNoResultsStringTo:(NSString*)newString {
+    
+    UILabel *noResultsLabel = [self labelWithNoResultsTextInView:self.searchDisplayController.searchResultsTableView];
+    if (noResultsLabel) {
+        noResultsLabel.font = [UIFont barTitleFont];
+        noResultsLabel.text = newString;
+    }
 }
-*/
+
+- (UILabel*)labelWithNoResultsTextInView:(UIView*)view {
+    for (UILabel *subview in view.subviews) {
+        if ([subview isKindOfClass:[UILabel class]]) {
+            UILabel *label = (UILabel*)subview;
+            if ([label.text isEqualToString:@"No Results"])
+                return label;
+        }
+        UILabel *label = [self labelWithNoResultsTextInView:subview];
+        if (label) return label;
+    }
+    
+    return nil;
+}
 
 @end

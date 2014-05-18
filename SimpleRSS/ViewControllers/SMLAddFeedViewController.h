@@ -1,5 +1,5 @@
 //
-//  SMLAddFeedTableViewController.h
+//  SMLAddFeedViewController.h
 //  SimpleRSS
 //
 //  Created by Ivan Blagajić on 17/05/14.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SMLAddFeedTableViewController : UITableViewController
+@interface SMLAddFeedViewController : UIViewController
 
 @end

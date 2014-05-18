@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A1790E01929162B0069A64D /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1790DF1929162B0069A64D /* CoreData.framework */; };
+		1A1790E3192916440069A64D /* SimpleRSS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A1790E1192916440069A64D /* SimpleRSS.xcdatamodeld */; };
 		1A1BC84619268BC70080B22C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1BC84519268BC70080B22C /* Foundation.framework */; };
 		1A1BC84819268BC70080B22C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1BC84719268BC70080B22C /* CoreGraphics.framework */; };
 		1A1BC84A19268BC70080B22C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1BC84919268BC70080B22C /* UIKit.framework */; };
@@ -25,7 +27,7 @@
 		1A1BC89519276FF70080B22C /* UILabel+SML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1BC89419276FF70080B22C /* UILabel+SML.m */; };
 		1A1F80671927CB4D004546BA /* SMLRSSItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F80661927CB4D004546BA /* SMLRSSItem.m */; };
 		1A1F806A1927CB62004546BA /* SMLRSSFeed.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F80691927CB62004546BA /* SMLRSSFeed.m */; };
-		1A1F806D1927E0C9004546BA /* SMLAddFeedTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F806C1927E0C9004546BA /* SMLAddFeedTableViewController.m */; };
+		1A1F806D1927E0C9004546BA /* SMLAddFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F806C1927E0C9004546BA /* SMLAddFeedViewController.m */; };
 		1A1F8078192819A0004546BA /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F8075192819A0004546BA /* GTMNSString+HTML.m */; };
 		1A1F8079192819A0004546BA /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F8077192819A0004546BA /* NSString+HTML.m */; };
 		1A1F80801928B361004546BA /* SMLNavigationItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F807F1928B361004546BA /* SMLNavigationItem.m */; };
@@ -46,6 +48,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1A1790DF1929162B0069A64D /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		1A1790E2192916440069A64D /* SimpleRSS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SimpleRSS.xcdatamodel; sourceTree = "<group>"; };
 		1A1BC84219268BC70080B22C /* SimpleRSS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleRSS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A1BC84519268BC70080B22C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1A1BC84719268BC70080B22C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -73,8 +77,8 @@
 		1A1F80661927CB4D004546BA /* SMLRSSItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLRSSItem.m; sourceTree = "<group>"; };
 		1A1F80681927CB62004546BA /* SMLRSSFeed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLRSSFeed.h; sourceTree = "<group>"; };
 		1A1F80691927CB62004546BA /* SMLRSSFeed.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLRSSFeed.m; sourceTree = "<group>"; };
-		1A1F806B1927E0C9004546BA /* SMLAddFeedTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLAddFeedTableViewController.h; sourceTree = "<group>"; };
-		1A1F806C1927E0C9004546BA /* SMLAddFeedTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLAddFeedTableViewController.m; sourceTree = "<group>"; };
+		1A1F806B1927E0C9004546BA /* SMLAddFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLAddFeedViewController.h; sourceTree = "<group>"; };
+		1A1F806C1927E0C9004546BA /* SMLAddFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLAddFeedViewController.m; sourceTree = "<group>"; };
 		1A1F8074192819A0004546BA /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		1A1F8075192819A0004546BA /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		1A1F8076192819A0004546BA /* NSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HTML.h"; sourceTree = "<group>"; };
@@ -96,6 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A1790E01929162B0069A64D /* CoreData.framework in Frameworks */,
 				1A1BC84819268BC70080B22C /* CoreGraphics.framework in Frameworks */,
 				1A1BC84A19268BC70080B22C /* UIKit.framework in Frameworks */,
 				1A1BC84619268BC70080B22C /* Foundation.framework in Frameworks */,
@@ -139,6 +144,7 @@
 		1A1BC84419268BC70080B22C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1A1790DF1929162B0069A64D /* CoreData.framework */,
 				1A1BC84519268BC70080B22C /* Foundation.framework */,
 				1A1BC84719268BC70080B22C /* CoreGraphics.framework */,
 				1A1BC84919268BC70080B22C /* UIKit.framework */,
@@ -160,6 +166,7 @@
 				1A1BC85719268BC70080B22C /* Main.storyboard */,
 				1A1BC86019268BC80080B22C /* Images.xcassets */,
 				1A1BC84C19268BC70080B22C /* Supporting Files */,
+				1A1790E1192916440069A64D /* SimpleRSS.xcdatamodeld */,
 			);
 			path = SimpleRSS;
 			sourceTree = "<group>";
@@ -239,8 +246,8 @@
 				1AF8FF091927A1F10003C313 /* SMLFeedsManagerTableViewController.m */,
 				1AF8FF051927A1A80003C313 /* SMLFeedItemsViewController.h */,
 				1AF8FF061927A1A80003C313 /* SMLFeedItemsViewController.m */,
-				1A1F806B1927E0C9004546BA /* SMLAddFeedTableViewController.h */,
-				1A1F806C1927E0C9004546BA /* SMLAddFeedTableViewController.m */,
+				1A1F806B1927E0C9004546BA /* SMLAddFeedViewController.h */,
+				1A1F806C1927E0C9004546BA /* SMLAddFeedViewController.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -389,7 +396,8 @@
 				1A1BC85619268BC70080B22C /* SMLAppDelegate.m in Sources */,
 				1A1F80801928B361004546BA /* SMLNavigationItem.m in Sources */,
 				1AF8FF071927A1A80003C313 /* SMLFeedItemsViewController.m in Sources */,
-				1A1F806D1927E0C9004546BA /* SMLAddFeedTableViewController.m in Sources */,
+				1A1790E3192916440069A64D /* SimpleRSS.xcdatamodeld in Sources */,
+				1A1F806D1927E0C9004546BA /* SMLAddFeedViewController.m in Sources */,
 				1A1F8079192819A0004546BA /* NSString+HTML.m in Sources */,
 				1A1BC88F192751360080B22C /* NSDate+SML.m in Sources */,
 			);
@@ -610,6 +618,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		1A1790E1192916440069A64D /* SimpleRSS.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				1A1790E2192916440069A64D /* SimpleRSS.xcdatamodel */,
+			);
+			currentVersion = 1A1790E2192916440069A64D /* SimpleRSS.xcdatamodel */;
+			path = SimpleRSS.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 1A1BC83A19268BC70080B22C /* Project object */;
 }
