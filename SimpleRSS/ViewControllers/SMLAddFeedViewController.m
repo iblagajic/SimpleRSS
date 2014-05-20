@@ -7,18 +7,19 @@
 //
 
 #import "SMLAddFeedViewController.h"
-#import "SMLRSSFeed.h"
+#import "SMLDataController.h"
+#import "RSSFeed.h"
+#import "SMLFetchedResultsControllerDataSource.h"
 
 typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     UIAlertViewButtonIndexCancel,
     UIAlertViewButtonIndexAdd
 };
 
-@interface SMLAddFeedViewController () <UISearchDisplayDelegate ,UISearchBarDelegate, UIAlertViewDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface SMLAddFeedViewController () <UISearchDisplayDelegate ,UISearchBarDelegate, UIAlertViewDelegate, UITableViewDelegate, SMLFetchedResultsControllerDataSourceDelegate>
 
-@property (nonatomic) NSMutableArray *feeds;
-@property (nonatomic) NSOperationQueue *searchQueue;
 @property (nonatomic) NSIndexPath *selectedIndexPath;
+@property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
 
 @end
 
@@ -31,12 +32,12 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 {
     [super viewDidLoad];
     
+    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.searchDisplayController.searchResultsTableView];
+    self.frcDataSource.delegate = self;
+    self.frcDataSource.reuseIdentifier = @"Cell";
+    
     self.searchDisplayController.displaysSearchBarInNavigationBar = YES;
     self.searchDisplayController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
-    
-    self.feeds = [NSMutableArray array];
-    self.searchQueue = [NSOperationQueue new];
-    self.searchQueue.maxConcurrentOperationCount = 1;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -45,33 +46,13 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     [self.searchDisplayController.searchBar becomeFirstResponder];
 }
 
-- (void)dealloc {
-    
-    self.feeds = nil;
-    [self.searchQueue cancelAllOperations];
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    self.searchQueue = nil;
-}
 
+#pragma mark - SMLFetchedResultsControllerDataSourceDelegate
 
-#pragma mark - UITableViewDataSource
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return self.feeds.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    SMLRSSFeed *feed = [self.feeds objectAtIndex:indexPath.row];
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
-        cell.textLabel.font = [UIFont titleFont];
-        cell.accessoryType = UITableViewCellAccessoryNone;
-    }
-    cell.textLabel.text = feed.title;
-    return cell;
+- (void)configureCell:(UITableViewCell*)cell withObject:(RSSFeed*)object {
+    cell.textLabel.font = [UIFont titleFont];
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    cell.textLabel.text = object.title;
 }
 
 
@@ -80,8 +61,8 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     self.selectedIndexPath = indexPath;
-    SMLRSSFeed *feed = [self.feeds objectAtIndex:indexPath.row];
-    UIAlertView *exampleAlert = [[UIAlertView alloc] initWithTitle:@"Add to My Feeds?" message:feed.contentSnippet delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Add", nil];
+    RSSFeed *feed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
+    UIAlertView *exampleAlert = [[UIAlertView alloc] initWithTitle:@"Add to My Feeds?" message:feed.snippet delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Add", nil];
     [exampleAlert show];
 }
 
@@ -98,28 +79,8 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
     
-    if  (![searchString isEqualToString:@""]) {
-        [self.searchQueue cancelAllOperations];
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-        [self.searchQueue addOperationWithBlock:^{
-            NSDictionary *results = [self JSONResponseForSearchTerm:[searchString stringByAppendingString:@" "]];
-            
-            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                [self parseResults:results];
-                
-                [controller.searchResultsTableView reloadData];
-                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-            }];
-        }];
-        
-        return NO;
-    }
-    else
-    {
-        [self.feeds removeAllObjects];
-        [controller.searchResultsTableView reloadData];
-        return YES;
-    }
+    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithRSSFeedsContainingString:[searchString stringByAppendingString:@" "]];
+    return NO;
 }
 
 - (void)searchDisplayController:(UISearchDisplayController *)controller didShowSearchResultsTableView:(UITableView *)tableView {
@@ -129,7 +90,7 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 - (void)searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller {
     
-    [self.searchQueue cancelAllOperations];
+    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithRSSFeedsContainingString:nil];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 
@@ -140,45 +101,16 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     
     [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:self.selectedIndexPath animated:YES];
     if (buttonIndex == UIAlertViewButtonIndexAdd) {
-        // TODO: Add to My Feeds
+        RSSFeed *feed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:self.selectedIndexPath];
+        [self.dataController addFeedToMyFeeds:feed];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"RSS Saved Successfully" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alertView show];
     }
     self.selectedIndexPath = nil;
 }
 
 
-#pragma mark - helpers
 
-- (NSDictionary*)JSONResponseForSearchTerm:(NSString*)term {
-    
-    NSString *requestUrlString = [@"https://ajax.googleapis.com/ajax/services/feed/find?v=1.0&q=" stringByAppendingString:[term stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    NSURL *requestUrl = [NSURL URLWithString:requestUrlString];
-
-    NSError *err;
-    NSString *resultString = [NSString stringWithContentsOfURL:requestUrl encoding:NSUTF8StringEncoding error:&err];
-    if (err)
-        NSLog(@"%@",err);
-    
-    NSData *resultData = [resultString dataUsingEncoding:NSUTF8StringEncoding];
-    if (!resultData)
-        return nil;
-    err = nil;
-    
-    NSDictionary *result = [NSJSONSerialization JSONObjectWithData:resultData options:NSJSONReadingMutableContainers error:&err];
-    if (err)
-        NSLog(@"%@", err);
-    return result;
-}
-
-- (void)parseResults:(NSDictionary*)resultsJSON {
-    
-    [self.feeds removeAllObjects];
-    NSDictionary *responseData = [resultsJSON objectForKey:@"responseData"];
-    NSDictionary *entries = [responseData objectForKey:@"entries"];
-    for (NSDictionary *entry in entries) {
-        SMLRSSFeed *feed = [SMLRSSFeed itemWithDictionary:entry];
-        [self.feeds addObject:feed];
-    }
-}
 
 // This is mostly a hack, but I really really wanted to change that text
 - (void)changeSearchDisplayControllerNoResultsStringTo:(NSString*)newString {
@@ -202,6 +134,10 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     }
     
     return nil;
+}
+
+- (SMLDataController*)dataController {
+    return [SMLDataController sharedController];
 }
 
 @end

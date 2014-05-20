@@ -7,6 +7,7 @@
 //
 
 #import "SMLAppDelegate.h"
+#import "SMLDataController.h"
 
 @implementation SMLAppDelegate
 
@@ -14,6 +15,7 @@
 {
     [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationController class], nil] setTitleTextAttributes:@{NSFontAttributeName : [UIFont barButtonFont]} forState:UIControlStateNormal];
 //    [[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
+    
     return YES;
 }
 							

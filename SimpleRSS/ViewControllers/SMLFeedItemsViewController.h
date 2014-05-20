@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RSSFeed.h"
 
 @interface SMLFeedItemsViewController : UIViewController
 
-@property (nonatomic) NSURL *url;
+@property (nonatomic) RSSFeed *feed;
 
 @end

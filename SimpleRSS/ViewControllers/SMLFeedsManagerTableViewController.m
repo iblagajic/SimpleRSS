@@ -8,11 +8,13 @@
 
 #import "SMLFeedsManagerTableViewController.h"
 #import "SMLFeedItemsViewController.h"
-#import "SMLRSSFeed.h"
+#import "RSSFeed.h"
+#import "SMLDataController.h"
+#import "SMLFetchedResultsControllerDataSource.h"
 
-@interface SMLFeedsManagerTableViewController ()
+@interface SMLFeedsManagerTableViewController () <NSFetchedResultsControllerDelegate, SMLFetchedResultsControllerDataSourceDelegate>
 
-@property (nonatomic) NSMutableArray *feeds;
+@property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
 
 @end
 
@@ -25,70 +27,42 @@
     
     [super viewDidLoad];
     
+    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
+    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithMyRSSFeeds];
+    self.frcDataSource.delegate = self;
+    self.frcDataSource.reuseIdentifier = @"Cell";
+    
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     self.title = @"My Feeds";
+}
+
+- (void)viewWillAppear:(BOOL)animated {
     
-    SMLRSSFeed *feed = [SMLRSSFeed itemWithDictionary:@{@"url" : @"http://images.apple.com/main/rss/hotnews/hotnews.rss",
-                                                        @"title" : @"Apple"}];
-    self.feeds = [NSMutableArray array];
-    [self.feeds addObject:feed];
-    
+    [super viewWillAppear:animated];
     [self.tableView reloadData];
 }
 
 
-#pragma mark - UITableViewDataSource
+#pragma mark - SMLFetchedResultsControllerDataSourceDelegate
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return self.feeds.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    SMLRSSFeed *feed = [self.feeds objectAtIndex:indexPath.row];
-    cell.textLabel.text = feed.title;
-    return cell;
-}
-
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return YES;
-}
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return YES;
+- (void)configureCell:(UITableViewCell*)cell withObject:(RSSFeed*)object {
+    cell.textLabel.text = object.title;
 }
 
 
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"PushFeed"]) {
-        SMLFeedItemsViewController *destinationViewController = (SMLFeedItemsViewController*)segue.destinationViewController;
-        destinationViewController.url = [NSURL URLWithString:@"http://images.apple.com/main/rss/hotnews/hotnews.rss"];
-    }
-}
+//// In a storyboard-based application, you will often want to do a little preparation before navigation
+//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+//{
+//    if ([segue.identifier isEqualToString:@"PushFeed"]) {
+//        NSParameterAssert([sender isKindOfClass:[UITableViewCell class]]);
+//        UITableViewCell *cell = (UITableViewCell*)sender;
+//        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+//        RSSFeed *feed = [self.fetchedResultsController objectAtIndexPath:indexPath];
+//        SMLFeedItemsViewController *destinationViewController = (SMLFeedItemsViewController*)segue.destinationViewController;
+//        destinationViewController.feed = feed;
+//    }
+//}
 
 @end

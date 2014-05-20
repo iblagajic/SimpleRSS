@@ -8,8 +8,8 @@
 
 #import "SMLFeedItemsViewController.h"
 #import "Ono.h"
-#import "SMLRSSItem.h"
 #import "UIViewController+ScrollingNavbar.h"
+#import "RSSItem.h"
 
 #define kCellPadding 10.0
 
@@ -18,9 +18,6 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic) ONOXMLDocument *parser;
 @property (nonatomic) NSMutableArray *items;
-@property (nonatomic) NSMutableString *title;
-@property (nonatomic) NSMutableString *link;
-@property (nonatomic) NSString *element;
 
 @end
 
@@ -73,11 +70,11 @@
     return self.items.count;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    SMLRSSItem *item = [self.items objectAtIndex:indexPath.row];
-    return [self heightForCellWithRSSItem:item];
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+//
+//    SMLRSSItem *item = [self.items objectAtIndex:indexPath.row];
+//    return [self heightForCellWithRSSItem:item];
+//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -97,9 +94,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    SMLRSSItem *item = [self.items objectAtIndex:indexPath.row];
-    NSURL *url = [NSURL URLWithString:item.link];
-    [[UIApplication sharedApplication] openURL:url];
+//    SMLRSSItem *item = [self.items objectAtIndex:indexPath.row];
+//    NSURL *url = [NSURL URLWithString:item.link];
+//    [[UIApplication sharedApplication] openURL:url];
 }
 
 
@@ -107,7 +104,8 @@
 
 - (void)parse {
     
-    NSData *data = [NSData dataWithContentsOfURL:self.url];
+    NSURL *url = [NSURL URLWithString:self.feed.url];
+    NSData *data = [NSData dataWithContentsOfURL:url];
     NSError *err;
     self.parser = [ONOXMLDocument XMLDocumentWithData:data
                                                 error:&err];
@@ -116,8 +114,8 @@
     
     NSArray *items = [channel childrenWithTag:@"item"];
     for (ONOXMLElement *element in items) {
-        SMLRSSItem *item = [SMLRSSItem itemWithXMLElement:element];
-        [self.items addObject:item];
+//        RSSItem *item = [SMLRSSItem itemWithXMLElement:element];
+//        [self.items addObject:item];
 //        NSLog(@"%@ - %@", item.title, item.pubDate);
     }
     
@@ -129,49 +127,49 @@
     for (UIView *subview in cell.contentView.subviews)
          [subview removeFromSuperview];
     
-    SMLRSSItem *item = [self.items objectAtIndex:indexPath.row];
-    
-    CGFloat height = kCellPadding;
-
-    CGRect titleFrame = CGRectMake(kCellPadding,
-                                   height,
-                                   CGRectGetWidth(self.tableView.frame) - 2*kCellPadding,
-                                   [UILabel heightForTitleLabelWithText:item.title andMaximumSize:self.maximumLabelSize]);
-    UILabel *titleLabel = [UILabel cellTitleLabelWithFrame:titleFrame andText:item.title];
-    height += CGRectGetHeight(titleFrame) + kCellPadding;
-    [cell.contentView addSubview:titleLabel];
-    
-    CGRect descriptionFrame = CGRectMake(kCellPadding,
-                                         height,
-                                         CGRectGetWidth(self.tableView.frame) - 2*kCellPadding,
-                                         [UILabel heightForDescriptionLabelWithText:item.description andMaximumSize:self.maximumLabelSize]);
-    UILabel *descriptionLabel = [UILabel cellDescriptionLabelWithFrame:descriptionFrame andText:item.description];
-    height += CGRectGetHeight(descriptionFrame) + kCellPadding;
-    [cell.contentView addSubview:descriptionLabel];
-    
-    NSString *dateString = [item.pubDate mediumStyleDateString];
-    CGRect dateFrame = CGRectMake(kCellPadding,
-                                  height,
-                                  CGRectGetWidth(self.tableView.frame) - 2*kCellPadding,
-                                  [UILabel heightForDateLabelWithText:dateString andMaximumSize:self.maximumLabelSize]);
-    UILabel *dateLabel = [UILabel cellDateLabelWithFrame:dateFrame andText:dateString];
-    [cell.contentView addSubview:dateLabel];
-    
-    height += CGRectGetHeight(dateFrame) + kCellPadding;
+//    SMLRSSItem *item = [self.items objectAtIndex:indexPath.row];
+//    
+//    CGFloat height = kCellPadding;
+//
+//    CGRect titleFrame = CGRectMake(kCellPadding,
+//                                   height,
+//                                   CGRectGetWidth(self.tableView.frame) - 2*kCellPadding,
+//                                   [UILabel heightForTitleLabelWithText:item.title andMaximumSize:self.maximumLabelSize]);
+//    UILabel *titleLabel = [UILabel cellTitleLabelWithFrame:titleFrame andText:item.title];
+//    height += CGRectGetHeight(titleFrame) + kCellPadding;
+//    [cell.contentView addSubview:titleLabel];
+//    
+//    CGRect descriptionFrame = CGRectMake(kCellPadding,
+//                                         height,
+//                                         CGRectGetWidth(self.tableView.frame) - 2*kCellPadding,
+//                                         [UILabel heightForDescriptionLabelWithText:item.description andMaximumSize:self.maximumLabelSize]);
+//    UILabel *descriptionLabel = [UILabel cellDescriptionLabelWithFrame:descriptionFrame andText:item.description];
+//    height += CGRectGetHeight(descriptionFrame) + kCellPadding;
+//    [cell.contentView addSubview:descriptionLabel];
+//    
+//    NSString *dateString = [item.pubDate mediumStyleDateString];
+//    CGRect dateFrame = CGRectMake(kCellPadding,
+//                                  height,
+//                                  CGRectGetWidth(self.tableView.frame) - 2*kCellPadding,
+//                                  [UILabel heightForDateLabelWithText:dateString andMaximumSize:self.maximumLabelSize]);
+//    UILabel *dateLabel = [UILabel cellDateLabelWithFrame:dateFrame andText:dateString];
+//    [cell.contentView addSubview:dateLabel];
+//    
+//    height += CGRectGetHeight(dateFrame) + kCellPadding;
 //    NSLog(@"Cell height: %f", height);
 }
 
 
 #pragma mark - helpers
 
-- (CGFloat)heightForCellWithRSSItem:(SMLRSSItem*)item {
+- (CGFloat)heightForCellWithRSSItem:(RSSItem*)item {
     
     CGFloat height = 2*kCellPadding;
 
     height += [UILabel heightForTitleLabelWithText:item.title andMaximumSize:self.maximumLabelSize];
     height += kCellPadding;
     
-    height += [UILabel heightForDescriptionLabelWithText:item.description andMaximumSize:self.maximumLabelSize];
+    height += [UILabel heightForDescriptionLabelWithText:item.text andMaximumSize:self.maximumLabelSize];
     height += kCellPadding;
     
     height += [UILabel heightForDateLabelWithText:[item.pubDate mediumStyleDateString] andMaximumSize:self.maximumLabelSize];
