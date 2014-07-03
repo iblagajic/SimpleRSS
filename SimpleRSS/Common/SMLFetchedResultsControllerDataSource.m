@@ -11,6 +11,7 @@
 @interface SMLFetchedResultsControllerDataSource() <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic) UITableView *tableView;
+@property (nonatomic) BOOL isUserDrivenChange;
 
 @end
 
@@ -29,8 +30,13 @@
 - (void)setFetchedResultsController:(NSFetchedResultsController*)fetchedResultsController
 {
     _fetchedResultsController = fetchedResultsController;
-    fetchedResultsController.delegate = self;
-    [fetchedResultsController performFetch:NULL];
+    self.fetchedResultsController.delegate = self;
+    [self.fetchedResultsController performFetch:NULL];
+}
+
+- (void)dealloc {
+    
+    self.fetchedResultsController.delegate = nil;
 }
 
 
@@ -47,8 +53,7 @@
     return section.numberOfObjects;
 }
 
-- (UITableViewCell*)tableView:(UITableView*)tableView
-        cellForRowAtIndexPath:(NSIndexPath*)indexPath
+- (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
     id object = [self.fetchedResultsController objectAtIndexPath:indexPath];
     id cell = [tableView dequeueReusableCellWithIdentifier:self.reuseIdentifier
@@ -57,19 +62,41 @@
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        [self.delegate deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
+    }
+}
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return self.allowReorderingCells;
+}
+
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
+   
+    self.isUserDrivenChange = YES;
+    [self.delegate objectMovedFrom:sourceIndexPath to:destinationIndexPath];
+    self.isUserDrivenChange = NO;
+}
+
 
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    // The fetch controller is about to start sending change notifications, so prepare the table view for updates.
+
+    if (self.isUserDrivenChange) return;
+    
     [self.tableView beginUpdates];
 }
 
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
-    UITableView *tableView = self.tableView;
+    if (self.isUserDrivenChange) return;
     
+    UITableView *tableView = self.tableView;
     switch(type) {
             
         case NSFetchedResultsChangeInsert:
@@ -96,6 +123,8 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id )sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
     
+    if (self.isUserDrivenChange) return;
+    
     switch(type) {
             
         case NSFetchedResultsChangeInsert:
@@ -110,8 +139,19 @@
 
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    // The fetch controller has sent all current change notifications, so tell the table view to process all updates.
+
+    if (self.isUserDrivenChange) return;
+    
     [self.tableView endUpdates];
+    [self updateInterface];
+}
+
+- (void)updateInterface {
+    
+    if ([self.delegate respondsToSelector:@selector(updateInterfaceForObjectsCount:)]) {
+        NSInteger count = self.fetchedResultsController.fetchedObjects.count;
+        [self.delegate updateInterfaceForObjectsCount:count];
+    }
 }
 
 @end

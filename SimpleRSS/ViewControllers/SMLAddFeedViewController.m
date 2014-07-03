@@ -13,7 +13,7 @@
 
 typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     UIAlertViewButtonIndexCancel,
-    UIAlertViewButtonIndexAdd
+    UIAlertViewButtonIndexAction
 };
 
 @interface SMLAddFeedViewController () <UISearchDisplayDelegate ,UISearchBarDelegate, UIAlertViewDelegate, UITableViewDelegate, SMLFetchedResultsControllerDataSourceDelegate>
@@ -32,25 +32,27 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 {
     [super viewDidLoad];
     
-    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.searchDisplayController.searchResultsTableView];
-    self.frcDataSource.delegate = self;
-    self.frcDataSource.reuseIdentifier = @"Cell";
+    [self.searchDisplayController.searchResultsTableView registerNib:[UINib nibWithNibName:@"SearchCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
     
     self.searchDisplayController.displaysSearchBarInNavigationBar = YES;
     self.searchDisplayController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
+- (void)setup {
     
-    [super viewWillAppear:animated];
-    [self.searchDisplayController.searchBar becomeFirstResponder];
+    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.searchDisplayController.searchResultsTableView];
+    self.frcDataSource.delegate = self;
+    self.frcDataSource.reuseIdentifier = @"Cell";
 }
 
 
 #pragma mark - SMLFetchedResultsControllerDataSourceDelegate
 
 - (void)configureCell:(UITableViewCell*)cell withObject:(RSSFeed*)object {
-    cell.textLabel.font = [UIFont titleFont];
+    if (object.isInMyFeedsValue)
+        cell.textLabel.font = [UIFont myFeedsCellTitleFont];
+    else
+        cell.textLabel.font = [UIFont titleFont];
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.textLabel.text = object.title;
 }
@@ -62,8 +64,13 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     
     self.selectedIndexPath = indexPath;
     RSSFeed *feed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
-    UIAlertView *exampleAlert = [[UIAlertView alloc] initWithTitle:@"Add to My Feeds?" message:feed.snippet delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Add", nil];
-    [exampleAlert show];
+    if (feed.isInMyFeedsValue){
+        UIAlertView *removeAlert = [[UIAlertView alloc] initWithTitle:@"Remove from My Feeds?" message:feed.snippet delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Remove", nil];
+        [removeAlert show];
+    } else {
+        UIAlertView *addAlert = [[UIAlertView alloc] initWithTitle:@"Add to My Feeds?" message:feed.snippet delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Add", nil];
+        [addAlert show];
+    }
 }
 
 
@@ -71,6 +78,7 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
     
+    self.frcDataSource = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -79,8 +87,8 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
     
-    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithRSSFeedsContainingString:[searchString stringByAppendingString:@" "]];
-    return NO;
+    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithRSSFeedsContainingString:searchString];
+    return YES;
 }
 
 - (void)searchDisplayController:(UISearchDisplayController *)controller didShowSearchResultsTableView:(UITableView *)tableView {
@@ -90,7 +98,7 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 - (void)searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller {
     
-    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithRSSFeedsContainingString:nil];
+    self.frcDataSource.fetchedResultsController = [self.dataController frcWithRSSFeedsContainingString:nil];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 
@@ -100,16 +108,21 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     
     [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:self.selectedIndexPath animated:YES];
-    if (buttonIndex == UIAlertViewButtonIndexAdd) {
+    if (buttonIndex == UIAlertViewButtonIndexAction) {
         RSSFeed *feed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:self.selectedIndexPath];
-        [self.dataController addFeedToMyFeeds:feed];
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"RSS Saved Successfully" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [alertView show];
+        NSInteger count = self.frcDataSource.fetchedResultsController.fetchedObjects.count;
+        if (feed.isInMyFeedsValue) {
+            [self.dataController removeFeedFromMyFeeds:feed];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Feed Removed Successfully" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            [alertView show];
+        } else {
+            [self.dataController addFeedToMyFeeds:feed withOrdinal:count];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Feed Saved Successfully" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            [alertView show];
+        }
     }
     self.selectedIndexPath = nil;
 }
-
-
 
 
 // This is mostly a hack, but I really really wanted to change that text

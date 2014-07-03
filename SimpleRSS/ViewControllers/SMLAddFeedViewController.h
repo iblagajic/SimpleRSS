@@ -10,4 +10,6 @@
 
 @interface SMLAddFeedViewController : UIViewController
 
+- (void)setup;
+
 @end

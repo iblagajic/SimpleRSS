@@ -2,6 +2,7 @@
 
 @interface RSSFeed : _RSSFeed {}
 
-+ (id)feedWithDictionary:(NSDictionary*)dictionary inContext:(NSManagedObjectContext*)context;
++ (void)insertFeedWithDictionary:(NSDictionary*)dictionary inContext:(NSManagedObjectContext*)context;
++ (NSArray*)arrayOfExistingFeedsForTitles:(NSArray*)titles inContext:(NSManagedObjectContext*)context;
 
 @end

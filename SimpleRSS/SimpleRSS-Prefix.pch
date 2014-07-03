@@ -17,4 +17,5 @@
     #import "UIFont+SML.h"
     #import "UILabel+SML.h"
     #import "NSString+HTML.h"
+    #import "NSDictionary+SML.h"
 #endif

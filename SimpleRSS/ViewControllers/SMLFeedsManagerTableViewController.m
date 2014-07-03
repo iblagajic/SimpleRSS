@@ -11,6 +11,7 @@
 #import "RSSFeed.h"
 #import "SMLDataController.h"
 #import "SMLFetchedResultsControllerDataSource.h"
+#import "SMLAddFeedViewController.h"
 
 @interface SMLFeedsManagerTableViewController () <NSFetchedResultsControllerDelegate, SMLFetchedResultsControllerDataSourceDelegate>
 
@@ -31,6 +32,7 @@
     self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithMyRSSFeeds];
     self.frcDataSource.delegate = self;
     self.frcDataSource.reuseIdentifier = @"Cell";
+    self.frcDataSource.allowReorderingCells = YES;
     
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     self.title = @"My Feeds";
@@ -42,27 +44,63 @@
     [self.tableView reloadData];
 }
 
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+
+    [super setEditing:editing animated:animated];
+    
+    self.navigationItem.leftBarButtonItem.enabled = !editing;
+}
+
 
 #pragma mark - SMLFetchedResultsControllerDataSourceDelegate
 
 - (void)configureCell:(UITableViewCell*)cell withObject:(RSSFeed*)object {
+    
     cell.textLabel.text = object.title;
+}
+
+- (void)deleteObject:(id)object {
+    
+    [[SMLDataController sharedController] removeFeedFromMyFeeds:object];
+}
+
+- (void)updateInterfaceForObjectsCount:(NSInteger)count {
+
+    if (count == 0) {
+        if (self.tableView.editing) {
+            self.editing = NO;
+        }
+    }
+    self.navigationItem.rightBarButtonItem.enabled = count != 0;
+}
+
+- (void)objectMovedFrom:(NSIndexPath *)fromIndexPath to:(NSIndexPath *)toIndexPath {
+   
+    NSMutableArray *objects = [self.frcDataSource.fetchedResultsController.fetchedObjects mutableCopy];
+    id objectToMove = [objects objectAtIndex:fromIndexPath.row];
+    [objects removeObjectAtIndex:fromIndexPath.row];
+    [objects insertObject:objectToMove atIndex:toIndexPath.row];
+    
+    [[SMLDataController sharedController] updateOrdinalsForFeeds:objects];
 }
 
 
 #pragma mark - Navigation
 
-//// In a storyboard-based application, you will often want to do a little preparation before navigation
-//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-//{
-//    if ([segue.identifier isEqualToString:@"PushFeed"]) {
-//        NSParameterAssert([sender isKindOfClass:[UITableViewCell class]]);
-//        UITableViewCell *cell = (UITableViewCell*)sender;
-//        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-//        RSSFeed *feed = [self.fetchedResultsController objectAtIndexPath:indexPath];
-//        SMLFeedItemsViewController *destinationViewController = (SMLFeedItemsViewController*)segue.destinationViewController;
-//        destinationViewController.feed = feed;
-//    }
-//}
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"ShowFeed"]) {
+        NSParameterAssert([sender isKindOfClass:[UITableViewCell class]]);
+        UITableViewCell *cell = (UITableViewCell*)sender;
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+        RSSFeed *feed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
+        SMLFeedItemsViewController *destinationViewController = (SMLFeedItemsViewController*)segue.destinationViewController;
+        [destinationViewController setupWithFeed:feed];
+    } else if ([segue.identifier isEqualToString:@"ShowSearch"]) {
+        UINavigationController *destinationNavigationController = (UINavigationController*)segue.destinationViewController;
+        SMLAddFeedViewController *searchViewController = (SMLAddFeedViewController*)destinationNavigationController.topViewController;
+        [searchViewController setup];
+    }
+}
 
 @end

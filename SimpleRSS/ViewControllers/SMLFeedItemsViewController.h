@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "RSSFeed.h"
 
-@interface SMLFeedItemsViewController : UIViewController
+@interface SMLFeedItemsViewController : UITableViewController
 
-@property (nonatomic) RSSFeed *feed;
+- (void)setupWithFeed:(RSSFeed*)feed;
 
 @end

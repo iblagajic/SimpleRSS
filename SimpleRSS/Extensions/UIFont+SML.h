@@ -11,6 +11,7 @@
 @interface UIFont (SML)
 
 + (UIFont*)titleFont;
++ (UIFont*)myFeedsCellTitleFont;
 + (UIFont*)descriptionFont;
 + (UIFont*)dateFont;
 + (UIFont*)barButtonFont;

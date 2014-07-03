@@ -11,11 +11,15 @@
 @implementation UIFont (SML)
 
 + (UIFont*)titleFont {
-    return [self timesNewRomanWithSize:15.0];
+    return [self systemFontOfSize:15.0];
+}
+
++ (UIFont*)myFeedsCellTitleFont {
+    return [self boldSystemFontOfSize:15.0];
 }
 
 + (UIFont*)descriptionFont {
-    return [self timesNewRomanWithSize:13.0];
+    return [self systemFontOfSize:13.0];
 }
 
 + (UIFont*)dateFont {
@@ -23,15 +27,19 @@
 }
 
 + (UIFont*)barButtonFont {
-    return [self timesNewRomanWithSize:20.0];
+    return [self systemFontOfSize:20.0];
 }
 
 + (UIFont*)barTitleFont {
-    return [self timesNewRomanWithSize:20.0];
+    return [self systemFontOfSize:20.0];
 }
 
 + (UIFont*)timesNewRomanWithSize:(CGFloat)size {
     return [UIFont fontWithName:@"Times New Roman" size:size];
+}
+
++ (UIFont*)timesNewRomanBoldWithSize:(CGFloat)size {
+    return [UIFont fontWithName:@"Times New Roman - Bold" size:size];
 }
 
 @end

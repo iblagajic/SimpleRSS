@@ -1,5 +1,9 @@
 #import "_RSSItem.h"
+#import "Ono.h"
 
 @interface RSSItem : _RSSItem {}
-// Custom logic goes here.
+
++ (void)insertItemWithDictionary:(NSDictionary*)dictionary inContext:(NSManagedObjectContext*)context;
++ (NSArray*)arrayOfExistingItemsForTitles:(NSArray*)titles inContext:(NSManagedObjectContext*)context;
+
 @end

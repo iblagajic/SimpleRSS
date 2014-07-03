@@ -15,7 +15,7 @@
 @property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 @property (strong, nonatomic) NSFetchedResultsController *frcForRSSFeedsSearch;
-@property (nonatomic) NSOperationQueue *searchQueue;
+@property (nonatomic) NSOperationQueue *refreshOperationQueue;
 
 @end
 
@@ -26,16 +26,16 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedDataController = [[self alloc] init];
-        sharedDataController.searchQueue = [NSOperationQueue new];
-        sharedDataController.searchQueue.maxConcurrentOperationCount = 1;
+        sharedDataController.refreshOperationQueue = [NSOperationQueue new];
+        sharedDataController.refreshOperationQueue.maxConcurrentOperationCount = 1;
     });
     return sharedDataController;
 }
 
 - (void)dealloc {
-    [self.searchQueue cancelAllOperations];
+    [self.refreshOperationQueue cancelAllOperations];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    self.searchQueue = nil;
+    self.refreshOperationQueue = nil;
 }
 
 - (void)saveContext
@@ -156,30 +156,30 @@
 - (NSFetchedResultsController *)frcWithRSSFeedsContainingString:(NSString*)searchTerm {
     
     if (!searchTerm || [searchTerm isEqualToString:@""]) {
-        [self.searchQueue cancelAllOperations];
+        [self.refreshOperationQueue cancelAllOperations];
         return nil;
     }
     
-    [self.searchQueue cancelAllOperations];
+    [self.refreshOperationQueue cancelAllOperations];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    [self.searchQueue addOperationWithBlock:^{
+    [self.refreshOperationQueue addOperationWithBlock:^{
         NSDictionary *results = [self JSONResponseForSearchTerm:searchTerm];
         
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            [self parseResults:results];
+            [self parseFeedsJSON:results];
             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         }];
     }];
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"RSSFeed"];
     
-    if (self.frcForRSSFeedsSearch) {
+    if (!self.frcForRSSFeedsSearch) {
         NSSortDescriptor *byTitle = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
         fetchRequest.sortDescriptors = @[byTitle];
         self.frcForRSSFeedsSearch = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                         managedObjectContext:self.managedObjectContext
                                                                           sectionNameKeyPath:nil
-                                                                                   cacheName:@"MyFeeds"];
+                                                                                   cacheName:nil];
     }
     
     self.frcForRSSFeedsSearch.fetchRequest.predicate = [NSPredicate predicateWithFormat:@"title CONTAINS[cd] %@", searchTerm];
@@ -188,6 +188,21 @@
 }
 
 - (NSFetchedResultsController *)frcWithItemsForRSSFeed:(RSSFeed*)feed {
+    
+    [self.refreshOperationQueue cancelAllOperations];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    [self.refreshOperationQueue addOperationWithBlock:^{
+        NSURL *url = [NSURL URLWithString:feed.url];
+        NSData *data = [NSData dataWithContentsOfURL:url];
+        NSError *err;
+        ONOXMLDocument *itemsXML = [ONOXMLDocument XMLDocumentWithData:data
+                                                               error:&err];
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            [self parseFeedItemsXML:itemsXML forFeed:feed];
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        }];
+    }];
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"RSSItem"];
     
@@ -198,12 +213,28 @@
     NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                                                managedObjectContext:self.managedObjectContext
                                                                                                  sectionNameKeyPath:nil
-                                                                                                          cacheName:feed.title];
+                                                                                                          cacheName:nil];
     return fetchedResultsController;
 }
 
-- (void)addFeedToMyFeeds:(RSSFeed*)feed {
+- (void)addFeedToMyFeeds:(RSSFeed*)feed withOrdinal:(NSInteger)ordinal {
+    
     feed.isInMyFeeds = @YES;
+    feed.ordinal = [NSNumber numberWithInt:ordinal];
+    [self saveContext];
+}
+
+- (void)removeFeedFromMyFeeds:(RSSFeed*)feed {
+
+    feed.isInMyFeeds = @NO;
+    feed.ordinal = @-1;
+    [self saveContext];
+}
+
+- (void)updateOrdinalsForFeeds:(NSArray*)objects {
+    
+    for (RSSFeed *feed in objects)
+        feed.ordinal = [NSNumber numberWithInt:[objects indexOfObject:feed]];
     [self saveContext];
 }
 
@@ -231,15 +262,68 @@
     return result;
 }
 
-- (void)parseResults:(NSDictionary*)resultsJSON {
+- (void)parseFeedsJSON:(NSDictionary*)resultsJSON {
     
     NSDictionary *responseData = [resultsJSON objectForKey:@"responseData"];
     NSDictionary *entries = [responseData objectForKey:@"entries"];
+    NSMutableArray *feeds = [NSMutableArray array];
+    NSMutableArray *titles = [NSMutableArray array];
     for (NSDictionary *entry in entries) {
-        RSSFeed *feed = [RSSFeed feedWithDictionary:entry inContext:self.managedObjectContext];
-        NSLog(@"%@", [feed description]);
+        NSMutableDictionary *feed = [entry mutableCopy];
+        NSString *title = [[entry objectForKey:@"title"] stringByConvertingHTMLToPlainText];
+        [feed setObject:title forKey:@"title"];
+        [titles addObject:title];
+        [feeds addObject:feed];
     }
+    NSSortDescriptor *byTitle = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+    [feeds sortUsingDescriptors:@[byTitle]];
+    NSArray *feedObjects = [RSSFeed arrayOfExistingFeedsForTitles:titles inContext:self.managedObjectContext];
+    NSInteger i, j;
+    for (i = 0, j = 0; i < feeds.count; i++) {
+        NSString *title = [[feeds objectAtIndex:i] objectForKey:@"title"];
+        RSSFeed *feed;
+        if (feedObjects.count > j)
+            feed = [feedObjects objectAtIndex:j];
+        if ([title isEqualToString:feed.title]) {
+            j++;
+        } else {
+            [RSSFeed insertFeedWithDictionary:[feeds objectAtIndex:i] inContext:self.managedObjectContext];
+        }
+    }
+    [self saveContext];
+}
+
+- (void)parseFeedItemsXML:(ONOXMLDocument*)itemsXML forFeed:(RSSFeed*)feed {
     
+    ONOXMLElement *channel = [itemsXML.rootElement firstChildWithTag:@"channel"];
+    
+    NSArray *items = [channel childrenWithTag:@"item"];
+    
+    NSMutableArray *itemsToAdd = [NSMutableArray array];
+    NSMutableArray *titles = [NSMutableArray array];
+    
+    for (ONOXMLElement *element in items) {
+        NSMutableDictionary *item = [[NSDictionary dictionaryFromXML:element] mutableCopy];
+        [item setObject:feed forKey:@"feed"];
+        NSString *title = [[item objectForKey:@"title"] stringByConvertingHTMLToPlainText];
+        [titles addObject:title];
+        [itemsToAdd addObject:item];
+    }
+    NSSortDescriptor *byTitle = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+    [itemsToAdd sortUsingDescriptors:@[byTitle]];
+    NSArray *itemObjects = [RSSItem arrayOfExistingItemsForTitles:titles inContext:self.managedObjectContext];
+    NSInteger i, j;
+    for (i = 0, j = 0; i < itemsToAdd.count; i++) {
+        NSString *title = [[itemsToAdd objectAtIndex:i] objectForKey:@"title"];
+        RSSItem *item;
+        if (itemObjects.count > j)
+            item = [itemObjects objectAtIndex:j];
+        if ([title isEqualToString:item.title]) {
+            j++;
+        } else {
+            [RSSItem insertItemWithDictionary:[itemsToAdd objectAtIndex:i] inContext:self.managedObjectContext];
+        }
+    }
     [self saveContext];
 }
 

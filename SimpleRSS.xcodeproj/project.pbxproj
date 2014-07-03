@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		03419DDE3F5D489AAAEF308B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A764F92976B34784BA1492F9 /* libPods.a */; };
+		1A1751AE195F1ED9007602D6 /* NSDictionary+SML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1751AD195F1ED9007602D6 /* NSDictionary+SML.m */; };
 		1A1790E01929162B0069A64D /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A1790DF1929162B0069A64D /* CoreData.framework */; };
 		1A1790E3192916440069A64D /* SimpleRSS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A1790E1192916440069A64D /* SimpleRSS.xcdatamodeld */; };
 		1A1790E71929179C0069A64D /* SMLDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1790E61929179C0069A64D /* SMLDataController.m */; };
@@ -36,6 +37,7 @@
 		1A1F8079192819A0004546BA /* NSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F8077192819A0004546BA /* NSString+HTML.m */; };
 		1A1F80801928B361004546BA /* SMLNavigationItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F807F1928B361004546BA /* SMLNavigationItem.m */; };
 		1A1F80831928B5E8004546BA /* SMLNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F80821928B5E8004546BA /* SMLNavigationBar.m */; };
+		1A800ADA192C6F5D00FFA05F /* SearchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A800AD9192C6F5D00FFA05F /* SearchCell.xib */; };
 		1A89A739192A6975008FC3AB /* SMLFetchedResultsControllerDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A89A738192A6975008FC3AB /* SMLFetchedResultsControllerDataSource.m */; };
 		1AF8FF071927A1A80003C313 /* SMLFeedItemsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AF8FF061927A1A80003C313 /* SMLFeedItemsViewController.m */; };
 		1AF8FF0A1927A1F10003C313 /* SMLFeedsManagerTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AF8FF091927A1F10003C313 /* SMLFeedsManagerTableViewController.m */; };
@@ -52,6 +54,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1A1751AC195F1ED9007602D6 /* NSDictionary+SML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+SML.h"; sourceTree = "<group>"; };
+		1A1751AD195F1ED9007602D6 /* NSDictionary+SML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+SML.m"; sourceTree = "<group>"; };
 		1A1790DF1929162B0069A64D /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		1A1790E2192916440069A64D /* SimpleRSS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SimpleRSS.xcdatamodel; sourceTree = "<group>"; };
 		1A1790E51929179C0069A64D /* SMLDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLDataController.h; sourceTree = "<group>"; };
@@ -97,6 +101,7 @@
 		1A1F807F1928B361004546BA /* SMLNavigationItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLNavigationItem.m; sourceTree = "<group>"; };
 		1A1F80811928B5E8004546BA /* SMLNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLNavigationBar.h; sourceTree = "<group>"; };
 		1A1F80821928B5E8004546BA /* SMLNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLNavigationBar.m; sourceTree = "<group>"; };
+		1A800AD9192C6F5D00FFA05F /* SearchCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchCell.xib; sourceTree = "<group>"; };
 		1A89A737192A6975008FC3AB /* SMLFetchedResultsControllerDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLFetchedResultsControllerDataSource.h; sourceTree = "<group>"; };
 		1A89A738192A6975008FC3AB /* SMLFetchedResultsControllerDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLFetchedResultsControllerDataSource.m; sourceTree = "<group>"; };
 		1AF8FF051927A1A80003C313 /* SMLFeedItemsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLFeedItemsViewController.h; sourceTree = "<group>"; };
@@ -203,6 +208,7 @@
 		1A1BC84B19268BC70080B22C /* SimpleRSS */ = {
 			isa = PBXGroup;
 			children = (
+				1A800AD8192C6F4000FFA05F /* Prototypes */,
 				1A1790FD19292AE90069A64D /* ModelObjects */,
 				1A1790E41929173C0069A64D /* Common */,
 				1A1F807A1928ABD7004546BA /* CustomViews */,
@@ -261,6 +267,8 @@
 				1A1BC89119276CE80080B22C /* UIFont+SML.m */,
 				1A1BC89319276FF70080B22C /* UILabel+SML.h */,
 				1A1BC89419276FF70080B22C /* UILabel+SML.m */,
+				1A1751AC195F1ED9007602D6 /* NSDictionary+SML.h */,
+				1A1751AD195F1ED9007602D6 /* NSDictionary+SML.m */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -274,6 +282,14 @@
 				1A1F80821928B5E8004546BA /* SMLNavigationBar.m */,
 			);
 			path = CustomViews;
+			sourceTree = "<group>";
+		};
+		1A800AD8192C6F4000FFA05F /* Prototypes */ = {
+			isa = PBXGroup;
+			children = (
+				1A800AD9192C6F5D00FFA05F /* SearchCell.xib */,
+			);
+			path = Prototypes;
 			sourceTree = "<group>";
 		};
 		1AF8FF041927A1A80003C313 /* ViewControllers */ = {
@@ -369,6 +385,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A1BC86119268BC80080B22C /* Images.xcassets in Resources */,
+				1A800ADA192C6F5D00FFA05F /* SearchCell.xib in Resources */,
 				1A1BC85019268BC70080B22C /* InfoPlist.strings in Resources */,
 				1A1BC85919268BC70080B22C /* Main.storyboard in Resources */,
 			);
@@ -425,6 +442,7 @@
 				1A1BC89219276CE80080B22C /* UIFont+SML.m in Sources */,
 				1A1BC85219268BC70080B22C /* main.m in Sources */,
 				1A1F80831928B5E8004546BA /* SMLNavigationBar.m in Sources */,
+				1A1751AE195F1ED9007602D6 /* NSDictionary+SML.m in Sources */,
 				1A1F8078192819A0004546BA /* GTMNSString+HTML.m in Sources */,
 				1A1BC89519276FF70080B22C /* UILabel+SML.m in Sources */,
 				1A1790FC19292ADD0069A64D /* _RSSItem.m in Sources */,
