@@ -10,4 +10,6 @@
 
 @interface UIColor (SML)
 
++ (UIColor*)smlTintColor;
+
 @end

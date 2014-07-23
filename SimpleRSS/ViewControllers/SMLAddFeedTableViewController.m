@@ -1,12 +1,12 @@
 //
-//  SMLAddFeedViewController.m
+//  SMLAddFeedTableViewController.m
 //  SimpleRSS
 //
 //  Created by Ivan Blagajić on 17/05/14.
 //  Copyright (c) 2014 Simple. All rights reserved.
 //
 
-#import "SMLAddFeedViewController.h"
+#import "SMLAddFeedTableViewController.h"
 #import "SMLDataController.h"
 #import "RSSFeed.h"
 #import "SMLFetchedResultsControllerDataSource.h"
@@ -16,14 +16,15 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     UIAlertViewButtonIndexAction
 };
 
-@interface SMLAddFeedViewController () <UISearchDisplayDelegate ,UISearchBarDelegate, UIAlertViewDelegate, UITableViewDelegate, SMLFetchedResultsControllerDataSourceDelegate>
+@interface SMLAddFeedTableViewController () <UISearchDisplayDelegate ,UISearchBarDelegate, UIAlertViewDelegate, UITableViewDelegate, SMLFetchedResultsControllerDataSourceDelegate>
 
 @property (nonatomic) NSIndexPath *selectedIndexPath;
 @property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
+@property (nonatomic) UILabel *searchDisplayControllerLabel;
 
 @end
 
-@implementation SMLAddFeedViewController
+@implementation SMLAddFeedTableViewController
 
 
 #pragma mark - UIViewController
@@ -35,12 +36,18 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     [self.searchDisplayController.searchResultsTableView registerNib:[UINib nibWithNibName:@"SearchCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
     
     self.searchDisplayController.displaysSearchBarInNavigationBar = YES;
-    self.searchDisplayController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+    self.searchDisplayController.searchBar.searchBarStyle = UISearchBarStyleDefault;
+    self.navigationItem.titleView.tintColor = [UIColor blackColor];
 }
 
 - (void)setup {
     
-    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.searchDisplayController.searchResultsTableView];
+//    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.searchDisplayController.searchResultsTableView];
+//    self.frcDataSource.delegate = self;
+//    self.frcDataSource.reuseIdentifier = @"Cell";
+    
+    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:nil];
+    self.searchDisplayController.searchResultsDataSource = self.frcDataSource;
     self.frcDataSource.delegate = self;
     self.frcDataSource.reuseIdentifier = @"Cell";
 }
@@ -52,9 +59,13 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     if (object.isInMyFeedsValue)
         cell.textLabel.font = [UIFont myFeedsCellTitleFont];
     else
-        cell.textLabel.font = [UIFont titleFont];
+        cell.textLabel.font = [UIFont cellTitleFont];
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.textLabel.text = object.title;
+}
+
+- (void)updateInterfaceForObjectsCount:(NSInteger)count {
+    [self.frcDataSource.fetchedResultsController performFetch:NULL];
 }
 
 
@@ -91,14 +102,9 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     return YES;
 }
 
-- (void)searchDisplayController:(UISearchDisplayController *)controller didShowSearchResultsTableView:(UITableView *)tableView {
-    
-    [self changeSearchDisplayControllerNoResultsStringTo:@"Searching..."];
-}
-
 - (void)searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller {
     
-    self.frcDataSource.fetchedResultsController = [self.dataController frcWithRSSFeedsContainingString:nil];
+    self.frcDataSource.fetchedResultsController = nil;
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 
@@ -128,14 +134,14 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 // This is mostly a hack, but I really really wanted to change that text
 - (void)changeSearchDisplayControllerNoResultsStringTo:(NSString*)newString {
     
-    UILabel *noResultsLabel = [self labelWithNoResultsTextInView:self.searchDisplayController.searchResultsTableView];
-    if (noResultsLabel) {
-        noResultsLabel.font = [UIFont barTitleFont];
-        noResultsLabel.text = newString;
+    if (self.searchDisplayControllerLabel) {
+        self.searchDisplayControllerLabel.font = [UIFont barTitleFont];
+        self.searchDisplayControllerLabel.text = newString;
     }
 }
 
 - (UILabel*)labelWithNoResultsTextInView:(UIView*)view {
+    
     for (UILabel *subview in view.subviews) {
         if ([subview isKindOfClass:[UILabel class]]) {
             UILabel *label = (UILabel*)subview;

@@ -14,6 +14,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationController class], nil] setTitleTextAttributes:@{NSFontAttributeName : [UIFont barButtonFont]} forState:UIControlStateNormal];
+
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
 //    [[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
     
     return YES;

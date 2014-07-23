@@ -11,15 +11,19 @@
 @implementation UIFont (SML)
 
 + (UIFont*)titleFont {
-    return [self systemFontOfSize:15.0];
+    return [self avenirNextOfSize:17.0];
+}
+
++ (UIFont*)cellTitleFont {
+    return [self avenirNextOfSize:15.0];
 }
 
 + (UIFont*)myFeedsCellTitleFont {
-    return [self boldSystemFontOfSize:15.0];
+    return [self avenirNextDemiBoldOfSize:15.0];
 }
 
 + (UIFont*)descriptionFont {
-    return [self systemFontOfSize:13.0];
+    return [self avenirNextOfSize:15.0];
 }
 
 + (UIFont*)dateFont {
@@ -27,19 +31,19 @@
 }
 
 + (UIFont*)barButtonFont {
-    return [self systemFontOfSize:20.0];
+    return [self avenirNextOfSize:20.0];
 }
 
 + (UIFont*)barTitleFont {
-    return [self systemFontOfSize:20.0];
+    return [self avenirNextOfSize:20.0];
 }
 
-+ (UIFont*)timesNewRomanWithSize:(CGFloat)size {
-    return [UIFont fontWithName:@"Times New Roman" size:size];
++ (UIFont*)avenirNextOfSize:(CGFloat)size {
+    return [UIFont fontWithName:@"AvenirNext-Regular" size:size];
 }
 
-+ (UIFont*)timesNewRomanBoldWithSize:(CGFloat)size {
-    return [UIFont fontWithName:@"Times New Roman - Bold" size:size];
++ (UIFont*)avenirNextDemiBoldOfSize:(CGFloat)size {
+    return [UIFont fontWithName:@"AvenirNext-DemiBold" size:size];
 }
 
 @end

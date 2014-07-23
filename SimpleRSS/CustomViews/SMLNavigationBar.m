@@ -25,7 +25,10 @@
 
 - (void)applyStyle {
     
-    self.titleTextAttributes = @{NSFontAttributeName : [UIFont barTitleFont]};
+    self.titleTextAttributes = @{NSFontAttributeName : [UIFont barTitleFont],
+                                 NSForegroundColorAttributeName : [UIColor whiteColor]};
+    self.barTintColor = [UIColor smlTintColor];
+    self.tintColor = [UIColor whiteColor];
 }
 
 @end

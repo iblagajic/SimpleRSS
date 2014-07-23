@@ -14,7 +14,7 @@
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:frame];
     titleLabel.font = [UIFont titleFont];
-    titleLabel.textColor = [UIColor blackColor];
+    titleLabel.textColor = [UIColor smlTintColor];
     titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     titleLabel.numberOfLines = 0;
     titleLabel.text = text;

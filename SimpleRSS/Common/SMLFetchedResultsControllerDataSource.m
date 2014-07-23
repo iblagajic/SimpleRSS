@@ -37,6 +37,7 @@
 - (void)dealloc {
     
     self.fetchedResultsController.delegate = nil;
+    self.fetchedResultsController = nil;
 }
 
 
@@ -87,6 +88,8 @@
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
 
     if (self.isUserDrivenChange) return;
+    
+    [self.fetchedResultsController performFetch:NULL];
     
     [self.tableView beginUpdates];
 }

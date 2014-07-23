@@ -7,11 +7,11 @@
 //
 
 #import "SMLFeedsManagerTableViewController.h"
-#import "SMLFeedItemsViewController.h"
+#import "SMLFeedItemsTableViewController.h"
 #import "RSSFeed.h"
 #import "SMLDataController.h"
 #import "SMLFetchedResultsControllerDataSource.h"
-#import "SMLAddFeedViewController.h"
+#import "SMLAddFeedTableViewController.h"
 
 @interface SMLFeedsManagerTableViewController () <NSFetchedResultsControllerDelegate, SMLFetchedResultsControllerDataSourceDelegate>
 
@@ -34,13 +34,13 @@
     self.frcDataSource.reuseIdentifier = @"Cell";
     self.frcDataSource.allowReorderingCells = YES;
     
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
     self.title = @"My Feeds";
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
     [self.tableView reloadData];
 }
 
@@ -94,11 +94,11 @@
         UITableViewCell *cell = (UITableViewCell*)sender;
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
         RSSFeed *feed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
-        SMLFeedItemsViewController *destinationViewController = (SMLFeedItemsViewController*)segue.destinationViewController;
+        SMLFeedItemsTableViewController *destinationViewController = (SMLFeedItemsTableViewController*)segue.destinationViewController;
         [destinationViewController setupWithFeed:feed];
     } else if ([segue.identifier isEqualToString:@"ShowSearch"]) {
         UINavigationController *destinationNavigationController = (UINavigationController*)segue.destinationViewController;
-        SMLAddFeedViewController *searchViewController = (SMLAddFeedViewController*)destinationNavigationController.topViewController;
+        SMLAddFeedTableViewController *searchViewController = (SMLAddFeedTableViewController*)destinationNavigationController.topViewController;
         [searchViewController setup];
     }
 }

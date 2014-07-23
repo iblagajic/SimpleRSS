@@ -17,7 +17,12 @@
     item.text = [[dictionary objectForKey:@"description"] stringByConvertingHTMLToPlainText];
     NSDateFormatter *dateFormat = [NSDateFormatter new];
     [dateFormat setDateFormat:@"ccc, d MMM yyyy H:m:s Z"];
-    item.pubDate = [dateFormat dateFromString:[dictionary objectForKey:@"pubDate"]];
+    NSDate *date = [dateFormat dateFromString:[dictionary objectForKey:@"pubDate"]];
+    if (!date) {
+        [dateFormat setDateFormat:@"ccc, d MMM yyyy H:m:s z"];
+        date = [dateFormat dateFromString:[dictionary objectForKey:@"pubDate"]];
+    }
+    item.pubDate = date;
     item.link = [dictionary objectForKey:@"link"];
     item.feed = [dictionary objectForKey:@"feed"];
 }

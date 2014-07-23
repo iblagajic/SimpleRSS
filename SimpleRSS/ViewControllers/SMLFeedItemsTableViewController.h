@@ -1,5 +1,5 @@
 //
-//  SMLFeedItemsViewController.h
+//  SMLFeedItemsTableViewController.h
 //  SimpleRSS
 //
 //  Created by Ivan Blagajić on 16/05/14.
@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "RSSFeed.h"
 
-@interface SMLFeedItemsViewController : UITableViewController
+@interface SMLFeedItemsTableViewController : UITableViewController
 
 - (void)setupWithFeed:(RSSFeed*)feed;
 

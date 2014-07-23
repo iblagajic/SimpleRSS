@@ -8,6 +8,8 @@
 
 #import "SMLDataController.h"
 
+#define kSMLFetchLimit 25
+
 @interface SMLDataController()
 
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
@@ -206,9 +208,10 @@
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"RSSItem"];
     
-    NSSortDescriptor *byDate = [NSSortDescriptor sortDescriptorWithKey:@"pubDate" ascending:YES];
+    NSSortDescriptor *byDate = [NSSortDescriptor sortDescriptorWithKey:@"pubDate" ascending:NO];
     fetchRequest.sortDescriptors = @[byDate];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"feed = %@", feed];
+    fetchRequest.fetchLimit = kSMLFetchLimit;
     
     NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                                                managedObjectContext:self.managedObjectContext
@@ -220,7 +223,7 @@
 - (void)addFeedToMyFeeds:(RSSFeed*)feed withOrdinal:(NSInteger)ordinal {
     
     feed.isInMyFeeds = @YES;
-    feed.ordinal = [NSNumber numberWithInt:ordinal];
+    feed.ordinal = [NSNumber numberWithInteger:ordinal];
     [self saveContext];
 }
 
@@ -234,7 +237,7 @@
 - (void)updateOrdinalsForFeeds:(NSArray*)objects {
     
     for (RSSFeed *feed in objects)
-        feed.ordinal = [NSNumber numberWithInt:[objects indexOfObject:feed]];
+        feed.ordinal = [NSNumber numberWithInteger:[objects indexOfObject:feed]];
     [self saveContext];
 }
 
@@ -264,6 +267,8 @@
 
 - (void)parseFeedsJSON:(NSDictionary*)resultsJSON {
     
+    NSInteger responseStatus = [[resultsJSON objectForKey:@"responseStatus"] integerValue];
+    if (responseStatus != 200) return;
     NSDictionary *responseData = [resultsJSON objectForKey:@"responseData"];
     NSDictionary *entries = [responseData objectForKey:@"entries"];
     NSMutableArray *feeds = [NSMutableArray array];
