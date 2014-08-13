@@ -42,10 +42,6 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 - (void)setup {
     
-//    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.searchDisplayController.searchResultsTableView];
-//    self.frcDataSource.delegate = self;
-//    self.frcDataSource.reuseIdentifier = @"Cell";
-    
     self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:nil];
     self.searchDisplayController.searchResultsDataSource = self.frcDataSource;
     self.frcDataSource.delegate = self;
@@ -65,7 +61,8 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 }
 
 - (void)updateInterfaceForObjectsCount:(NSInteger)count {
-    [self.frcDataSource.fetchedResultsController performFetch:NULL];
+
+    [self.searchDisplayController.searchResultsTableView reloadData];
 }
 
 
@@ -99,12 +96,12 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
     
     self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithRSSFeedsContainingString:searchString];
+    self.searchDisplayController.searchResultsDataSource = self.frcDataSource;
     return YES;
 }
 
 - (void)searchDisplayControllerWillEndSearch:(UISearchDisplayController *)controller {
     
-    self.frcDataSource.fetchedResultsController = nil;
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 

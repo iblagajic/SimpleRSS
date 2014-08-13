@@ -162,15 +162,17 @@
         return nil;
     }
     
-    [self.refreshOperationQueue cancelAllOperations];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     [self.refreshOperationQueue addOperationWithBlock:^{
         NSDictionary *results = [self JSONResponseForSearchTerm:searchTerm];
-        
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        dispatch_queue_t main_queue = dispatch_get_main_queue();
+        dispatch_sync(main_queue, ^{
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
             [self parseFeedsJSON:results];
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        }];
+            if ([[NSOperationQueue currentQueue] operationCount] == 0) {
+                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            }
+        });
     }];
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"RSSFeed"];

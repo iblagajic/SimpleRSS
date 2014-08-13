@@ -28,20 +28,24 @@
     
     [super viewDidLoad];
     
-    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
-    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithMyRSSFeeds];
-    self.frcDataSource.delegate = self;
-    self.frcDataSource.reuseIdentifier = @"Cell";
-    self.frcDataSource.allowReorderingCells = YES;
-    
     self.title = @"My Feeds";
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
+    
+    [self setup];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     [self.tableView reloadData];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    self.frcDataSource.delegate = nil;
+    self.frcDataSource = nil;
 }
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated {
@@ -49,6 +53,15 @@
     [super setEditing:editing animated:animated];
     
     self.navigationItem.leftBarButtonItem.enabled = !editing;
+}
+
+- (void)setup {
+    
+    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
+    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithMyRSSFeeds];
+    self.frcDataSource.delegate = self;
+    self.frcDataSource.reuseIdentifier = @"Cell";
+    self.frcDataSource.allowReorderingCells = YES;
 }
 
 

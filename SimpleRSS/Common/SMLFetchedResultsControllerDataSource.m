@@ -51,6 +51,7 @@
 - (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)sectionIndex
 {
     id<NSFetchedResultsSectionInfo> section = self.fetchedResultsController.sections[sectionIndex];
+    NSLog(@"%d", section.numberOfObjects);
     return section.numberOfObjects;
 }
 
@@ -88,8 +89,6 @@
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
 
     if (self.isUserDrivenChange) return;
-    
-    [self.fetchedResultsController performFetch:NULL];
     
     [self.tableView beginUpdates];
 }
