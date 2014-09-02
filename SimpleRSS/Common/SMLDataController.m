@@ -7,6 +7,8 @@
 //
 
 #import "SMLDataController.h"
+#import <PromiseKit.h>
+#import <MRProgress/MRProgress.h>
 
 #define kSMLFetchLimit 25
 
@@ -15,9 +17,8 @@
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-
 @property (strong, nonatomic) NSFetchedResultsController *frcForRSSFeedsSearch;
-@property (nonatomic) NSOperationQueue *refreshOperationQueue;
+@property (nonatomic, assign) NSUInteger *liveOperationsCounter;
 
 @end
 
@@ -28,16 +29,13 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedDataController = [[self alloc] init];
-        sharedDataController.refreshOperationQueue = [NSOperationQueue new];
-        sharedDataController.refreshOperationQueue.maxConcurrentOperationCount = 1;
+        sharedDataController.liveOperationsCounter = 0;
     });
     return sharedDataController;
 }
 
 - (void)dealloc {
-    [self.refreshOperationQueue cancelAllOperations];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    self.refreshOperationQueue = nil;
 }
 
 - (void)saveContext
@@ -158,22 +156,25 @@
 - (NSFetchedResultsController *)frcWithRSSFeedsContainingString:(NSString*)searchTerm {
     
     if (!searchTerm || [searchTerm isEqualToString:@""]) {
-        [self.refreshOperationQueue cancelAllOperations];
         return nil;
     }
     
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    [self.refreshOperationQueue addOperationWithBlock:^{
-        NSDictionary *results = [self JSONResponseForSearchTerm:searchTerm];
-        dispatch_queue_t main_queue = dispatch_get_main_queue();
-        dispatch_sync(main_queue, ^{
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-            [self parseFeedsJSON:results];
-            if ([[NSOperationQueue currentQueue] operationCount] == 0) {
-                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-            }
-        });
-    }];
+    PMKPromise *refreshPromise = [self JSONResponseForSearchTerm:searchTerm];
+    UIWindow *window = [UIApplication sharedApplication].delegate.window;
+    if ([MRProgressOverlayView allOverlaysForView:window].count == 0) {
+        [MRProgressOverlayView showOverlayAddedTo:window animated:YES];
+    }
+    refreshPromise.then(^(NSDictionary *resultsDictionary) {
+        
+        [self parseFeedsJSON:resultsDictionary];
+        self.liveOperationsCounter--;
+        if (self.liveOperationsCounter == 0) {
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            [MRProgressOverlayView dismissAllOverlaysForView:window animated:YES];
+        }
+    }).catch(^(NSError *error) {
+        NSLog(@"%@", error);
+    });
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"RSSFeed"];
     
@@ -193,20 +194,18 @@
 
 - (NSFetchedResultsController *)frcWithItemsForRSSFeed:(RSSFeed*)feed {
     
-    [self.refreshOperationQueue cancelAllOperations];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    [self.refreshOperationQueue addOperationWithBlock:^{
-        NSURL *url = [NSURL URLWithString:feed.url];
-        NSData *data = [NSData dataWithContentsOfURL:url];
+    [NSURLConnection GET:feed.url].then(^(NSData *itemsData) {
         NSError *err;
-        ONOXMLDocument *itemsXML = [ONOXMLDocument XMLDocumentWithData:data
-                                                               error:&err];
-        
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            [self parseFeedItemsXML:itemsXML forFeed:feed];
+        ONOXMLDocument *itemsXML = [ONOXMLDocument XMLDocumentWithData:itemsData
+                                                                 error:&err];
+        [self parseFeedItemsXML:itemsXML forFeed:feed];
+        self.liveOperationsCounter --;
+        if (self.liveOperationsCounter == 0) {
             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        }];
-    }];
+        }
+    });
+    self.liveOperationsCounter ++;
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"RSSItem"];
     
@@ -246,25 +245,14 @@
 
 #pragma mark - helpers
 
-- (NSDictionary*)JSONResponseForSearchTerm:(NSString*)term {
+- (PMKPromise*)JSONResponseForSearchTerm:(NSString*)term {
     
     NSString *requestUrlString = [@"https://ajax.googleapis.com/ajax/services/feed/find?v=1.0&q=" stringByAppendingString:[term stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    NSURL *requestUrl = [NSURL URLWithString:requestUrlString];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    PMKPromise *feedsPromise = [NSURLConnection GET:requestUrlString];
+    self.liveOperationsCounter ++;
     
-    NSError *err;
-    NSString *resultString = [NSString stringWithContentsOfURL:requestUrl encoding:NSUTF8StringEncoding error:&err];
-    if (err)
-        NSLog(@"%@",err);
-    
-    NSData *resultData = [resultString dataUsingEncoding:NSUTF8StringEncoding];
-    if (!resultData)
-        return nil;
-    err = nil;
-    
-    NSDictionary *result = [NSJSONSerialization JSONObjectWithData:resultData options:NSJSONReadingMutableContainers error:&err];
-    if (err)
-        NSLog(@"%@", err);
-    return result;
+    return feedsPromise;
 }
 
 - (void)parseFeedsJSON:(NSDictionary*)resultsJSON {

@@ -10,6 +10,8 @@
 #import "SMLDataController.h"
 #import "RSSFeed.h"
 #import "SMLFetchedResultsControllerDataSource.h"
+#import <PromiseKit/Promise.h>
+#import <MRProgress/MRProgress.h>
 
 typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     UIAlertViewButtonIndexCancel,

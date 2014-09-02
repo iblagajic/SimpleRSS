@@ -35,10 +35,6 @@
     self.title = self.feed.title;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
-}
-
 
 #pragma mark - SMLMasterViewController
 
