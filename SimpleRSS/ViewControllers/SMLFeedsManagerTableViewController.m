@@ -94,7 +94,7 @@
     [objects removeObjectAtIndex:fromIndexPath.row];
     [objects insertObject:objectToMove atIndex:toIndexPath.row];
     
-    [[SMLDataController sharedController] updateOrdinalsForFeeds:objects];
+    [[SMLDataController sharedController] updateOrdinalsForMyFeeds];
 }
 
 

@@ -10,6 +10,10 @@
 
 @implementation UIFont (SML)
 
++ (UIFont*)feedFont {
+    return [self avenirNextOfSize:11.0];
+}
+
 + (UIFont*)titleFont {
     return [self avenirNextOfSize:17.0];
 }

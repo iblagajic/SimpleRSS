@@ -13,7 +13,8 @@
 #import "SMLDataController.h"
 
 #define kCellPadding 20.0
-#define kCellTextPadding 10.0
+#define kCellTextPadding 12.0
+#define kBottomLabelHeight 11.0
 
 @interface SMLFeedItemsTableViewController () <NSFetchedResultsControllerDelegate, SMLFetchedResultsControllerDataSourceDelegate>
 
@@ -60,16 +61,24 @@
                                          CGRectGetWidth(self.tableView.frame) - 2*kCellTextPadding,
                                          [UILabel heightForDescriptionLabelWithText:item.text andMaximumSize:self.maximumLabelSize]);
     UILabel *descriptionLabel = [UILabel cellDescriptionLabelWithFrame:descriptionFrame andText:item.text];
-    height += CGRectGetHeight(descriptionFrame) + kCellTextPadding;
+    height += CGRectGetHeight(descriptionFrame) + 1.5 * kCellTextPadding;
     [cell.contentView addSubview:descriptionLabel];
 
     NSString *dateString = [item.pubDate mediumStyleDateString];
     CGRect dateFrame = CGRectMake(kCellTextPadding,
                                   height,
-                                  CGRectGetWidth(self.tableView.frame) - 2*kCellTextPadding,
-                                  [UILabel heightForDateLabelWithText:dateString andMaximumSize:self.maximumLabelSize]);
+                                  (CGRectGetWidth(self.tableView.frame) - 2*kCellTextPadding)/2,
+                                  kBottomLabelHeight);
     UILabel *dateLabel = [UILabel cellDateLabelWithFrame:dateFrame andText:dateString];
     [cell.contentView addSubview:dateLabel];
+    
+    CGRect feedFrame = CGRectMake(kCellTextPadding + (CGRectGetWidth(self.tableView.frame) - 2*kCellTextPadding)/2,
+                                  height,
+                                  (CGRectGetWidth(self.tableView.frame) - 2*kCellTextPadding)/2,
+                                  kBottomLabelHeight);
+    UILabel *feedLabel = [UILabel cellFeedLabelWithFrame:feedFrame andText:item.feed.title];
+    height += CGRectGetHeight(feedFrame) + kCellTextPadding;
+    [cell.contentView addSubview:feedLabel];
     
 //    height += CGRectGetHeight(dateFrame) + kCellPadding;
 }
@@ -89,14 +98,14 @@
 - (CGFloat)heightForCellWithRSSItem:(RSSItem*)item {
     
     CGFloat height = 2*kCellPadding;
-
+    
     height += [UILabel heightForTitleLabelWithText:item.title andMaximumSize:self.maximumLabelSize];
     height += kCellTextPadding;
 
     height += [UILabel heightForDescriptionLabelWithText:item.text andMaximumSize:self.maximumLabelSize];
     height += kCellTextPadding;
 
-    height += [UILabel heightForDateLabelWithText:[item.pubDate mediumStyleDateString] andMaximumSize:self.maximumLabelSize];
+    height += kBottomLabelHeight;
     
 //    NSLog(@"Predicted height: %f", height);
 

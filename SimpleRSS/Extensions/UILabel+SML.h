@@ -10,6 +10,7 @@
 
 @interface UILabel (SML)
 
++ (UILabel*)cellFeedLabelWithFrame:(CGRect)frame andText:(NSString*)text;
 + (UILabel*)cellTitleLabelWithFrame:(CGRect)frame andText:(NSString*)text;
 + (UILabel*)cellDescriptionLabelWithFrame:(CGRect)frame andText:(NSString*)text;
 + (UILabel*)cellDateLabelWithFrame:(CGRect)frame andText:(NSString*)text;

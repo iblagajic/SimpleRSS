@@ -8,7 +8,6 @@
 
 #import "SMLDataController.h"
 #import <PromiseKit.h>
-#import <MRProgress/MRProgress.h>
 
 #define kSMLFetchLimit 25
 
@@ -160,20 +159,17 @@
     }
     
     PMKPromise *refreshPromise = [self JSONResponseForSearchTerm:searchTerm];
-    UIWindow *window = [UIApplication sharedApplication].delegate.window;
-    if ([MRProgressOverlayView allOverlaysForView:window].count == 0) {
-        [MRProgressOverlayView showOverlayAddedTo:window animated:YES];
-    }
     refreshPromise.then(^(NSDictionary *resultsDictionary) {
         
         [self parseFeedsJSON:resultsDictionary];
         self.liveOperationsCounter--;
         if (self.liveOperationsCounter == 0) {
             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-            [MRProgressOverlayView dismissAllOverlaysForView:window animated:YES];
         }
     }).catch(^(NSError *error) {
+        
         NSLog(@"%@", error);
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     });
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"RSSFeed"];
@@ -200,10 +196,11 @@
         ONOXMLDocument *itemsXML = [ONOXMLDocument XMLDocumentWithData:itemsData
                                                                  error:&err];
         [self parseFeedItemsXML:itemsXML forFeed:feed];
-        self.liveOperationsCounter --;
-        if (self.liveOperationsCounter == 0) {
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        }
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    }).catch(^(NSError *error) {
+        
+        NSLog(@"%@", error);
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     });
     self.liveOperationsCounter ++;
     
@@ -221,10 +218,22 @@
     return fetchedResultsController;
 }
 
-- (void)addFeedToMyFeeds:(RSSFeed*)feed withOrdinal:(NSInteger)ordinal {
+- (NSArray*)myRSSFeeds {
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"RSSFeed"];
+    
+    NSSortDescriptor *byOrdinal = [NSSortDescriptor sortDescriptorWithKey:@"ordinal" ascending:YES];
+    fetchRequest.sortDescriptors = @[byOrdinal];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isInMyFeeds = YES", nil];
+    
+    NSArray *feeds = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    
+    return feeds;
+}
+
+- (void)addFeedToMyFeeds:(RSSFeed*)feed {
     
     feed.isInMyFeeds = @YES;
-    feed.ordinal = [NSNumber numberWithInteger:ordinal];
+    feed.ordinal = [NSNumber numberWithUnsignedInteger:[self myRSSFeeds].count];
     [self saveContext];
 }
 
@@ -233,12 +242,14 @@
     feed.isInMyFeeds = @NO;
     feed.ordinal = @-1;
     [self saveContext];
+    [self updateOrdinalsForMyFeeds];
 }
 
-- (void)updateOrdinalsForFeeds:(NSArray*)objects {
+- (void)updateOrdinalsForMyFeeds {
     
-    for (RSSFeed *feed in objects)
-        feed.ordinal = [NSNumber numberWithInteger:[objects indexOfObject:feed]];
+    NSArray *feeds = [self myRSSFeeds];
+    for (RSSFeed *feed in feeds)
+        feed.ordinal = [NSNumber numberWithInteger:[feeds indexOfObject:feed]];
     [self saveContext];
 }
 

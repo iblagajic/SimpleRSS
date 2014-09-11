@@ -17,8 +17,8 @@
 - (NSFetchedResultsController *)frcWithMyRSSFeeds;
 - (NSFetchedResultsController *)frcWithItemsForRSSFeed:(RSSFeed*)feed;
 - (NSFetchedResultsController *)frcWithRSSFeedsContainingString:(NSString*)searchTerm;
-- (void)addFeedToMyFeeds:(RSSFeed*)feed withOrdinal:(NSInteger)ordinal;
+- (void)addFeedToMyFeeds:(RSSFeed*)feed;
 - (void)removeFeedFromMyFeeds:(RSSFeed*)feed;
-- (void)updateOrdinalsForFeeds:(NSArray*)objects;
+- (void)updateOrdinalsForMyFeeds;
 
 @end

@@ -10,6 +10,20 @@
 
 @implementation UILabel (SML)
 
++ (UILabel*)cellFeedLabelWithFrame:(CGRect)frame andText:(NSString*)text {
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:frame];
+    titleLabel.font = [UIFont feedFont];
+    titleLabel.adjustsFontSizeToFitWidth = YES;
+    titleLabel.minimumScaleFactor = 0.5;
+    titleLabel.textColor = [UIColor lightGrayColor];
+    titleLabel.textAlignment = NSTextAlignmentRight;
+    titleLabel.numberOfLines = 1;
+    titleLabel.text = text;
+    
+    return titleLabel;
+}
+
 + (UILabel*)cellTitleLabelWithFrame:(CGRect)frame andText:(NSString*)text {
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:frame];

@@ -10,6 +10,7 @@
 
 @interface UIFont (SML)
 
++ (UIFont*)feedFont;
 + (UIFont*)titleFont;
 + (UIFont*)cellTitleFont;
 + (UIFont*)myFeedsCellTitleFont;
