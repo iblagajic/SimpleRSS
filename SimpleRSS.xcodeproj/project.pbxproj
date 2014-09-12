@@ -38,6 +38,7 @@
 		1A1F80801928B361004546BA /* SMLNavigationItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F807F1928B361004546BA /* SMLNavigationItem.m */; };
 		1A1F80831928B5E8004546BA /* SMLNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A1F80821928B5E8004546BA /* SMLNavigationBar.m */; };
 		1A22209419668C9D00572DC5 /* UIColor+SML.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A22209319668C9D00572DC5 /* UIColor+SML.m */; };
+		1A5C651B19C22C140054CAF6 /* SMLWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A5C651A19C22C140054CAF6 /* SMLWebViewController.m */; };
 		1A800ADA192C6F5D00FFA05F /* SearchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1A800AD9192C6F5D00FFA05F /* SearchCell.xib */; };
 		1A89A739192A6975008FC3AB /* SMLFetchedResultsControllerDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A89A738192A6975008FC3AB /* SMLFetchedResultsControllerDataSource.m */; };
 		1AF8FF071927A1A80003C313 /* SMLFeedItemsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AF8FF061927A1A80003C313 /* SMLFeedItemsTableViewController.m */; };
@@ -104,6 +105,8 @@
 		1A1F80821928B5E8004546BA /* SMLNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLNavigationBar.m; sourceTree = "<group>"; };
 		1A22209219668C9D00572DC5 /* UIColor+SML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+SML.h"; sourceTree = "<group>"; };
 		1A22209319668C9D00572DC5 /* UIColor+SML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+SML.m"; sourceTree = "<group>"; };
+		1A5C651919C22C140054CAF6 /* SMLWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLWebViewController.h; sourceTree = "<group>"; };
+		1A5C651A19C22C140054CAF6 /* SMLWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLWebViewController.m; sourceTree = "<group>"; };
 		1A800AD9192C6F5D00FFA05F /* SearchCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchCell.xib; sourceTree = "<group>"; };
 		1A89A737192A6975008FC3AB /* SMLFetchedResultsControllerDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMLFetchedResultsControllerDataSource.h; sourceTree = "<group>"; };
 		1A89A738192A6975008FC3AB /* SMLFetchedResultsControllerDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMLFetchedResultsControllerDataSource.m; sourceTree = "<group>"; };
@@ -306,6 +309,8 @@
 				1AF8FF061927A1A80003C313 /* SMLFeedItemsTableViewController.m */,
 				1A1F806B1927E0C9004546BA /* SMLAddFeedTableViewController.h */,
 				1A1F806C1927E0C9004546BA /* SMLAddFeedTableViewController.m */,
+				1A5C651919C22C140054CAF6 /* SMLWebViewController.h */,
+				1A5C651A19C22C140054CAF6 /* SMLWebViewController.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -448,6 +453,7 @@
 				1A1BC85219268BC70080B22C /* main.m in Sources */,
 				1A1F80831928B5E8004546BA /* SMLNavigationBar.m in Sources */,
 				1A1751AE195F1ED9007602D6 /* NSDictionary+SML.m in Sources */,
+				1A5C651B19C22C140054CAF6 /* SMLWebViewController.m in Sources */,
 				1A1F8078192819A0004546BA /* GTMNSString+HTML.m in Sources */,
 				1A1BC89519276FF70080B22C /* UILabel+SML.m in Sources */,
 				1A1790FC19292ADD0069A64D /* _RSSItem.m in Sources */,

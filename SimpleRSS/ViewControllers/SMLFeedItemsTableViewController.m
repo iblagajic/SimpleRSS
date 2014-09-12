@@ -11,6 +11,7 @@
 #import "RSSItem.h"
 #import "SMLFetchedResultsControllerDataSource.h"
 #import "SMLDataController.h"
+#import "SMLWebViewController.h"
 
 #define kCellPadding 20.0
 #define kCellTextPadding 12.0
@@ -119,6 +120,18 @@
     size.height = MAXFLOAT;
     
     return size;
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"ShowWeb"]) {
+        NSParameterAssert([sender isKindOfClass:[UITableViewCell class]]);
+        UITableViewCell *cell = (UITableViewCell*)sender;
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+        RSSItem *item = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
+        UINavigationController *destinationNavigationController = segue.destinationViewController;
+        SMLWebViewController *destinationViewController = (SMLWebViewController*)destinationNavigationController.topViewController;
+        destinationViewController.item = item;
+    }
 }
 
 @end
