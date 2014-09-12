@@ -42,6 +42,14 @@
     return [self avenirNextOfSize:20.0];
 }
 
++ (UIFont*)articleTitleFont {
+    return [self avenirNextDemiBoldOfSize:20.0];
+}
+
++ (UIFont*)articleTextFont {
+    return [self avenirNextOfSize:17.0];
+}
+
 + (UIFont*)avenirNextOfSize:(CGFloat)size {
     return [UIFont fontWithName:@"AvenirNext-Regular" size:size];
 }

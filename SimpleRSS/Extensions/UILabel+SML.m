@@ -84,4 +84,20 @@
                               context:nil].size.height;
 }
 
++ (CGFloat)heightForArticleTitleLabelWithText:(NSString*)text andMaximumSize:(CGSize)maximumSize {
+    
+    return [text boundingRectWithSize:maximumSize
+                              options:NSStringDrawingUsesLineFragmentOrigin
+                           attributes:@{NSFontAttributeName : [UIFont articleTitleFont]}
+                              context:nil].size.height;
+}
+
++ (CGFloat)heightForArticleTextLabelWithText:(NSString*)text andMaximumSize:(CGSize)maximumSize {
+    
+    return [text boundingRectWithSize:maximumSize
+                              options:NSStringDrawingUsesLineFragmentOrigin
+                           attributes:@{NSFontAttributeName : [UIFont articleTextFont]}
+                              context:nil].size.height;
+}
+
 @end

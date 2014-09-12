@@ -8,6 +8,8 @@
 
 #import "SMLWebViewController.h"
 
+#define kReadabilityToken @"ddd2fc89a569f7d858b8bb3163b5c1a260225e73"
+
 @interface SMLWebViewController () <UIWebViewDelegate>
 
 @property (nonatomic, weak) IBOutlet UIWebView *webView;
@@ -20,7 +22,8 @@
 
     [super viewDidAppear:animated];
     
-    NSURL *url = [NSURL URLWithString:self.item.link];
+    NSString *urlString = [NSString stringWithFormat:@"https://readability.com/m?url=%@", self.item.link];
+    NSURL *url = [NSURL URLWithString:urlString];
     [self loadUrl:url];
     self.title = self.item.title;
 }

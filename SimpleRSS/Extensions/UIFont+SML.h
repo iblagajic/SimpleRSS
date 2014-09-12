@@ -18,5 +18,7 @@
 + (UIFont*)dateFont;
 + (UIFont*)barButtonFont;
 + (UIFont*)barTitleFont;
++ (UIFont*)articleTitleFont;
++ (UIFont*)articleTextFont;
 
 @end
