@@ -1,14 +1,14 @@
 //
-//  SMLArticleTextLabel.m
+//  SMLStyledLabel.m
 //  SimpleRSS
 //
 //  Created by Ivan Blagajić on 12/09/14.
 //  Copyright (c) 2014 Simple. All rights reserved.
 //
 
-#import "SMLArticleTextLabel.h"
+#import "SMLStyledLabel.h"
 
-@implementation SMLArticleTextLabel
+@implementation SMLStyledLabel
 
 - (id)init {
     self = [super init];
@@ -25,7 +25,7 @@
 
 - (void)applyStyle {
     
-    self.font = [UIFont articleTextFont];
+    self.font = [UIFont standardTextFont];
     self.textColor = [UIColor darkTextColor];
     self.textAlignment = NSTextAlignmentLeft;
 }

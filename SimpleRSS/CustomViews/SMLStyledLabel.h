@@ -1,5 +1,5 @@
 //
-//  SMLArticleTextLabel.h
+//  SMLStyledLabel.h
 //  SimpleRSS
 //
 //  Created by Ivan Blagajić on 12/09/14.
@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SMLArticleTextLabel : UILabel
+@interface SMLStyledLabel : UILabel
+
+- (void)applyStyle;
 
 @end

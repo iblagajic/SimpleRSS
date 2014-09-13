@@ -19,6 +19,8 @@
 @property (nonatomic, weak) IBOutlet UIScrollView *scrollView;
 @property (nonatomic, weak) IBOutlet UILabel *titleLabel;
 @property (nonatomic, weak) IBOutlet UILabel *textLabel;
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, weak) IBOutlet UILabel *errorLabel;
 @property (nonatomic, strong) NSDictionary *articleJSON;
 @property (nonatomic, weak) PMKPromise *promise;
 
@@ -41,7 +43,7 @@
     
     self.title = name;
     NSString *readabilityURLString = [NSString stringWithFormat:@"https://readability.com/api/content/v1/parser?url=%@&token=%@", urlString, kReadabilityParserAPIKey];
-    self.promise = [self promiseWithJSONResponseForURL:readabilityURLString];
+    self.promise = [self promiseWithJSONResponseForURL:[readabilityURLString stringWithASCIIStringEncoding]];
     self.promise.then(^(NSDictionary *resultsDictionary) {
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         self.articleJSON = resultsDictionary;
@@ -51,6 +53,11 @@
                          animations:^{
                              self.scrollView.alpha = 1.0;
                          }];
+    }).catch(^(NSError *err) {
+        NSLog(@"%@", err.description);
+        self.activityIndicator.hidden = YES;
+        self.errorLabel.text = @"No data available";
+        self.errorLabel.hidden = NO;
     });
 }
 

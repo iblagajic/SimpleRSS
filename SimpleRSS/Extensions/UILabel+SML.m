@@ -96,7 +96,7 @@
     
     return [text boundingRectWithSize:maximumSize
                               options:NSStringDrawingUsesLineFragmentOrigin
-                           attributes:@{NSFontAttributeName : [UIFont articleTextFont]}
+                           attributes:@{NSFontAttributeName : [UIFont standardTextFont]}
                               context:nil].size.height;
 }
 

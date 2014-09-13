@@ -13,7 +13,7 @@
 + (void)insertItemWithDictionary:(NSDictionary*)dictionary inContext:(NSManagedObjectContext*)context {
     
     RSSItem *item = [RSSItem insertInManagedObjectContext:context];
-    item.title = [[dictionary objectForKey:@"title"] stringByConvertingHTMLToPlainText];
+    item.title = [[[dictionary objectForKey:@"title"] stringByConvertingHTMLToPlainText] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     item.text = [[dictionary objectForKey:@"description"] stringByConvertingHTMLToPlainText];
     NSDateFormatter *dateFormat = [NSDateFormatter new];
     [dateFormat setDateFormat:@"ccc, d MMM yyyy H:m:s Z"];
@@ -33,7 +33,7 @@
     [fetchRequest setEntity: [NSEntityDescription entityForName:[self entityName] inManagedObjectContext:context]];
     [fetchRequest setPredicate: [NSPredicate predicateWithFormat: @"(title IN %@)", titles]];
     
-    [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES]]];
+    [fetchRequest setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)]]];
     NSError *error;
     NSArray *uniqueTitles = [context executeFetchRequest:fetchRequest error:&error];
     return uniqueTitles;

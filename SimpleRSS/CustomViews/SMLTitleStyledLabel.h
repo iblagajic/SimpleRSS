@@ -1,13 +1,13 @@
 //
-//  SMLArticleTitleLabel.h
+//  SMLTitleStyledLabel.h
 //  SimpleRSS
 //
 //  Created by Ivan Blagajić on 12/09/14.
 //  Copyright (c) 2014 Simple. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "SMLStyledLabel.h"
 
-@interface SMLArticleTitleLabel : UILabel
+@interface SMLTitleStyledLabel : SMLStyledLabel
 
 @end

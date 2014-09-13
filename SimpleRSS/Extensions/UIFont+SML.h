@@ -19,6 +19,6 @@
 + (UIFont*)barButtonFont;
 + (UIFont*)barTitleFont;
 + (UIFont*)articleTitleFont;
-+ (UIFont*)articleTextFont;
++ (UIFont*)standardTextFont;
 
 @end

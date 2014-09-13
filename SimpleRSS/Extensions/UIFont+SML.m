@@ -46,7 +46,7 @@
     return [self avenirNextDemiBoldOfSize:20.0];
 }
 
-+ (UIFont*)articleTextFont {
++ (UIFont*)standardTextFont {
     return [self avenirNextOfSize:17.0];
 }
 

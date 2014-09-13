@@ -19,4 +19,5 @@
     #import "NSString+HTML.h"
     #import "NSDictionary+SML.h"
     #import "UIColor+SML.h"
+    #import "NSString+SML.h"
 #endif

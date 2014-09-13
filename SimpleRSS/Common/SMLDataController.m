@@ -311,20 +311,21 @@
     for (ONOXMLElement *element in items) {
         NSMutableDictionary *item = [[NSDictionary dictionaryFromXML:element] mutableCopy];
         [item setObject:feed forKey:@"feed"];
-        NSString *title = [[item objectForKey:@"title"] stringByConvertingHTMLToPlainText];
+        NSString *title = [[[item objectForKey:@"title"] stringByConvertingHTMLToPlainText] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         [titles addObject:title];
         [itemsToAdd addObject:item];
     }
-    NSSortDescriptor *byTitle = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+    NSSortDescriptor *byTitle = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
     [itemsToAdd sortUsingDescriptors:@[byTitle]];
     NSArray *itemObjects = [RSSItem arrayOfExistingItemsForTitles:titles inContext:self.managedObjectContext];
     NSInteger i, j;
     for (i = 0, j = 0; i < itemsToAdd.count; i++) {
         NSString *title = [[itemsToAdd objectAtIndex:i] objectForKey:@"title"];
         RSSItem *item;
-        if (itemObjects.count > j)
+        if (itemObjects.count > j) {
             item = [itemObjects objectAtIndex:j];
-        if ([title isEqualToString:item.title]) {
+        }
+        if ([[title stringByRemovingNewLinesAndWhitespace] isEqualToString:[item.title stringByRemovingNewLinesAndWhitespace]]) {
             j++;
         } else {
             [RSSItem insertItemWithDictionary:[itemsToAdd objectAtIndex:i] inContext:self.managedObjectContext];
