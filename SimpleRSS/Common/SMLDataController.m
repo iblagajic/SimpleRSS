@@ -191,7 +191,7 @@
                                                                             sectionNameKeyPath:nil
                                                                                      cacheName:nil];
     
-    frc.fetchRequest.predicate = [NSPredicate predicateWithFormat:@"channels == %@", channel];
+    frc.fetchRequest.predicate = [NSPredicate predicateWithFormat:@"channels CONTAINS[cd] %@", channel];
     
     return frc;
 }
@@ -276,24 +276,9 @@
 
 
 
-- (void)addFeedToMyFeeds:(SMLFeed*)feed {
+- (void)addFeed:(SMLFeed*)feed toChannel:(SMLChannel*)channel {
     
-    feed.ordinal = [NSNumber numberWithUnsignedInteger:[self mySMLFeeds].count];
-    [self saveContext];
-}
-
-- (void)removeFeedFromMyFeeds:(SMLFeed*)feed {
-
-    feed.ordinal = @-1;
-    [self saveContext];
-    [self updateOrdinalsForMyFeeds];
-}
-
-- (void)updateOrdinalsForMyFeeds {
-    
-    NSArray *feeds = [self mySMLFeeds];
-    for (SMLFeed *feed in feeds)
-        feed.ordinal = [NSNumber numberWithInteger:[feeds indexOfObject:feed]];
+    [feed addChannelsObject:channel];
     [self saveContext];
 }
 

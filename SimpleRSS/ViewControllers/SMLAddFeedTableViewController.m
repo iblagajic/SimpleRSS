@@ -8,7 +8,7 @@
 
 #import "SMLAddFeedTableViewController.h"
 #import "SMLDataController.h"
-#import "RSSFeed.h"
+#import "SMLFeed.h"
 #import "SMLFetchedResultsControllerDataSource.h"
 #import <PromiseKit/Promise.h>
 
@@ -23,6 +23,7 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 @property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
 @property (nonatomic) UILabel *searchDisplayControllerLabel;
 @property (nonatomic) NSTimer *searchTimer;
+@property (nonatomic) SMLChannel *channel;
 
 @end
 
@@ -48,8 +49,9 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     [self.searchTimer invalidate];
 }
 
-- (void)setup {
+- (void)setupWithChannel:(SMLChannel *)channel {
     
+    self.channel = channel;
     self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:nil];
     self.searchDisplayController.searchResultsDataSource = self.frcDataSource;
     self.frcDataSource.delegate = self;
@@ -58,11 +60,20 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 #pragma mark - SMLFetchedResultsControllerDataSourceDelegate
 
-- (void)configureCell:(UITableViewCell*)cell withObject:(RSSFeed*)object {
-    if (object.isInMyFeedsValue)
+- (void)configureCell:(UITableViewCell*)cell withObject:(SMLFeed*)object {
+    
+    __block BOOL contains = NO;
+    [object.channels enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+        if ([obj isEqual:self.channel]) {
+            contains = YES;
+            *stop = YES;
+        }
+    }];
+    if (contains) {
         cell.textLabel.font = [UIFont myFeedsCellTitleFont];
-    else
+    } else {
         cell.textLabel.font = [UIFont cellTitleFont];
+    }
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.textLabel.text = object.title;
 }
@@ -82,14 +93,12 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     self.selectedIndexPath = indexPath;
-    RSSFeed *feed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
-    if (feed.isInMyFeedsValue){
-        UIAlertView *removeAlert = [[UIAlertView alloc] initWithTitle:@"Remove from My Feeds?" message:feed.snippet delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Remove", nil];
-        [removeAlert show];
-    } else {
-        UIAlertView *addAlert = [[UIAlertView alloc] initWithTitle:@"Add to My Feeds?" message:feed.snippet delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Add", nil];
-        [addAlert show];
-    }
+    UIAlertView *addAlert = [[UIAlertView alloc] initWithTitle:@"Add Feed to Channel"
+                                                       message:[NSString stringWithFormat:@"Do you want to add feed to \"%@\" channel?", self.channel.name]
+                                                      delegate:self
+                                             cancelButtonTitle:@"No"
+                                             otherButtonTitles:@"Add", nil];
+    [addAlert show];
 }
 
 
@@ -118,16 +127,14 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     
     [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:self.selectedIndexPath animated:YES];
     if (buttonIndex == UIAlertViewButtonIndexAction) {
-        RSSFeed *feed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:self.selectedIndexPath];
-        if (feed.isInMyFeedsValue) {
-            [self.dataController removeFeedFromMyFeeds:feed];
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Feed Removed Successfully" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-            [alertView show];
-        } else {
-            [self.dataController addFeedToMyFeeds:feed];
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"Feed Saved Successfully" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-            [alertView show];
-        }
+        SMLFeed *feed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:self.selectedIndexPath];
+        [self.dataController addFeed:feed toChannel:self.channel];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Saved"
+                                                            message:@"Feed Added Successfully."
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"Ok"
+                                                  otherButtonTitles:nil];
+        [alertView show];
     }
     self.selectedIndexPath = nil;
 }
@@ -137,7 +144,7 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 - (void)searchForCurrentTerm {
     
-    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithRSSFeedsContainingString:self.searchDisplayController.searchBar.text];
+    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithFeedsContainingString:self.searchDisplayController.searchBar.text];
     self.searchDisplayController.searchResultsDataSource = self.frcDataSource;
     [self.searchDisplayController.searchResultsTableView reloadData];
 }

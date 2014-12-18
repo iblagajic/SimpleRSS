@@ -8,7 +8,7 @@
 
 #import "SMLFeedItemsTableViewController.h"
 #import "UIViewController+ScrollingNavbar.h"
-#import "RSSItem.h"
+#import "SMLItem.h"
 #import "SMLFetchedResultsControllerDataSource.h"
 #import "SMLDataController.h"
 #import "SMLArticleViewController.h"
@@ -20,17 +20,17 @@
 @interface SMLFeedItemsTableViewController () <NSFetchedResultsControllerDelegate, SMLFetchedResultsControllerDataSourceDelegate>
 
 @property (strong, nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
-@property (strong, nonatomic) RSSFeed *feed;
+@property (strong, nonatomic) SMLFeed *feed;
 
 @end
 
 @implementation SMLFeedItemsTableViewController
 
-- (void)setupWithFeed:(RSSFeed*)feed {
+- (void)setupWithFeed:(SMLFeed*)feed {
     
     self.feed = feed;
     self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
-    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithItemsForRSSFeed:self.feed];
+    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithItemsForSMLFeed:self.feed];
     self.frcDataSource.delegate = self;
     
     self.title = self.feed.title;
@@ -44,7 +44,7 @@
     for (UIView *subview in cell.contentView.subviews)
          [subview removeFromSuperview];
     
-    RSSItem *item = (RSSItem*)object;
+    SMLItem *item = (SMLItem*)object;
     
     CGFloat height = kCellPadding;
 
@@ -92,14 +92,14 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    RSSItem *item = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
-    return [self heightForCellWithRSSItem:item];
+    SMLItem *item = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
+    return [self heightForCellWithSMLItem:item];
 }
 
 
 #pragma mark - helpers
 
-- (CGFloat)heightForCellWithRSSItem:(RSSItem*)item {
+- (CGFloat)heightForCellWithSMLItem:(SMLItem*)item {
     
     CGFloat height = 2*kCellPadding;
     
@@ -131,7 +131,7 @@
         NSParameterAssert([sender isKindOfClass:[UITableViewCell class]]);
         UITableViewCell *cell = (UITableViewCell*)sender;
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-        RSSItem *item = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
+        SMLItem *item = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
         UINavigationController *destinationNavigationController = segue.destinationViewController;
         SMLArticleViewController *destinationViewController = (SMLArticleViewController*)destinationNavigationController.topViewController;
         [destinationViewController generateArticleJSONForURLString:item.link andFeedName:item.feed.title];

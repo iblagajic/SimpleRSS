@@ -3,14 +3,13 @@
     <entity name="SMLChannel" representedClassName="SMLChannel" syncable="YES">
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="ordinal" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="feeds" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="SMLFeed" inverseName="belongsTo" inverseEntity="SMLFeed" syncable="YES"/>
+        <relationship name="feeds" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="SMLFeed" inverseName="channels" inverseEntity="SMLFeed" syncable="YES"/>
     </entity>
     <entity name="SMLFeed" representedClassName="SMLFeed" syncable="YES">
-        <attribute name="ordinal" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="snippet" optional="YES" attributeType="String" defaultValueString="Snippet" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" defaultValueString="Title" syncable="YES"/>
         <attribute name="url" optional="YES" attributeType="String" defaultValueString="Url" syncable="YES"/>
-        <relationship name="belongsTo" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SMLChannel" inverseName="feeds" inverseEntity="SMLChannel" syncable="YES"/>
+        <relationship name="channels" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SMLChannel" inverseName="feeds" inverseEntity="SMLChannel" syncable="YES"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SMLItem" inverseName="feed" inverseEntity="SMLItem" syncable="YES"/>
     </entity>
     <entity name="SMLItem" representedClassName="SMLItem" syncable="YES">
@@ -21,7 +20,7 @@
         <relationship name="feed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SMLFeed" inverseName="items" inverseEntity="SMLFeed" syncable="YES"/>
     </entity>
     <elements>
-        <element name="SMLFeed" positionX="-9081" positionY="-4725" width="128" height="133"/>
+        <element name="SMLFeed" positionX="-9081" positionY="-4725" width="128" height="118"/>
         <element name="SMLItem" positionX="-8813" positionY="-4725" width="128" height="118"/>
         <element name="SMLChannel" positionX="-8946" positionY="-4671" width="128" height="88"/>
     </elements>

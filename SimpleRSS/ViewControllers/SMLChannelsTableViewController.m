@@ -9,6 +9,7 @@
 #import "SMLChannelsTableViewController.h"
 #import "SMLFetchedResultsControllerDataSource.h"
 #import "SMLDataController.h"
+#import "SMLFeedsTableViewController.h"
 
 @interface SMLChannelsTableViewController () <SMLFetchedResultsControllerDataSourceDelegate, UIAlertViewDelegate>
 
@@ -74,7 +75,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    [self performSegueWithIdentifier:@"ShowChannelItems" sender:cell];
+    [self performSegueWithIdentifier:@"ShowChannelFeeds" sender:cell];
 }
 
 - (NSArray*)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -122,8 +123,12 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    if ([segue.identifier isEqualToString:@"ShowChannelItems"]) {
+    if ([segue.identifier isEqualToString:@"ShowChannelFeeds"]) {
         
+        NSIndexPath *selectedIndexPath = [self.tableView indexPathForSelectedRow];
+        SMLChannel *selectedChannel = [self.frcDataSource.fetchedResultsController objectAtIndexPath:selectedIndexPath];
+        SMLFeedsTableViewController *destinationViewController = segue.destinationViewController;
+        destinationViewController.channel = selectedChannel;
     }
 }
 

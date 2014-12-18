@@ -4,14 +4,13 @@
 #import "_SMLFeed.h"
 
 const struct SMLFeedAttributes SMLFeedAttributes = {
-	.ordinal = @"ordinal",
 	.snippet = @"snippet",
 	.title = @"title",
 	.url = @"url",
 };
 
 const struct SMLFeedRelationships SMLFeedRelationships = {
-	.belongsTo = @"belongsTo",
+	.channels = @"channels",
 	.items = @"items",
 };
 
@@ -44,40 +43,9 @@ const struct SMLFeedFetchedProperties SMLFeedFetchedProperties = {
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
-	if ([key isEqualToString:@"ordinalValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"ordinal"];
-		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
-	}
 
 	return keyPaths;
 }
-
-
-
-
-@dynamic ordinal;
-
-
-
-- (int64_t)ordinalValue {
-	NSNumber *result = [self ordinal];
-	return [result longLongValue];
-}
-
-- (void)setOrdinalValue:(int64_t)value_ {
-	[self setOrdinal:[NSNumber numberWithLongLong:value_]];
-}
-
-- (int64_t)primitiveOrdinalValue {
-	NSNumber *result = [self primitiveOrdinal];
-	return [result longLongValue];
-}
-
-- (void)setPrimitiveOrdinalValue:(int64_t)value_ {
-	[self setPrimitiveOrdinal:[NSNumber numberWithLongLong:value_]];
-}
-
 
 
 
@@ -103,15 +71,15 @@ const struct SMLFeedFetchedProperties SMLFeedFetchedProperties = {
 
 
 
-@dynamic belongsTo;
+@dynamic channels;
 
 	
-- (NSMutableSet*)belongsToSet {
-	[self willAccessValueForKey:@"belongsTo"];
+- (NSMutableSet*)channelsSet {
+	[self willAccessValueForKey:@"channels"];
   
-	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"belongsTo"];
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"channels"];
   
-	[self didAccessValueForKey:@"belongsTo"];
+	[self didAccessValueForKey:@"channels"];
 	return result;
 }
 	

@@ -29,29 +29,19 @@
     
     NSParameterAssert(self.channel);
     self.title = self.channel.name;
+    [self setup];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
     
-    [self setup];
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
     [self.tableView reloadData];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    
-    [super viewWillDisappear:animated];
-    
-    self.frcDataSource.delegate = nil;
 }
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated {
 
     [super setEditing:editing animated:animated];
-    
-    self.navigationItem.leftBarButtonItem.enabled = !editing;
 }
 
 - (void)setup {
@@ -59,7 +49,6 @@
     self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
     self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithFeedsForChannel:self.channel];
     self.frcDataSource.delegate = self;
-    self.frcDataSource.allowReorderingCells = YES;
 }
 
 
@@ -72,17 +61,17 @@
 
 - (void)deleteObject:(id)object {
     
-    [[SMLDataController sharedController] removeFeedFromMyFeeds:object];
+//    [[SMLDataController sharedController] removeFeedFromMyFeeds:object];
 }
 
 - (void)updateInterfaceForObjectsCount:(NSInteger)count {
 
-    if (count == 0) {
-        if (self.tableView.editing) {
-            self.editing = NO;
-        }
-    }
-    self.navigationItem.rightBarButtonItem.enabled = count != 0;
+//    if (count == 0) {
+//        if (self.tableView.editing) {
+//            self.editing = NO;
+//        }
+//    }
+//    self.navigationItem.rightBarButtonItem.enabled = count != 0;
 }
 
 - (NSString*)identifierForCellAtIndexPath:(NSIndexPath *)indexPath {
@@ -104,7 +93,7 @@
     } else if ([segue.identifier isEqualToString:@"ShowSearch"]) {
         UINavigationController *destinationNavigationController = (UINavigationController*)segue.destinationViewController;
         SMLAddFeedTableViewController *searchViewController = (SMLAddFeedTableViewController*)destinationNavigationController.topViewController;
-        [searchViewController setup];
+        [searchViewController setupWithChannel:self.channel];
     }
 }
 

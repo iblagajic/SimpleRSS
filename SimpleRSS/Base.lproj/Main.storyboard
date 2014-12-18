@@ -115,12 +115,11 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="kkk-80-Btj" customClass="SMLNavigationItem">
-                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="04j-LL-RBA">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="04j-LL-RBA">
                             <connections>
                                 <segue destination="uZy-rG-mjb" kind="modal" identifier="ShowSearch" modalTransitionStyle="crossDissolve" id="jCX-6m-hSP"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="lLJ-Z3-OaX"/>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fpp-WV-PpJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -322,6 +321,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="hEU-0s-CDL"/>
+        <segue reference="ReH-2B-P6R"/>
     </inferredMetricsTieBreakers>
 </document>

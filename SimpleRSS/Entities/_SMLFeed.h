@@ -5,14 +5,13 @@
 
 
 extern const struct SMLFeedAttributes {
-	__unsafe_unretained NSString *ordinal;
 	__unsafe_unretained NSString *snippet;
 	__unsafe_unretained NSString *title;
 	__unsafe_unretained NSString *url;
 } SMLFeedAttributes;
 
 extern const struct SMLFeedRelationships {
-	__unsafe_unretained NSString *belongsTo;
+	__unsafe_unretained NSString *channels;
 	__unsafe_unretained NSString *items;
 } SMLFeedRelationships;
 
@@ -26,7 +25,6 @@ extern const struct SMLFeedFetchedProperties {
 
 
 
-
 @interface SMLFeedID : NSManagedObjectID {}
 @end
 
@@ -35,20 +33,6 @@ extern const struct SMLFeedFetchedProperties {
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 - (SMLFeedID*)objectID;
-
-
-
-
-
-@property (nonatomic, strong) NSNumber* ordinal;
-
-
-
-@property int64_t ordinalValue;
-- (int64_t)ordinalValue;
-- (void)setOrdinalValue:(int64_t)value_;
-
-//- (BOOL)validateOrdinal:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -84,9 +68,9 @@ extern const struct SMLFeedFetchedProperties {
 
 
 
-@property (nonatomic, strong) NSSet *belongsTo;
+@property (nonatomic, strong) NSSet *channels;
 
-- (NSMutableSet*)belongsToSet;
+- (NSMutableSet*)channelsSet;
 
 
 
@@ -103,10 +87,10 @@ extern const struct SMLFeedFetchedProperties {
 
 @interface _SMLFeed (CoreDataGeneratedAccessors)
 
-- (void)addBelongsTo:(NSSet*)value_;
-- (void)removeBelongsTo:(NSSet*)value_;
-- (void)addBelongsToObject:(SMLChannel*)value_;
-- (void)removeBelongsToObject:(SMLChannel*)value_;
+- (void)addChannels:(NSSet*)value_;
+- (void)removeChannels:(NSSet*)value_;
+- (void)addChannelsObject:(SMLChannel*)value_;
+- (void)removeChannelsObject:(SMLChannel*)value_;
 
 - (void)addItems:(NSSet*)value_;
 - (void)removeItems:(NSSet*)value_;
@@ -116,15 +100,6 @@ extern const struct SMLFeedFetchedProperties {
 @end
 
 @interface _SMLFeed (CoreDataGeneratedPrimitiveAccessors)
-
-
-- (NSNumber*)primitiveOrdinal;
-- (void)setPrimitiveOrdinal:(NSNumber*)value;
-
-- (int64_t)primitiveOrdinalValue;
-- (void)setPrimitiveOrdinalValue:(int64_t)value_;
-
-
 
 
 - (NSString*)primitiveSnippet;
@@ -146,8 +121,8 @@ extern const struct SMLFeedFetchedProperties {
 
 
 
-- (NSMutableSet*)primitiveBelongsTo;
-- (void)setPrimitiveBelongsTo:(NSMutableSet*)value;
+- (NSMutableSet*)primitiveChannels;
+- (void)setPrimitiveChannels:(NSMutableSet*)value;
 
 
 

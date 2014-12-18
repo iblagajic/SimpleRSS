@@ -16,7 +16,6 @@
     feed.title = [[dictionary objectForKey:@"title"] stringByConvertingHTMLToPlainText];
     feed.url = [dictionary objectForKey:@"url"];
     feed.snippet = [[dictionary objectForKey:@"contentSnippet"] stringByConvertingHTMLToPlainText];
-    feed.ordinal = @-1;
 }
 
 + (NSArray*)arrayOfExistingFeedsForTitles:(NSArray*)titles inContext:(NSManagedObjectContext*)context {
