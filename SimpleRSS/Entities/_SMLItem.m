@@ -1,43 +1,43 @@
 // DO NOT EDIT. This file is machine-generated and constantly overwritten.
-// Make changes to RSSItem.m instead.
+// Make changes to SMLItem.m instead.
 
-#import "_RSSItem.h"
+#import "_SMLItem.h"
 
-const struct RSSItemAttributes RSSItemAttributes = {
+const struct SMLItemAttributes SMLItemAttributes = {
 	.link = @"link",
 	.pubDate = @"pubDate",
 	.text = @"text",
 	.title = @"title",
 };
 
-const struct RSSItemRelationships RSSItemRelationships = {
+const struct SMLItemRelationships SMLItemRelationships = {
 	.feed = @"feed",
 };
 
-const struct RSSItemFetchedProperties RSSItemFetchedProperties = {
+const struct SMLItemFetchedProperties SMLItemFetchedProperties = {
 };
 
-@implementation RSSItemID
+@implementation SMLItemID
 @end
 
-@implementation _RSSItem
+@implementation _SMLItem
 
 + (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_ {
 	NSParameterAssert(moc_);
-	return [NSEntityDescription insertNewObjectForEntityForName:@"RSSItem" inManagedObjectContext:moc_];
+	return [NSEntityDescription insertNewObjectForEntityForName:@"SMLItem" inManagedObjectContext:moc_];
 }
 
 + (NSString*)entityName {
-	return @"RSSItem";
+	return @"SMLItem";
 }
 
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_ {
 	NSParameterAssert(moc_);
-	return [NSEntityDescription entityForName:@"RSSItem" inManagedObjectContext:moc_];
+	return [NSEntityDescription entityForName:@"SMLItem" inManagedObjectContext:moc_];
 }
 
-- (RSSItemID*)objectID {
-	return (RSSItemID*)[super objectID];
+- (SMLItemID*)objectID {
+	return (SMLItemID*)[super objectID];
 }
 
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="rS3-R9-Ivy">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="rS3-R9-Ivy">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
     <scenes>
         <!--Navigation Controller-->
@@ -17,19 +18,73 @@
                         </textAttributes>
                     </navigationBar>
                     <connections>
-                        <segue destination="Tot-oD-V98" kind="relationship" relationship="rootViewController" id="Cdy-cM-DEz"/>
+                        <segue destination="sYn-XB-hzE" kind="relationship" relationship="rootViewController" id="nB3-2O-Lx3"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eq9-QA-ai8" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1" y="64"/>
+            <point key="canvasLocation" x="-229" y="76"/>
         </scene>
-        <!--Feeds Manager Table View Controller-->
+        <!--Channels Table View Controller-->
+        <scene sceneID="RSY-ET-zNO">
+            <objects>
+                <tableViewController id="sYn-XB-hzE" customClass="SMLChannelsTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="66" sectionHeaderHeight="22" sectionFooterHeight="66" id="DBl-g7-tAe">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="StandardCell" textLabel="qF1-en-D2Y" detailTextLabel="6U5-gE-RBV" style="IBUITableViewCellStyleSubtitle" id="pBH-WY-aE4" userLabel="StandardCell">
+                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="pBH-WY-aE4" id="Ebl-Xv-l4v">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Apple News" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="qF1-en-D2Y">
+                                            <rect key="frame" x="15" y="0.0" width="290" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="20"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Detail" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="6U5-gE-RBV">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="13"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="sYn-XB-hzE" id="BqM-wA-W9W"/>
+                            <outlet property="delegate" destination="sYn-XB-hzE" id="xOK-0o-V0a"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="YXO-et-70r">
+                        <barButtonItem key="leftBarButtonItem" title="Add" id="7Lj-P3-Bh9">
+                            <connections>
+                                <action selector="addNewChannel:" destination="sYn-XB-hzE" id="oL4-vb-NsB"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <segue destination="Tot-oD-V98" kind="push" identifier="ShowChannelFeeds" id="bG8-bf-2jk"/>
+                        <segue destination="bJK-yZ-Ee2" kind="push" identifier="ShowChannel" id="hEU-0s-CDL"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="RhB-YH-gIf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-229" y="811"/>
+        </scene>
+        <!--Feeds Table View Controller-->
         <scene sceneID="3lO-Wj-sNm">
             <objects>
-                <tableViewController id="Tot-oD-V98" customClass="SMLFeedsManagerTableViewController" sceneMemberID="viewController">
+                <tableViewController id="Tot-oD-V98" customClass="SMLFeedsTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="HFq-ar-3g5">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -70,14 +125,14 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fpp-WV-PpJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="571" y="64"/>
+            <point key="canvasLocation" x="254" y="76"/>
         </scene>
         <!--Feed Items Table View Controller-->
         <scene sceneID="kuX-42-j0l">
             <objects>
                 <tableViewController id="bJK-yZ-Ee2" customClass="SMLFeedItemsTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="JdW-PC-Xmj">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -103,7 +158,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="59g-UR-gQD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1081" y="64"/>
+            <point key="canvasLocation" x="744" y="811"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="kfq-eU-fnt">
@@ -118,7 +173,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q5o-qX-Kzw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1635" y="64"/>
+            <point key="canvasLocation" x="1298" y="811"/>
         </scene>
         <!--Article View Controller-->
         <scene sceneID="Zd8-lB-6P1">
@@ -202,7 +257,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="N63-ad-mxa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1089" y="-633"/>
+            <point key="canvasLocation" x="744" y="76"/>
         </scene>
         <!--Add Feed Table View Controller-->
         <scene sceneID="zHo-r3-GgF">
@@ -255,7 +310,7 @@
                     </connections>
                 </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="1651" y="-633"/>
+            <point key="canvasLocation" x="1298" y="76"/>
         </scene>
     </scenes>
     <resources>
@@ -266,4 +321,7 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="hEU-0s-CDL"/>
+    </inferredMetricsTieBreakers>
 </document>

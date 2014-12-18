@@ -35,11 +35,11 @@
 }
 
 + (UIFont*)barButtonFont {
-    return [self avenirNextOfSize:20.0];
+    return [self avenirNextOfSize:18.0];
 }
 
 + (UIFont*)barTitleFont {
-    return [self avenirNextOfSize:20.0];
+    return [self avenirNextOfSize:22.0];
 }
 
 + (UIFont*)articleTitleFont {

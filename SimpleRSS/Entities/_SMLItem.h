@@ -1,38 +1,38 @@
 // DO NOT EDIT. This file is machine-generated and constantly overwritten.
-// Make changes to RSSItem.h instead.
+// Make changes to SMLItem.h instead.
 
 #import <CoreData/CoreData.h>
 
 
-extern const struct RSSItemAttributes {
+extern const struct SMLItemAttributes {
 	__unsafe_unretained NSString *link;
 	__unsafe_unretained NSString *pubDate;
 	__unsafe_unretained NSString *text;
 	__unsafe_unretained NSString *title;
-} RSSItemAttributes;
+} SMLItemAttributes;
 
-extern const struct RSSItemRelationships {
+extern const struct SMLItemRelationships {
 	__unsafe_unretained NSString *feed;
-} RSSItemRelationships;
+} SMLItemRelationships;
 
-extern const struct RSSItemFetchedProperties {
-} RSSItemFetchedProperties;
+extern const struct SMLItemFetchedProperties {
+} SMLItemFetchedProperties;
 
-@class RSSFeed;
-
-
+@class SMLFeed;
 
 
 
 
-@interface RSSItemID : NSManagedObjectID {}
+
+
+@interface SMLItemID : NSManagedObjectID {}
 @end
 
-@interface _RSSItem : NSManagedObject {}
+@interface _SMLItem : NSManagedObject {}
 + (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_;
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
-- (RSSItemID*)objectID;
+- (SMLItemID*)objectID;
 
 
 
@@ -78,7 +78,7 @@ extern const struct RSSItemFetchedProperties {
 
 
 
-@property (nonatomic, strong) RSSFeed *feed;
+@property (nonatomic, strong) SMLFeed *feed;
 
 //- (BOOL)validateFeed:(id*)value_ error:(NSError**)error_;
 
@@ -88,11 +88,11 @@ extern const struct RSSItemFetchedProperties {
 
 @end
 
-@interface _RSSItem (CoreDataGeneratedAccessors)
+@interface _SMLItem (CoreDataGeneratedAccessors)
 
 @end
 
-@interface _RSSItem (CoreDataGeneratedPrimitiveAccessors)
+@interface _SMLItem (CoreDataGeneratedPrimitiveAccessors)
 
 
 - (NSString*)primitiveLink;
@@ -120,8 +120,8 @@ extern const struct RSSItemFetchedProperties {
 
 
 
-- (RSSFeed*)primitiveFeed;
-- (void)setPrimitiveFeed:(RSSFeed*)value;
+- (SMLFeed*)primitiveFeed;
+- (void)setPrimitiveFeed:(SMLFeed*)value;
 
 
 @end

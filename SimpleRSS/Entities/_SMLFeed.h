@@ -1,54 +1,40 @@
 // DO NOT EDIT. This file is machine-generated and constantly overwritten.
-// Make changes to RSSFeed.h instead.
+// Make changes to SMLFeed.h instead.
 
 #import <CoreData/CoreData.h>
 
 
-extern const struct RSSFeedAttributes {
-	__unsafe_unretained NSString *isInMyFeeds;
+extern const struct SMLFeedAttributes {
 	__unsafe_unretained NSString *ordinal;
 	__unsafe_unretained NSString *snippet;
 	__unsafe_unretained NSString *title;
 	__unsafe_unretained NSString *url;
-} RSSFeedAttributes;
+} SMLFeedAttributes;
 
-extern const struct RSSFeedRelationships {
+extern const struct SMLFeedRelationships {
+	__unsafe_unretained NSString *belongsTo;
 	__unsafe_unretained NSString *items;
-} RSSFeedRelationships;
+} SMLFeedRelationships;
 
-extern const struct RSSFeedFetchedProperties {
-} RSSFeedFetchedProperties;
+extern const struct SMLFeedFetchedProperties {
+} SMLFeedFetchedProperties;
 
-@class RSSItem;
-
-
-
+@class SMLChannel;
+@class SMLItem;
 
 
 
 
-@interface RSSFeedID : NSManagedObjectID {}
+
+
+@interface SMLFeedID : NSManagedObjectID {}
 @end
 
-@interface _RSSFeed : NSManagedObject {}
+@interface _SMLFeed : NSManagedObject {}
 + (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_;
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
-- (RSSFeedID*)objectID;
-
-
-
-
-
-@property (nonatomic, strong) NSNumber* isInMyFeeds;
-
-
-
-@property BOOL isInMyFeedsValue;
-- (BOOL)isInMyFeedsValue;
-- (void)setIsInMyFeedsValue:(BOOL)value_;
-
-//- (BOOL)validateIsInMyFeeds:(id*)value_ error:(NSError**)error_;
+- (SMLFeedID*)objectID;
 
 
 
@@ -98,6 +84,13 @@ extern const struct RSSFeedFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSSet *belongsTo;
+
+- (NSMutableSet*)belongsToSet;
+
+
+
+
 @property (nonatomic, strong) NSSet *items;
 
 - (NSMutableSet*)itemsSet;
@@ -108,25 +101,21 @@ extern const struct RSSFeedFetchedProperties {
 
 @end
 
-@interface _RSSFeed (CoreDataGeneratedAccessors)
+@interface _SMLFeed (CoreDataGeneratedAccessors)
+
+- (void)addBelongsTo:(NSSet*)value_;
+- (void)removeBelongsTo:(NSSet*)value_;
+- (void)addBelongsToObject:(SMLChannel*)value_;
+- (void)removeBelongsToObject:(SMLChannel*)value_;
 
 - (void)addItems:(NSSet*)value_;
 - (void)removeItems:(NSSet*)value_;
-- (void)addItemsObject:(RSSItem*)value_;
-- (void)removeItemsObject:(RSSItem*)value_;
+- (void)addItemsObject:(SMLItem*)value_;
+- (void)removeItemsObject:(SMLItem*)value_;
 
 @end
 
-@interface _RSSFeed (CoreDataGeneratedPrimitiveAccessors)
-
-
-- (NSNumber*)primitiveIsInMyFeeds;
-- (void)setPrimitiveIsInMyFeeds:(NSNumber*)value;
-
-- (BOOL)primitiveIsInMyFeedsValue;
-- (void)setPrimitiveIsInMyFeedsValue:(BOOL)value_;
-
-
+@interface _SMLFeed (CoreDataGeneratedPrimitiveAccessors)
 
 
 - (NSNumber*)primitiveOrdinal;
@@ -154,6 +143,11 @@ extern const struct RSSFeedFetchedProperties {
 - (void)setPrimitiveUrl:(NSString*)value;
 
 
+
+
+
+- (NSMutableSet*)primitiveBelongsTo;
+- (void)setPrimitiveBelongsTo:(NSMutableSet*)value;
 
 
 

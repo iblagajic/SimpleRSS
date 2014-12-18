@@ -1,18 +1,18 @@
-#import "RSSItem.h"
+#import "SMLItem.h"
 
 
-@interface RSSItem ()
+@interface SMLItem ()
 
 // Private interface goes here.
 
 @end
 
 
-@implementation RSSItem
+@implementation SMLItem
 
 + (void)insertItemWithDictionary:(NSDictionary*)dictionary inContext:(NSManagedObjectContext*)context {
     
-    RSSItem *item = [RSSItem insertInManagedObjectContext:context];
+    SMLItem *item = [SMLItem insertInManagedObjectContext:context];
     item.title = [[[dictionary objectForKey:@"title"] stringByConvertingHTMLToPlainText] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     item.text = [[dictionary objectForKey:@"description"] stringByConvertingHTMLToPlainText];
     NSDateFormatter *dateFormat = [NSDateFormatter new];

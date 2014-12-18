@@ -32,7 +32,6 @@
     self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
     self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithItemsForRSSFeed:self.feed];
     self.frcDataSource.delegate = self;
-    self.frcDataSource.reuseIdentifier = @"Cell";
     
     self.title = self.feed.title;
 }
@@ -82,6 +81,10 @@
     [cell.contentView addSubview:feedLabel];
     
 //    height += CGRectGetHeight(dateFrame) + kCellPadding;
+}
+
+- (NSString*)identifierForCellAtIndexPath:(NSIndexPath *)indexPath {
+    return @"Cell";
 }
 
 

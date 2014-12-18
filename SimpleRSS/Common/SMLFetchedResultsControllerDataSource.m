@@ -43,21 +43,21 @@
 
 #pragma mark - UITableViewDataSource
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView {
     return self.fetchedResultsController.sections.count;
 }
 
-- (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)sectionIndex
-{
+- (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)sectionIndex {
+
     id<NSFetchedResultsSectionInfo> section = self.fetchedResultsController.sections[sectionIndex];
     return section.numberOfObjects;
 }
 
-- (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
-{
+- (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath {
+
+    NSString *cellIdentifier = [self.delegate identifierForCellAtIndexPath:indexPath];
     id object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    id cell = [tableView dequeueReusableCellWithIdentifier:self.reuseIdentifier
+    id cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier
                                               forIndexPath:indexPath];
     [self.delegate configureCell:cell withObject:object];
     return cell;
@@ -72,13 +72,30 @@
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return self.allowReorderingCells;
+    switch (self.allowReorderingCells) {
+        case SMLTableViewAllowReorderingAll:
+            return YES;
+        case SMLTableViewAllowReorderingAllButFirst:
+            return indexPath.row != 0;
+        case SMLTableViewAllowReorderingAllButFirstAndLast:
+            return (indexPath.row != 0 && (indexPath.row != self.fetchedResultsController.fetchedObjects.count - 1));
+        case SMLTableViewAllowReorderingNone:
+            return NO;
+    }
 }
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
    
     self.isUserDrivenChange = YES;
-    [self.delegate objectMovedFrom:sourceIndexPath to:destinationIndexPath];
+    
+    NSMutableArray *objects = [self.fetchedResultsController.fetchedObjects mutableCopy];
+    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:sourceIndexPath];
+    
+    [objects removeObject:object];
+    [objects insertObject:object atIndex:destinationIndexPath.row];
+    
+    [self.delegate didReorderObjects:[objects copy]];
+    
     self.isUserDrivenChange = NO;
 }
 
@@ -103,20 +120,15 @@
         case NSFetchedResultsChangeInsert:
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
-            
         case NSFetchedResultsChangeDelete:
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
-            
         case NSFetchedResultsChangeUpdate:
             [self.delegate configureCell:[tableView cellForRowAtIndexPath:indexPath] withObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
             break;
-            
         case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths:[NSArray
-                                               arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [tableView insertRowsAtIndexPaths:[NSArray
-                                               arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
 }
@@ -127,7 +139,10 @@
     if (self.isUserDrivenChange) return;
     
     switch(type) {
-            
+        case NSFetchedResultsChangeMove:
+            break;
+        case NSFetchedResultsChangeUpdate:
+            break;
         case NSFetchedResultsChangeInsert:
             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
             break;

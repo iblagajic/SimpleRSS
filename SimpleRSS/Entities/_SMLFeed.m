@@ -1,54 +1,49 @@
 // DO NOT EDIT. This file is machine-generated and constantly overwritten.
-// Make changes to RSSFeed.m instead.
+// Make changes to SMLFeed.m instead.
 
-#import "_RSSFeed.h"
+#import "_SMLFeed.h"
 
-const struct RSSFeedAttributes RSSFeedAttributes = {
-	.isInMyFeeds = @"isInMyFeeds",
+const struct SMLFeedAttributes SMLFeedAttributes = {
 	.ordinal = @"ordinal",
 	.snippet = @"snippet",
 	.title = @"title",
 	.url = @"url",
 };
 
-const struct RSSFeedRelationships RSSFeedRelationships = {
+const struct SMLFeedRelationships SMLFeedRelationships = {
+	.belongsTo = @"belongsTo",
 	.items = @"items",
 };
 
-const struct RSSFeedFetchedProperties RSSFeedFetchedProperties = {
+const struct SMLFeedFetchedProperties SMLFeedFetchedProperties = {
 };
 
-@implementation RSSFeedID
+@implementation SMLFeedID
 @end
 
-@implementation _RSSFeed
+@implementation _SMLFeed
 
 + (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_ {
 	NSParameterAssert(moc_);
-	return [NSEntityDescription insertNewObjectForEntityForName:@"RSSFeed" inManagedObjectContext:moc_];
+	return [NSEntityDescription insertNewObjectForEntityForName:@"SMLFeed" inManagedObjectContext:moc_];
 }
 
 + (NSString*)entityName {
-	return @"RSSFeed";
+	return @"SMLFeed";
 }
 
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_ {
 	NSParameterAssert(moc_);
-	return [NSEntityDescription entityForName:@"RSSFeed" inManagedObjectContext:moc_];
+	return [NSEntityDescription entityForName:@"SMLFeed" inManagedObjectContext:moc_];
 }
 
-- (RSSFeedID*)objectID {
-	return (RSSFeedID*)[super objectID];
+- (SMLFeedID*)objectID {
+	return (SMLFeedID*)[super objectID];
 }
 
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
-	if ([key isEqualToString:@"isInMyFeedsValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"isInMyFeeds"];
-		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
-	}
 	if ([key isEqualToString:@"ordinalValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"ordinal"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -57,32 +52,6 @@ const struct RSSFeedFetchedProperties RSSFeedFetchedProperties = {
 
 	return keyPaths;
 }
-
-
-
-
-@dynamic isInMyFeeds;
-
-
-
-- (BOOL)isInMyFeedsValue {
-	NSNumber *result = [self isInMyFeeds];
-	return [result boolValue];
-}
-
-- (void)setIsInMyFeedsValue:(BOOL)value_ {
-	[self setIsInMyFeeds:[NSNumber numberWithBool:value_]];
-}
-
-- (BOOL)primitiveIsInMyFeedsValue {
-	NSNumber *result = [self primitiveIsInMyFeeds];
-	return [result boolValue];
-}
-
-- (void)setPrimitiveIsInMyFeedsValue:(BOOL)value_ {
-	[self setPrimitiveIsInMyFeeds:[NSNumber numberWithBool:value_]];
-}
-
 
 
 
@@ -133,6 +102,19 @@ const struct RSSFeedFetchedProperties RSSFeedFetchedProperties = {
 
 
 
+
+@dynamic belongsTo;
+
+	
+- (NSMutableSet*)belongsToSet {
+	[self willAccessValueForKey:@"belongsTo"];
+  
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"belongsTo"];
+  
+	[self didAccessValueForKey:@"belongsTo"];
+	return result;
+}
+	
 
 @dynamic items;
 

@@ -53,7 +53,6 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:nil];
     self.searchDisplayController.searchResultsDataSource = self.frcDataSource;
     self.frcDataSource.delegate = self;
-    self.frcDataSource.reuseIdentifier = @"Cell";
 }
 
 
@@ -71,6 +70,10 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 - (void)updateInterfaceForObjectsCount:(NSInteger)count {
 
     [self.searchDisplayController.searchResultsTableView reloadData];
+}
+
+- (NSString*)identifierForCellAtIndexPath:(NSIndexPath *)indexPath {
+    return @"Cell";
 }
 
 

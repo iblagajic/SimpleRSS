@@ -1,25 +1,24 @@
 //
-//  SMLFeedsManagerTableViewController.m
+//  SMLFeedsTableViewController.m
 //  SimpleRSS
 //
 //  Created by Ivan Blagajić on 17/05/14.
 //  Copyright (c) 2014 Simple. All rights reserved.
 //
 
-#import "SMLFeedsManagerTableViewController.h"
+#import "SMLFeedsTableViewController.h"
 #import "SMLFeedItemsTableViewController.h"
-#import "RSSFeed.h"
 #import "SMLDataController.h"
 #import "SMLFetchedResultsControllerDataSource.h"
 #import "SMLAddFeedTableViewController.h"
 
-@interface SMLFeedsManagerTableViewController () <NSFetchedResultsControllerDelegate, SMLFetchedResultsControllerDataSourceDelegate>
+@interface SMLFeedsTableViewController () <NSFetchedResultsControllerDelegate, SMLFetchedResultsControllerDataSourceDelegate>
 
 @property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
 
 @end
 
-@implementation SMLFeedsManagerTableViewController
+@implementation SMLFeedsTableViewController
 
 
 #pragma mark - UIViewController
@@ -28,7 +27,8 @@
     
     [super viewDidLoad];
     
-    self.title = @"My Feeds";
+    NSParameterAssert(self.channel);
+    self.title = self.channel.name;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -45,7 +45,6 @@
     [super viewWillDisappear:animated];
     
     self.frcDataSource.delegate = nil;
-    self.frcDataSource = nil;
 }
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated {
@@ -58,16 +57,15 @@
 - (void)setup {
     
     self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
-    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithMyRSSFeeds];
+    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithFeedsForChannel:self.channel];
     self.frcDataSource.delegate = self;
-    self.frcDataSource.reuseIdentifier = @"Cell";
     self.frcDataSource.allowReorderingCells = YES;
 }
 
 
 #pragma mark - SMLFetchedResultsControllerDataSourceDelegate
 
-- (void)configureCell:(UITableViewCell*)cell withObject:(RSSFeed*)object {
+- (void)configureCell:(UITableViewCell*)cell withObject:(SMLFeed*)object {
     
     cell.textLabel.text = object.title;
 }
@@ -87,14 +85,8 @@
     self.navigationItem.rightBarButtonItem.enabled = count != 0;
 }
 
-- (void)objectMovedFrom:(NSIndexPath *)fromIndexPath to:(NSIndexPath *)toIndexPath {
-   
-    NSMutableArray *objects = [self.frcDataSource.fetchedResultsController.fetchedObjects mutableCopy];
-    id objectToMove = [objects objectAtIndex:fromIndexPath.row];
-    [objects removeObjectAtIndex:fromIndexPath.row];
-    [objects insertObject:objectToMove atIndex:toIndexPath.row];
-    
-    [[SMLDataController sharedController] updateOrdinalsForMyFeeds];
+- (NSString*)identifierForCellAtIndexPath:(NSIndexPath *)indexPath {
+    return @"Cell";
 }
 
 
@@ -106,7 +98,7 @@
         NSParameterAssert([sender isKindOfClass:[UITableViewCell class]]);
         UITableViewCell *cell = (UITableViewCell*)sender;
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-        RSSFeed *feed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
+        SMLFeed *feed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
         SMLFeedItemsTableViewController *destinationViewController = (SMLFeedItemsTableViewController*)segue.destinationViewController;
         [destinationViewController setupWithFeed:feed];
     } else if ([segue.identifier isEqualToString:@"ShowSearch"]) {

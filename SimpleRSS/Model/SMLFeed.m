@@ -1,17 +1,18 @@
-#import "RSSFeed.h"
+#import "SMLFeed.h"
 
-@interface RSSFeed ()
+
+@interface SMLFeed ()
 
 // Private interface goes here.
 
 @end
 
 
-@implementation RSSFeed
+@implementation SMLFeed
 
 + (void)insertFeedWithDictionary:(NSDictionary*)dictionary inContext:(NSManagedObjectContext*)context {
     
-    RSSFeed *feed = [RSSFeed insertInManagedObjectContext:context];
+    SMLFeed *feed = [SMLFeed insertInManagedObjectContext:context];
     feed.title = [[dictionary objectForKey:@"title"] stringByConvertingHTMLToPlainText];
     feed.url = [dictionary objectForKey:@"url"];
     feed.snippet = [[dictionary objectForKey:@"contentSnippet"] stringByConvertingHTMLToPlainText];

@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RSSFeed.h"
+#import "SMLFeed.h"
 
 @interface SMLFeedItemsTableViewController : UITableViewController
 
-- (void)setupWithFeed:(RSSFeed*)feed;
+- (void)setupWithFeed:(SMLFeed*)feed;
 
 @end

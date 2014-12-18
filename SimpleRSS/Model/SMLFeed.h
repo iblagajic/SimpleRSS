@@ -1,6 +1,6 @@
-#import "_RSSFeed.h"
+#import "_SMLFeed.h"
 
-@interface RSSFeed : _RSSFeed {}
+@interface SMLFeed : _SMLFeed {}
 
 + (void)insertFeedWithDictionary:(NSDictionary*)dictionary inContext:(NSManagedObjectContext*)context;
 + (NSArray*)arrayOfExistingFeedsForTitles:(NSArray*)titles inContext:(NSManagedObjectContext*)context;

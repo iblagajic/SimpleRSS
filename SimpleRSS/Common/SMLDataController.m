@@ -135,15 +135,14 @@
 }
 
 
-#pragma mark - public methods
+#pragma mark - SMLChannel
 
-- (NSFetchedResultsController *)frcWithMyRSSFeeds {
+- (NSFetchedResultsController *)frcWithChannels {
     
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"RSSFeed"];
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"SMLChannel"];
 
     NSSortDescriptor *byOrdinal = [NSSortDescriptor sortDescriptorWithKey:@"ordinal" ascending:YES];
     fetchRequest.sortDescriptors = @[byOrdinal];
-    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"isInMyFeeds = YES", nil];
     
     NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                                                managedObjectContext:self.managedObjectContext
@@ -152,7 +151,52 @@
     return fetchedResultsController;
 }
 
-- (NSFetchedResultsController *)frcWithRSSFeedsContainingString:(NSString*)searchTerm {
+- (void)addChannelWithName:(NSString*)name {
+    
+    NSArray *channels = [SMLChannel channelsInContext:self.managedObjectContext];
+    NSNumber *ordinal = @(channels.count);
+    [SMLChannel addChannelWithName:name ordinal:ordinal inContext:self.managedObjectContext];
+    [self saveContext];
+}
+
+- (void)deleteChannel:(SMLChannel*)channel {
+    
+    [self.managedObjectContext deleteObject:channel];
+    [self saveContext];
+}
+
+- (void)updateOrdinals:(NSArray*)objects {
+    
+    for (int i = 0; i < objects.count; i++) {
+        NSManagedObject *mo = objects[i];
+        [mo setValue:@(i) forKey:@"ordinal"];
+    }
+    
+    [self saveContext];
+}
+
+
+#pragma mark - SMLFeed
+
+- (NSFetchedResultsController*)frcWithFeedsForChannel:(SMLChannel*)channel {
+    
+    NSParameterAssert(channel);
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"SMLFeed"];
+    
+    NSSortDescriptor *byTitle = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
+    fetchRequest.sortDescriptors = @[byTitle];
+    NSFetchedResultsController *frc = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                          managedObjectContext:self.managedObjectContext
+                                                                            sectionNameKeyPath:nil
+                                                                                     cacheName:nil];
+    
+    frc.fetchRequest.predicate = [NSPredicate predicateWithFormat:@"channels == %@", channel];
+    
+    return frc;
+}
+
+- (NSFetchedResultsController *)frcWithFeedsContainingString:(NSString*)searchTerm {
     
     if (!searchTerm || [searchTerm isEqualToString:@""]) {
         return nil;
@@ -172,7 +216,7 @@
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     });
     
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"RSSFeed"];
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"SMLFeed"];
     
     if (!self.frcForRSSFeedsSearch) {
         NSSortDescriptor *byTitle = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
@@ -188,7 +232,7 @@
     return self.frcForRSSFeedsSearch;
 }
 
-- (NSFetchedResultsController *)frcWithItemsForRSSFeed:(RSSFeed*)feed {
+- (NSFetchedResultsController *)frcWithItemsForSMLFeed:(SMLFeed*)feed {
     
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     [NSURLConnection GET:feed.url].then(^(NSData *itemsData) {
@@ -218,7 +262,7 @@
     return fetchedResultsController;
 }
 
-- (NSArray*)myRSSFeeds {
+- (NSArray*)mySMLFeeds {
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"RSSFeed"];
     
     NSSortDescriptor *byOrdinal = [NSSortDescriptor sortDescriptorWithKey:@"ordinal" ascending:YES];
@@ -230,16 +274,16 @@
     return feeds;
 }
 
-- (void)addFeedToMyFeeds:(RSSFeed*)feed {
+
+
+- (void)addFeedToMyFeeds:(SMLFeed*)feed {
     
-    feed.isInMyFeeds = @YES;
-    feed.ordinal = [NSNumber numberWithUnsignedInteger:[self myRSSFeeds].count];
+    feed.ordinal = [NSNumber numberWithUnsignedInteger:[self mySMLFeeds].count];
     [self saveContext];
 }
 
-- (void)removeFeedFromMyFeeds:(RSSFeed*)feed {
+- (void)removeFeedFromMyFeeds:(SMLFeed*)feed {
 
-    feed.isInMyFeeds = @NO;
     feed.ordinal = @-1;
     [self saveContext];
     [self updateOrdinalsForMyFeeds];
@@ -247,8 +291,8 @@
 
 - (void)updateOrdinalsForMyFeeds {
     
-    NSArray *feeds = [self myRSSFeeds];
-    for (RSSFeed *feed in feeds)
+    NSArray *feeds = [self mySMLFeeds];
+    for (SMLFeed *feed in feeds)
         feed.ordinal = [NSNumber numberWithInteger:[feeds indexOfObject:feed]];
     [self saveContext];
 }
@@ -283,23 +327,23 @@
     }
     NSSortDescriptor *byTitle = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
     [feeds sortUsingDescriptors:@[byTitle]];
-    NSArray *feedObjects = [RSSFeed arrayOfExistingFeedsForTitles:titles inContext:self.managedObjectContext];
+    NSArray *feedObjects = [SMLFeed arrayOfExistingFeedsForTitles:titles inContext:self.managedObjectContext];
     NSInteger i, j;
     for (i = 0, j = 0; i < feeds.count; i++) {
         NSString *title = [[feeds objectAtIndex:i] objectForKey:@"title"];
-        RSSFeed *feed;
+        SMLFeed *feed;
         if (feedObjects.count > j)
             feed = [feedObjects objectAtIndex:j];
         if ([title isEqualToString:feed.title]) {
             j++;
         } else {
-            [RSSFeed insertFeedWithDictionary:[feeds objectAtIndex:i] inContext:self.managedObjectContext];
+            [SMLFeed insertFeedWithDictionary:[feeds objectAtIndex:i] inContext:self.managedObjectContext];
         }
     }
     [self saveContext];
 }
 
-- (void)parseFeedItemsXML:(ONOXMLDocument*)itemsXML forFeed:(RSSFeed*)feed {
+- (void)parseFeedItemsXML:(ONOXMLDocument*)itemsXML forFeed:(SMLFeed*)feed {
     
     ONOXMLElement *channel = [itemsXML.rootElement firstChildWithTag:@"channel"];
     
@@ -317,18 +361,18 @@
     }
     NSSortDescriptor *byTitle = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
     [itemsToAdd sortUsingDescriptors:@[byTitle]];
-    NSArray *itemObjects = [RSSItem arrayOfExistingItemsForTitles:titles inContext:self.managedObjectContext];
+    NSArray *itemObjects = [SMLItem arrayOfExistingItemsForTitles:titles inContext:self.managedObjectContext];
     NSInteger i, j;
     for (i = 0, j = 0; i < itemsToAdd.count; i++) {
         NSString *title = [[itemsToAdd objectAtIndex:i] objectForKey:@"title"];
-        RSSItem *item;
+        SMLItem *item;
         if (itemObjects.count > j) {
             item = [itemObjects objectAtIndex:j];
         }
         if ([[title stringByRemovingNewLinesAndWhitespace] isEqualToString:[item.title stringByRemovingNewLinesAndWhitespace]]) {
             j++;
         } else {
-            [RSSItem insertItemWithDictionary:[itemsToAdd objectAtIndex:i] inContext:self.managedObjectContext];
+            [SMLItem insertItemWithDictionary:[itemsToAdd objectAtIndex:i] inContext:self.managedObjectContext];
         }
     }
     [self saveContext];

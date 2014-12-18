@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "RSSItem.h"
+#import "SMLItem.h"
 
 @interface SMLWebViewController : UIViewController
 
-@property (nonatomic, strong) RSSItem *item;
+@property (nonatomic, strong) SMLItem *item;
 
 @end
