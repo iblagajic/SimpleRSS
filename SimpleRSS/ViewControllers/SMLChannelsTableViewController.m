@@ -10,6 +10,7 @@
 #import "SMLFetchedResultsControllerDataSource.h"
 #import "SMLDataController.h"
 #import "SMLFeedsTableViewController.h"
+#import "SMLFeedItemsTableViewController.h"
 
 @interface SMLChannelsTableViewController () <SMLFetchedResultsControllerDataSourceDelegate, UIAlertViewDelegate>
 
@@ -75,15 +76,16 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    [self performSegueWithIdentifier:@"ShowChannelFeeds" sender:cell];
+    [self performSegueWithIdentifier:@"ShowChannel" sender:cell];
 }
 
 - (NSArray*)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     UITableViewRowAction *moreAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
-                                                                      title:@"More"
+                                                                      title:@"Feeds"
                                                                     handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-                                                                        
+                                                                        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+                                                                        [self performSegueWithIdentifier:@"ShowChannelFeeds" sender:cell];
                                                                     }];
     
     UITableViewRowAction *deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive
@@ -123,12 +125,18 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
+    UITableViewCell *cell = (UITableViewCell*)sender;
+    NSIndexPath *selectedIndexPath = [self.tableView indexPathForCell:cell];
+    SMLChannel *selectedChannel = [self.frcDataSource.fetchedResultsController objectAtIndexPath:selectedIndexPath];
+    
     if ([segue.identifier isEqualToString:@"ShowChannelFeeds"]) {
         
-        NSIndexPath *selectedIndexPath = [self.tableView indexPathForSelectedRow];
-        SMLChannel *selectedChannel = [self.frcDataSource.fetchedResultsController objectAtIndexPath:selectedIndexPath];
         SMLFeedsTableViewController *destinationViewController = segue.destinationViewController;
         destinationViewController.channel = selectedChannel;
+    } else if ([segue.identifier isEqualToString:@"ShowChannel"]) {
+        
+        SMLFeedItemsTableViewController *destinationViewController = segue.destinationViewController;
+        [destinationViewController setupWithChannel:selectedChannel];
     }
 }
 

@@ -20,20 +20,27 @@
 @interface SMLFeedItemsTableViewController () <NSFetchedResultsControllerDelegate, SMLFetchedResultsControllerDataSourceDelegate>
 
 @property (strong, nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
-@property (strong, nonatomic) SMLFeed *feed;
 
 @end
 
 @implementation SMLFeedItemsTableViewController
 
-- (void)setupWithFeed:(SMLFeed*)feed {
+- (void)setupWithChannel:(SMLChannel*)channel {
     
-    self.feed = feed;
     self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
-    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithItemsForSMLFeed:self.feed];
+    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithItemsForChannel:channel];
     self.frcDataSource.delegate = self;
     
-    self.title = self.feed.title;
+    self.title = channel.name;
+}
+
+- (void)setupWithFeed:(SMLFeed*)feed {
+    
+    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
+    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithItemsForFeed:feed];
+    self.frcDataSource.delegate = self;
+    
+    self.title = feed.title;
 }
 
 

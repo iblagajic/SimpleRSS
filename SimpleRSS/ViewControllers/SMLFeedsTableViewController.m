@@ -29,6 +29,7 @@
     
     NSParameterAssert(self.channel);
     self.title = self.channel.name;
+    self.navigationItem.backBarButtonItem.title = @" ";
     [self setup];
 }
 
@@ -37,11 +38,6 @@
     [super viewWillAppear:animated];
     
     [self.tableView reloadData];
-}
-
-- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
-
-    [super setEditing:editing animated:animated];
 }
 
 - (void)setup {
@@ -61,17 +57,7 @@
 
 - (void)deleteObject:(id)object {
     
-//    [[SMLDataController sharedController] removeFeedFromMyFeeds:object];
-}
-
-- (void)updateInterfaceForObjectsCount:(NSInteger)count {
-
-//    if (count == 0) {
-//        if (self.tableView.editing) {
-//            self.editing = NO;
-//        }
-//    }
-//    self.navigationItem.rightBarButtonItem.enabled = count != 0;
+    [[SMLDataController sharedController] removeFeed:object fromChannel:self.channel];
 }
 
 - (NSString*)identifierForCellAtIndexPath:(NSIndexPath *)indexPath {
@@ -81,16 +67,17 @@
 
 #pragma mark - Navigation
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
     if ([segue.identifier isEqualToString:@"ShowFeed"]) {
-        NSParameterAssert([sender isKindOfClass:[UITableViewCell class]]);
+        
         UITableViewCell *cell = (UITableViewCell*)sender;
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
         SMLFeed *feed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
         SMLFeedItemsTableViewController *destinationViewController = (SMLFeedItemsTableViewController*)segue.destinationViewController;
         [destinationViewController setupWithFeed:feed];
     } else if ([segue.identifier isEqualToString:@"ShowSearch"]) {
+        
         UINavigationController *destinationNavigationController = (UINavigationController*)segue.destinationViewController;
         SMLAddFeedTableViewController *searchViewController = (SMLAddFeedTableViewController*)destinationNavigationController.topViewController;
         [searchViewController setupWithChannel:self.channel];

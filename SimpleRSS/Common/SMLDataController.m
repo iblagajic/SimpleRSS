@@ -232,7 +232,45 @@
     return self.frcForRSSFeedsSearch;
 }
 
-- (NSFetchedResultsController *)frcWithItemsForSMLFeed:(SMLFeed*)feed {
+
+#pragma mark - SMLItem
+
+- (NSFetchedResultsController *)frcWithItemsForChannel:(SMLChannel*)channel {
+    
+    for (SMLFeed *feed in channel.feeds) {
+        
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+        
+        [NSURLConnection GET:feed.url].then(^(NSData *itemsData) {
+            
+            NSError *err;
+            ONOXMLDocument *itemsXML = [ONOXMLDocument XMLDocumentWithData:itemsData
+                                                                     error:&err];
+            [self parseFeedItemsXML:itemsXML forFeed:feed];
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        }).catch(^(NSError *error) {
+            
+            NSLog(@"%@", error);
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        });
+        self.liveOperationsCounter ++;
+    }
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"SMLItem"];
+    
+    NSSortDescriptor *byDate = [NSSortDescriptor sortDescriptorWithKey:@"pubDate" ascending:NO];
+    fetchRequest.sortDescriptors = @[byDate];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"feed.channels CONTAINS[cd] %@", channel];
+    fetchRequest.fetchLimit = kSMLFetchLimit;
+    
+    NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                                               managedObjectContext:self.managedObjectContext
+                                                                                                 sectionNameKeyPath:nil
+                                                                                                          cacheName:nil];
+    return fetchedResultsController;
+}
+
+- (NSFetchedResultsController *)frcWithItemsForFeed:(SMLFeed*)feed {
     
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     [NSURLConnection GET:feed.url].then(^(NSData *itemsData) {
@@ -279,6 +317,12 @@
 - (void)addFeed:(SMLFeed*)feed toChannel:(SMLChannel*)channel {
     
     [feed addChannelsObject:channel];
+    [self saveContext];
+}
+
+- (void)removeFeed:(SMLFeed*)feed fromChannel:(SMLChannel*)channel {
+    
+    [feed removeChannelsObject:channel];
     [self saveContext];
 }
 

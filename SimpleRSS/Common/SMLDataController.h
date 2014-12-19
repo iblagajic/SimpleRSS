@@ -22,8 +22,11 @@
 
 - (NSFetchedResultsController*)frcWithFeedsForChannel:(SMLChannel*)channel;
 - (void)addFeed:(SMLFeed*)feed toChannel:(SMLChannel*)channel;
+- (void)removeFeed:(SMLFeed*)feed fromChannel:(SMLChannel*)channel;
 
-- (NSFetchedResultsController *)frcWithItemsForSMLFeed:(SMLFeed*)feed;
+- (NSFetchedResultsController *)frcWithItemsForChannel:(SMLChannel*)channel;
+- (NSFetchedResultsController *)frcWithItemsForFeed:(SMLFeed*)feed;
+
 - (NSFetchedResultsController *)frcWithFeedsContainingString:(NSString*)searchTerm;
 
 - (void)updateOrdinals:(NSArray*)objects;
