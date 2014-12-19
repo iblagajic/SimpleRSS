@@ -11,6 +11,6 @@
 
 @interface SMLFeedsTableViewController : UITableViewController
 
-@property (nonatomic) SMLChannel *channel;
+- (void)setupWithChannel:(SMLChannel*)channel;
 
 @end

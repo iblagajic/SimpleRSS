@@ -71,7 +71,6 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <segue destination="Tot-oD-V98" kind="push" identifier="ShowChannelFeeds" id="bG8-bf-2jk"/>
                         <segue destination="bJK-yZ-Ee2" kind="push" identifier="ShowChannel" id="hEU-0s-CDL"/>
                     </connections>
                 </tableViewController>
@@ -104,9 +103,6 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
-                                <connections>
-                                    <segue destination="bJK-yZ-Ee2" kind="push" identifier="ShowFeed" id="ReH-2B-P6R"/>
-                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <sections/>
@@ -124,7 +120,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fpp-WV-PpJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="254" y="76"/>
+            <point key="canvasLocation" x="1069" y="76"/>
         </scene>
         <!--Feed Items Table View Controller-->
         <scene sceneID="kuX-42-j0l">
@@ -153,11 +149,17 @@
                         </connections>
                     </tableView>
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <navigationItem key="navigationItem" id="bvI-59-otk"/>
+                    <navigationItem key="navigationItem" id="bvI-59-otk">
+                        <barButtonItem key="rightBarButtonItem" systemItem="organize" id="8Wf-ge-Jco">
+                            <connections>
+                                <segue destination="Tot-oD-V98" kind="push" identifier="ShowChannelSettings" id="t6J-3X-NlS"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="59g-UR-gQD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="744" y="811"/>
+            <point key="canvasLocation" x="242" y="811"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="kfq-eU-fnt">
@@ -236,7 +238,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kHo-tW-MB2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2055" y="64"/>
+            <point key="canvasLocation" x="1829" y="811"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Uxh-rb-OFu">
@@ -256,7 +258,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="N63-ad-mxa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="744" y="76"/>
+            <point key="canvasLocation" x="1559" y="76"/>
         </scene>
         <!--Add Feed Table View Controller-->
         <scene sceneID="zHo-r3-GgF">
@@ -309,7 +311,7 @@
                     </connections>
                 </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="1298" y="76"/>
+            <point key="canvasLocation" x="2032" y="76"/>
         </scene>
     </scenes>
     <resources>
@@ -320,7 +322,4 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
-    <inferredMetricsTieBreakers>
-        <segue reference="ReH-2B-P6R"/>
-    </inferredMetricsTieBreakers>
 </document>

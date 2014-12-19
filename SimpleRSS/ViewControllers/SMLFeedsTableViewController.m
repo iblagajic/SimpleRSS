@@ -15,36 +15,28 @@
 @interface SMLFeedsTableViewController () <NSFetchedResultsControllerDelegate, SMLFetchedResultsControllerDataSourceDelegate>
 
 @property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
+@property (nonatomic) SMLChannel *channel;
 
 @end
 
 @implementation SMLFeedsTableViewController
 
+-(void)dealloc {
+    self.frcDataSource.delegate = nil;
+}
+
 
 #pragma mark - UIViewController
 
-- (void)viewDidLoad {
-    
-    [super viewDidLoad];
-    
-    NSParameterAssert(self.channel);
-    self.title = self.channel.name;
-    self.navigationItem.backBarButtonItem.title = @" ";
-    [self setup];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    
-    [super viewWillAppear:animated];
-    
-    [self.tableView reloadData];
-}
-
-- (void)setup {
+- (void)setupWithChannel:(SMLChannel*)channel {
     
     self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
-    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithFeedsForChannel:self.channel];
+    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithFeedsForChannel:channel];
     self.frcDataSource.delegate = self;
+    
+    self.title = @"Edit Channel";
+    
+    self.channel = channel;
 }
 
 

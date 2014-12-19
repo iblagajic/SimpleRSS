@@ -341,10 +341,10 @@
 			children = (
 				1AC2E83F1A3786C200C64BD3 /* SMLChannelsTableViewController.h */,
 				1AC2E8401A3786C200C64BD3 /* SMLChannelsTableViewController.m */,
-				1AF8FF081927A1F10003C313 /* SMLFeedsTableViewController.h */,
-				1AF8FF091927A1F10003C313 /* SMLFeedsTableViewController.m */,
 				1AF8FF051927A1A80003C313 /* SMLFeedItemsTableViewController.h */,
 				1AF8FF061927A1A80003C313 /* SMLFeedItemsTableViewController.m */,
+				1AF8FF081927A1F10003C313 /* SMLFeedsTableViewController.h */,
+				1AF8FF091927A1F10003C313 /* SMLFeedsTableViewController.m */,
 				1A1F806B1927E0C9004546BA /* SMLAddFeedTableViewController.h */,
 				1A1F806C1927E0C9004546BA /* SMLAddFeedTableViewController.m */,
 				1A5C651919C22C140054CAF6 /* SMLWebViewController.h */,

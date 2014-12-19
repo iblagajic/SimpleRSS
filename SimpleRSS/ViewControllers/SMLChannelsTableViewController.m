@@ -58,7 +58,7 @@
 - (void)configureCell:(UITableViewCell*)cell withObject:(SMLChannel*)object {
     
     cell.textLabel.text = object.name;
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d feeds", object.feeds.count];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%zd feeds", object.feeds.count];
 }
 
 - (void)didReorderObjects:(NSArray *)array {
@@ -66,8 +66,11 @@
 }
 
 - (NSString*)identifierForCellAtIndexPath:(NSIndexPath*)indexPath {
-    
     return @"StandardCell";
+}
+
+- (void)deleteObject:(id)object {
+    [self.dataController deleteChannel:object];
 }
 
 
@@ -77,24 +80,6 @@
     
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [self performSegueWithIdentifier:@"ShowChannel" sender:cell];
-}
-
-- (NSArray*)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    UITableViewRowAction *moreAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
-                                                                      title:@"Feeds"
-                                                                    handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-                                                                        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-                                                                        [self performSegueWithIdentifier:@"ShowChannelFeeds" sender:cell];
-                                                                    }];
-    
-    UITableViewRowAction *deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive
-                                                                      title:@"Delete"
-                                                                    handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-                                                                        [self.dataController deleteChannel:[self channelAtIndexPath:indexPath]];
-                                                                    }];
-    
-    return @[deleteAction, moreAction];
 }
 
 
@@ -129,11 +114,7 @@
     NSIndexPath *selectedIndexPath = [self.tableView indexPathForCell:cell];
     SMLChannel *selectedChannel = [self.frcDataSource.fetchedResultsController objectAtIndexPath:selectedIndexPath];
     
-    if ([segue.identifier isEqualToString:@"ShowChannelFeeds"]) {
-        
-        SMLFeedsTableViewController *destinationViewController = segue.destinationViewController;
-        destinationViewController.channel = selectedChannel;
-    } else if ([segue.identifier isEqualToString:@"ShowChannel"]) {
+    if ([segue.identifier isEqualToString:@"ShowChannel"]) {
         
         SMLFeedItemsTableViewController *destinationViewController = segue.destinationViewController;
         [destinationViewController setupWithChannel:selectedChannel];

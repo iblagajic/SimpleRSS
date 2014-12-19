@@ -12,6 +12,7 @@
 #import "SMLFetchedResultsControllerDataSource.h"
 #import "SMLDataController.h"
 #import "SMLArticleViewController.h"
+#import "SMLFeedsTableViewController.h"
 
 #define kCellPadding 20.0
 #define kCellTextPadding 12.0
@@ -19,7 +20,8 @@
 
 @interface SMLFeedItemsTableViewController () <NSFetchedResultsControllerDelegate, SMLFetchedResultsControllerDataSourceDelegate>
 
-@property (strong, nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
+@property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
+@property (nonatomic) SMLChannel *channel;
 
 @end
 
@@ -32,6 +34,8 @@
     self.frcDataSource.delegate = self;
     
     self.title = channel.name;
+    
+    self.channel = channel;
 }
 
 - (void)setupWithFeed:(SMLFeed*)feed {
@@ -142,6 +146,10 @@
         UINavigationController *destinationNavigationController = segue.destinationViewController;
         SMLArticleViewController *destinationViewController = (SMLArticleViewController*)destinationNavigationController.topViewController;
         [destinationViewController generateArticleJSONForURLString:item.link andFeedName:item.feed.title];
+    }
+    else if ([segue.identifier isEqualToString:@"ShowChannelSettings"]) {
+        SMLFeedsTableViewController *destinationViewController = segue.destinationViewController;
+        [destinationViewController setupWithChannel:self.channel];
     }
 }
 
