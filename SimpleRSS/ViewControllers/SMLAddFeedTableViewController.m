@@ -43,18 +43,18 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     self.navigationItem.titleView.tintColor = [UIColor blackColor];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    
-    [super viewWillDisappear:animated];
+- (void)dealloc {
     [self.searchTimer invalidate];
+    self.frcDataSource.delegate = nil;
 }
 
 - (void)setupWithChannel:(SMLChannel *)channel {
     
-    self.channel = channel;
     self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:nil];
     self.searchDisplayController.searchResultsDataSource = self.frcDataSource;
     self.frcDataSource.delegate = self;
+    
+    self.channel = channel;
 }
 
 

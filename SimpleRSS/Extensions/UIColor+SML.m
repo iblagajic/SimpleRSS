@@ -11,7 +11,11 @@
 @implementation UIColor (SML)
 
 + (UIColor*)smlTintColor {
-    return [UIColor colorWithRed:47.0/255.0 green:98.0/255.0 blue:217.0/255.0 alpha:1.0];
+    return [UIColor smlTintColorWithAlpha:1.0];
+}
+
++ (UIColor*)smlTintColorWithAlpha:(CGFloat)alpha {
+    return [UIColor colorWithRed:47.0/255.0 green:98.0/255.0 blue:217.0/255.0 alpha:alpha];
 }
 
 @end

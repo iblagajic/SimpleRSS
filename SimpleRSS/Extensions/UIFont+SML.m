@@ -39,7 +39,7 @@
 }
 
 + (UIFont*)barTitleFont {
-    return [self avenirNextOfSize:22.0];
+    return [self avenirNextDemiBoldOfSize:18.0];
 }
 
 + (UIFont*)articleTitleFont {

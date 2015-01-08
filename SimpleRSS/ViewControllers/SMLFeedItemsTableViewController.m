@@ -14,9 +14,9 @@
 #import "SMLArticleViewController.h"
 #import "SMLFeedsTableViewController.h"
 
-#define kCellPadding 20.0
-#define kCellTextPadding 12.0
-#define kBottomLabelHeight 11.0
+#define kCellPadding         20.0
+#define kCellTextPadding     12.0
+#define kSmallLabelHeight    12.0
 
 @interface SMLFeedItemsTableViewController () <NSFetchedResultsControllerDelegate, SMLFetchedResultsControllerDataSourceDelegate>
 
@@ -26,6 +26,11 @@
 @end
 
 @implementation SMLFeedItemsTableViewController
+
+
+- (void)dealloc {
+    self.frcDataSource.delegate = nil;
+}
 
 - (void)setupWithChannel:(SMLChannel*)channel {
     
@@ -58,6 +63,14 @@
     SMLItem *item = (SMLItem*)object;
     
     CGFloat height = kCellPadding;
+    
+    CGRect feedFrame = CGRectMake(kCellTextPadding,
+                                  height,
+                                  (CGRectGetWidth(self.tableView.frame) - 2*kCellTextPadding)/2,
+                                  kSmallLabelHeight);
+    UILabel *feedLabel = [UILabel cellFeedLabelWithFrame:feedFrame andText:item.feed.title];
+    height += CGRectGetHeight(feedFrame) + kCellTextPadding/2;
+    [cell.contentView addSubview:feedLabel];
 
     CGRect titleFrame = CGRectMake(kCellTextPadding,
                                    height,
@@ -72,26 +85,16 @@
                                          CGRectGetWidth(self.tableView.frame) - 2*kCellTextPadding,
                                          [UILabel heightForDescriptionLabelWithText:item.text andMaximumSize:self.maximumLabelSize]);
     UILabel *descriptionLabel = [UILabel cellDescriptionLabelWithFrame:descriptionFrame andText:item.text];
-    height += CGRectGetHeight(descriptionFrame) + 1.5 * kCellTextPadding;
+    height += CGRectGetHeight(descriptionFrame) + kCellTextPadding/2;
     [cell.contentView addSubview:descriptionLabel];
 
     NSString *dateString = [item.pubDate mediumStyleDateString];
     CGRect dateFrame = CGRectMake(kCellTextPadding,
                                   height,
                                   (CGRectGetWidth(self.tableView.frame) - 2*kCellTextPadding)/2,
-                                  kBottomLabelHeight);
+                                  kSmallLabelHeight);
     UILabel *dateLabel = [UILabel cellDateLabelWithFrame:dateFrame andText:dateString];
     [cell.contentView addSubview:dateLabel];
-    
-    CGRect feedFrame = CGRectMake(kCellTextPadding + (CGRectGetWidth(self.tableView.frame) - 2*kCellTextPadding)/2,
-                                  height,
-                                  (CGRectGetWidth(self.tableView.frame) - 2*kCellTextPadding)/2,
-                                  kBottomLabelHeight);
-    UILabel *feedLabel = [UILabel cellFeedLabelWithFrame:feedFrame andText:item.feed.title];
-    height += CGRectGetHeight(feedFrame) + kCellTextPadding;
-    [cell.contentView addSubview:feedLabel];
-    
-//    height += CGRectGetHeight(dateFrame) + kCellPadding;
 }
 
 - (NSString*)identifierForCellAtIndexPath:(NSIndexPath *)indexPath {
@@ -114,13 +117,16 @@
     
     CGFloat height = 2*kCellPadding;
     
+    height += kSmallLabelHeight;
+    height += kCellTextPadding/2;
+    
     height += [UILabel heightForTitleLabelWithText:item.title andMaximumSize:self.maximumLabelSize];
     height += kCellTextPadding;
 
     height += [UILabel heightForDescriptionLabelWithText:item.text andMaximumSize:self.maximumLabelSize];
-    height += kCellTextPadding;
+    height += kCellTextPadding/2;
 
-    height += kBottomLabelHeight;
+    height += kSmallLabelHeight;
     
 //    NSLog(@"Predicted height: %f", height);
 

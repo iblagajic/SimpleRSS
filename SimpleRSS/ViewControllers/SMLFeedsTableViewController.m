@@ -21,6 +21,7 @@
 
 @implementation SMLFeedsTableViewController
 
+
 -(void)dealloc {
     self.frcDataSource.delegate = nil;
 }
