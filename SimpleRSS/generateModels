@@ -1,0 +1,1 @@
+mogenerator -m "SimpleRSS.xcdatamodeld/SimpleRSS.xcdatamodel" -H Model -M Entities --template-var arc=true
