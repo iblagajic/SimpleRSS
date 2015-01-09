@@ -14,7 +14,7 @@
     
     [super applyStyle];
     
-    self.font = [UIFont standardTextFont];
+    self.font = [UIFont smlStandardTextFont];
     self.textAlignment = NSTextAlignmentCenter;
     self.textColor = [UIColor darkGrayColor];
 }

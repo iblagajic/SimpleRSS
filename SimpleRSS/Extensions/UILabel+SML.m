@@ -13,7 +13,7 @@
 + (UILabel*)cellFeedLabelWithFrame:(CGRect)frame andText:(NSString*)text {
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:frame];
-    titleLabel.font = [UIFont feedFont];
+    titleLabel.font = [UIFont smlFeedFont];
     titleLabel.adjustsFontSizeToFitWidth = YES;
     titleLabel.minimumScaleFactor = 0.5;
     titleLabel.textColor = [UIColor lightGrayColor];
@@ -26,7 +26,7 @@
 + (UILabel*)cellTitleLabelWithFrame:(CGRect)frame andText:(NSString*)text {
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:frame];
-    titleLabel.font = [UIFont titleFont];
+    titleLabel.font = [UIFont smlTitleFont];
     titleLabel.textColor = [UIColor smlTintColor];
     titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     titleLabel.numberOfLines = 0;
@@ -38,7 +38,7 @@
 + (UILabel*)cellDescriptionLabelWithFrame:(CGRect)frame andText:(NSString*)text {
     
     UILabel *descriptionLabel = [[UILabel alloc] initWithFrame:frame];
-    descriptionLabel.font = [UIFont descriptionFont];
+    descriptionLabel.font = [UIFont smlDescriptionFont];
     descriptionLabel.textColor = [UIColor darkGrayColor];
     descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
     descriptionLabel.numberOfLines = 0;
@@ -50,7 +50,7 @@
 + (UILabel*)cellDateLabelWithFrame:(CGRect)frame andText:(NSString*)text {
     
     UILabel *dateLabel = [[UILabel alloc] initWithFrame:frame];
-    dateLabel.font = [UIFont dateFont];
+    dateLabel.font = [UIFont smlDateFont];
     dateLabel.textColor = [UIColor grayColor];
     dateLabel.lineBreakMode = NSLineBreakByWordWrapping;
     dateLabel.numberOfLines = 0;
@@ -59,44 +59,37 @@
     return dateLabel;
 }
 
-+ (CGFloat)heightForTitleLabelWithText:(NSString*)text andMaximumSize:(CGSize)maximumSize {
++ (CGFloat)heightForLabelWithText:(NSString*)text font:(UIFont*)font andMaximumSize:(CGSize)maximumSize {
     
     return [text boundingRectWithSize:maximumSize
                               options:NSStringDrawingUsesLineFragmentOrigin
-                           attributes:@{NSFontAttributeName : [UIFont titleFont]}
+                           attributes:@{NSFontAttributeName : font}
                               context:nil].size.height;
+}
+
++ (CGFloat)heightForTitleLabelWithText:(NSString*)text andMaximumSize:(CGSize)maximumSize {
+    
+    return [self heightForLabelWithText:text font:[UIFont smlTitleFont] andMaximumSize:maximumSize];
 }
 
 + (CGFloat)heightForDescriptionLabelWithText:(NSString*)text andMaximumSize:(CGSize)maximumSize {
     
-    return [text boundingRectWithSize:maximumSize
-                              options:NSStringDrawingUsesLineFragmentOrigin
-                           attributes:@{NSFontAttributeName : [UIFont descriptionFont]}
-                              context:nil].size.height;
+    return [self heightForLabelWithText:text font:[UIFont smlDescriptionFont] andMaximumSize:maximumSize];
 }
 
 + (CGFloat)heightForDateLabelWithText:(NSString*)text andMaximumSize:(CGSize)maximumSize {
     
-    return [text boundingRectWithSize:maximumSize
-                              options:NSStringDrawingUsesLineFragmentOrigin
-                           attributes:@{NSFontAttributeName : [UIFont dateFont]}
-                              context:nil].size.height;
+    return [self heightForLabelWithText:text font:[UIFont smlDateFont] andMaximumSize:maximumSize];
 }
 
 + (CGFloat)heightForArticleTitleLabelWithText:(NSString*)text andMaximumSize:(CGSize)maximumSize {
     
-    return [text boundingRectWithSize:maximumSize
-                              options:NSStringDrawingUsesLineFragmentOrigin
-                           attributes:@{NSFontAttributeName : [UIFont articleTitleFont]}
-                              context:nil].size.height;
+    return [self heightForLabelWithText:text font:[UIFont smlArticleTitleFont] andMaximumSize:maximumSize];
 }
 
 + (CGFloat)heightForArticleTextLabelWithText:(NSString*)text andMaximumSize:(CGSize)maximumSize {
     
-    return [text boundingRectWithSize:maximumSize
-                              options:NSStringDrawingUsesLineFragmentOrigin
-                           attributes:@{NSFontAttributeName : [UIFont standardTextFont]}
-                              context:nil].size.height;
+    return [self heightForLabelWithText:text font:[UIFont smlStandardTextFont] andMaximumSize:maximumSize];
 }
 
 @end

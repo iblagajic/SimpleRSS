@@ -14,7 +14,7 @@
     
     [super applyStyle];
     
-    self.font = [UIFont articleTitleFont];
+    self.font = [UIFont smlArticleTitleFont];
     self.textColor = [UIColor smlTintColor];
     self.textAlignment = NSTextAlignmentCenter;
 }

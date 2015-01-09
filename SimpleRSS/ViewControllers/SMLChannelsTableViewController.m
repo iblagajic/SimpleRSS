@@ -11,11 +11,13 @@
 #import "SMLDataController.h"
 #import "SMLFeedsTableViewController.h"
 #import "SMLFeedItemsTableViewController.h"
+#import "SMLNoDataView.h"
 
 @interface SMLChannelsTableViewController () <SMLFetchedResultsControllerDataSourceDelegate, UIAlertViewDelegate>
 
 @property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
 @property (nonatomic, readonly) SMLDataController *dataController;
+@property (nonatomic) SMLNoDataView *overlayView;
 
 @end
 
@@ -24,9 +26,14 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
     self.title = @"Channels";
     [self setup];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    [self updateInterfaceForObjectsCount:self.frcDataSource.fetchedResultsController.fetchedObjects.count];
 }
 
 - (void)setup {
@@ -73,6 +80,22 @@
     [self.dataController deleteChannel:object];
 }
 
+- (void)updateInterfaceForObjectsCount:(NSInteger)count {
+    
+    if (count == 0) {
+        [self addOverlayViewIfNeeded];
+        self.navigationItem.rightBarButtonItem = nil;
+    } else {
+        if (self.overlayView) {
+            [self.overlayView removeFromSuperview];
+            self.overlayView = nil;
+        }
+        if (!self.navigationItem.rightBarButtonItem) {
+            self.navigationItem.rightBarButtonItem = self.editButtonItem;
+        }
+    }
+}
+
 
 #pragma mark - UITableViewDelegate
 
@@ -103,6 +126,19 @@
 - (SMLChannel*)channelAtIndexPath:(NSIndexPath*)indexPath {
     
     return [self.frcDataSource.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row];
+}
+
+- (void)addOverlayViewIfNeeded {
+    
+    if (!self.overlayView) {
+        self.overlayView = [[SMLNoDataView alloc] initWithFrame:self.view.bounds message:@"You don't have any channels yet. Start by creating your first channel."];
+        __weak SMLChannelsTableViewController *weakSelf = self;
+        [self.overlayView addActionButtonWithText:@"Create Channel" actionBlock:^{
+            SMLChannelsTableViewController *strongSelf = weakSelf;
+            [strongSelf addNewChannel:nil];
+        }];
+        [self.view addSubview:self.overlayView];
+    }
 }
 
 

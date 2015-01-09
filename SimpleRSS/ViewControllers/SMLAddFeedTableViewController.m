@@ -70,9 +70,9 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
         }
     }];
     if (contains) {
-        cell.textLabel.font = [UIFont myFeedsCellTitleFont];
+        cell.textLabel.font = [UIFont smlMyFeedsCellTitleFont];
     } else {
-        cell.textLabel.font = [UIFont cellTitleFont];
+        cell.textLabel.font = [UIFont smlCellTitleFont];
     }
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.textLabel.text = object.title;

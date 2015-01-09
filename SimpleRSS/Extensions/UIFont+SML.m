@@ -10,43 +10,43 @@
 
 @implementation UIFont (SML)
 
-+ (UIFont*)feedFont {
++ (UIFont*)smlFeedFont {
     return [self avenirNextOfSize:11.0];
 }
 
-+ (UIFont*)titleFont {
++ (UIFont*)smlTitleFont {
     return [self avenirNextOfSize:17.0];
 }
 
-+ (UIFont*)cellTitleFont {
++ (UIFont*)smlCellTitleFont {
     return [self avenirNextOfSize:15.0];
 }
 
-+ (UIFont*)myFeedsCellTitleFont {
++ (UIFont*)smlMyFeedsCellTitleFont {
     return [self avenirNextDemiBoldOfSize:15.0];
 }
 
-+ (UIFont*)descriptionFont {
++ (UIFont*)smlDescriptionFont {
     return [self avenirNextOfSize:15.0];
 }
 
-+ (UIFont*)dateFont {
++ (UIFont*)smlDateFont {
     return [UIFont fontWithName:@"Trebuchet MS" size:11.0];
 }
 
-+ (UIFont*)barButtonFont {
++ (UIFont*)smlBarButtonFont {
     return [self avenirNextOfSize:18.0];
 }
 
-+ (UIFont*)barTitleFont {
++ (UIFont*)smlBarTitleFont {
     return [self avenirNextDemiBoldOfSize:18.0];
 }
 
-+ (UIFont*)articleTitleFont {
++ (UIFont*)smlArticleTitleFont {
     return [self avenirNextDemiBoldOfSize:20.0];
 }
 
-+ (UIFont*)standardTextFont {
++ (UIFont*)smlStandardTextFont {
     return [self avenirNextOfSize:17.0];
 }
 
