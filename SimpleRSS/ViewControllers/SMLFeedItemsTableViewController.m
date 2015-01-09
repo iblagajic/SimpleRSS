@@ -137,7 +137,7 @@
     
     CGSize size = self.tableView.frame.size;
     size.width -= 2*kCellTextPadding;
-    size.height = MAXFLOAT;
+    size.height = 120.0;
     
     return size;
 }

@@ -40,7 +40,7 @@
     UILabel *descriptionLabel = [[UILabel alloc] initWithFrame:frame];
     descriptionLabel.font = [UIFont smlDescriptionFont];
     descriptionLabel.textColor = [UIColor darkGrayColor];
-    descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    descriptionLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     descriptionLabel.numberOfLines = 0;
     descriptionLabel.text = text;
     
