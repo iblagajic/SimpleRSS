@@ -29,7 +29,7 @@
         <scene sceneID="RSY-ET-zNO">
             <objects>
                 <tableViewController id="sYn-XB-hzE" customClass="SMLChannelsTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="66" sectionHeaderHeight="22" sectionFooterHeight="66" id="DBl-g7-tAe">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="66" sectionHeaderHeight="22" sectionFooterHeight="66" id="DBl-g7-tAe">
                         <rect key="frame" x="0.0" y="64" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -56,6 +56,9 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="bJK-yZ-Ee2" kind="push" identifier="ShowChannel" id="5d3-wm-GtI"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -70,9 +73,6 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
-                    <connections>
-                        <segue destination="bJK-yZ-Ee2" kind="push" identifier="ShowChannel" id="hEU-0s-CDL"/>
-                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RhB-YH-gIf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -120,14 +120,14 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fpp-WV-PpJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1069" y="76"/>
+            <point key="canvasLocation" x="746" y="76"/>
         </scene>
         <!--Feed Items Table View Controller-->
         <scene sceneID="kuX-42-j0l">
             <objects>
-                <tableViewController id="bJK-yZ-Ee2" customClass="SMLFeedItemsTableViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="NewsTableViewController" id="bJK-yZ-Ee2" customClass="SMLFeedItemsTableViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="JdW-PC-Xmj">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -148,7 +148,6 @@
                             <outlet property="delegate" destination="bJK-yZ-Ee2" id="e5G-3c-knB"/>
                         </connections>
                     </tableView>
-                    <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" id="bvI-59-otk">
                         <barButtonItem key="rightBarButtonItem" systemItem="organize" id="8Wf-ge-Jco">
                             <connections>
@@ -156,6 +155,9 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <segue destination="uZy-rG-mjb" kind="modal" identifier="ShowSearch" modalTransitionStyle="crossDissolve" id="ZsN-ru-bkF"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="59g-UR-gQD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -268,10 +270,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <imageView key="tableFooterView" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="search" id="BU6-az-Z4C">
-                            <rect key="frame" x="0.0" y="130" width="320" height="320"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        </imageView>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SearchCell" id="ADb-w8-RXL">
                                 <rect key="frame" x="0.0" y="86" width="320" height="44"/>
@@ -314,12 +312,12 @@
             <point key="canvasLocation" x="2032" y="76"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="search" width="280" height="280"/>
-    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="ZsN-ru-bkF"/>
+    </inferredMetricsTieBreakers>
 </document>

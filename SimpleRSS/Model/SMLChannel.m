@@ -10,11 +10,12 @@
 
 @implementation SMLChannel
 
-+ (void)addChannelWithName:(NSString*)name ordinal:(NSNumber*)ordinal inContext:(NSManagedObjectContext*)context {
++ (SMLChannel*)addChannelWithName:(NSString*)name ordinal:(NSNumber*)ordinal inContext:(NSManagedObjectContext*)context {
     
     SMLChannel *channel = [SMLChannel insertInManagedObjectContext:context];
     channel.name = name;
     channel.ordinal = ordinal;
+    return channel;
 }
 
 + (NSArray*)channelsInContext:(NSManagedObjectContext*)context {

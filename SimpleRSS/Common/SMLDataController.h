@@ -17,7 +17,7 @@
 + (id)sharedController;
 
 - (NSFetchedResultsController *)frcWithChannels;
-- (void)addChannelWithName:(NSString*)name;
+- (SMLChannel*)addChannelWithName:(NSString*)name;
 - (void)deleteChannel:(SMLChannel*)channel;
 
 - (NSFetchedResultsController*)frcWithFeedsForChannel:(SMLChannel*)channel;

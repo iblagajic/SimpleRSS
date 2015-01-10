@@ -11,7 +11,8 @@
 @interface SMLFetchedResultsControllerDataSource() <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic) UITableView *tableView;
-@property (nonatomic) BOOL isUserDrivenChange;
+@property (nonatomic) BOOL isUserDrivenReorder;
+@property (nonatomic) BOOL didAddObject;
 
 @end
 
@@ -86,7 +87,7 @@
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
    
-    self.isUserDrivenChange = YES;
+    self.isUserDrivenReorder = YES;
     
     NSMutableArray *objects = [self.fetchedResultsController.fetchedObjects mutableCopy];
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:sourceIndexPath];
@@ -96,7 +97,7 @@
     
     [self.delegate didReorderObjects:[objects copy]];
     
-    self.isUserDrivenChange = NO;
+    self.isUserDrivenReorder = NO;
 }
 
 
@@ -104,7 +105,7 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
 
-    if (self.isUserDrivenChange) return;
+    if (self.isUserDrivenReorder) return;
     
     [self.tableView beginUpdates];
 }
@@ -112,7 +113,7 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     
-    if (self.isUserDrivenChange) return;
+    if (self.isUserDrivenReorder) return;
     
     UITableView *tableView = self.tableView;
     switch(type) {
@@ -136,7 +137,7 @@
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id )sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
     
-    if (self.isUserDrivenChange) return;
+    if (self.isUserDrivenReorder) return;
     
     switch(type) {
         case NSFetchedResultsChangeMove:
@@ -156,7 +157,7 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 
-    if (self.isUserDrivenChange) return;
+    if (self.isUserDrivenReorder) return;
     
     [self.tableView endUpdates];
     [self updateInterface];

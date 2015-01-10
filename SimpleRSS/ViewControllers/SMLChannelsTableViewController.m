@@ -23,25 +23,10 @@
 
 @implementation SMLChannelsTableViewController
 
+
 - (void)viewDidLoad {
-    
     [super viewDidLoad];
     self.title = @"Channels";
-    [self setup];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    
-    [super viewDidAppear:animated];
-    [self updateInterfaceForObjectsCount:self.frcDataSource.fetchedResultsController.fetchedObjects.count];
-}
-
-- (void)setup {
-    
-    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
-    self.frcDataSource.fetchedResultsController = [self.dataController frcWithChannels];
-    self.frcDataSource.allowReorderingCells = SMLTableViewAllowReorderingAll;
-    self.frcDataSource.delegate = self;
 }
 
 
@@ -97,31 +82,19 @@
 }
 
 
-#pragma mark - UITableViewDelegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    [self performSegueWithIdentifier:@"ShowChannel" sender:cell];
-}
-
-
 #pragma mark - UIAlertViewDelegate
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     
     if (buttonIndex == 1) {
         NSString *name = [alertView textFieldAtIndex:0].text;
-        [self.dataController addChannelWithName:name];
+        SMLChannel *channel = [self.dataController addChannelWithName:name];
+        [self showChannelNewsViewControllerForChannel:channel];
     }
 }
 
 
 #pragma mark - helpers
-
-- (SMLDataController*)dataController {
-    return [SMLDataController sharedController];
-}
 
 - (SMLChannel*)channelAtIndexPath:(NSIndexPath*)indexPath {
     
@@ -141,6 +114,21 @@
     }
 }
 
+- (void)showChannelNewsViewControllerForChannel:(SMLChannel*)channel {
+
+    SMLFeedItemsTableViewController *channelNewsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"NewsTableViewController"];
+    [channelNewsViewController setupWithChannel:channel];
+    [self.navigationController pushViewController:channelNewsViewController animated:YES];
+}
+
+- (NSFetchedResultsController*)fetchedResultsController {
+    return [self.dataController frcWithChannels];
+}
+
+- (SMLDataController*)dataController {
+    return [SMLDataController sharedController];
+}
+
 
 #pragma mark - navigation
 
@@ -151,7 +139,6 @@
     SMLChannel *selectedChannel = [self.frcDataSource.fetchedResultsController objectAtIndexPath:selectedIndexPath];
     
     if ([segue.identifier isEqualToString:@"ShowChannel"]) {
-        
         SMLFeedItemsTableViewController *destinationViewController = segue.destinationViewController;
         [destinationViewController setupWithChannel:selectedChannel];
     }

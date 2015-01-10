@@ -11,16 +11,24 @@
 #import "SMLDataController.h"
 #import "SMLFetchedResultsControllerDataSource.h"
 #import "SMLAddFeedTableViewController.h"
+#import "SMLNoDataView.h"
 
 @interface SMLFeedsTableViewController () <NSFetchedResultsControllerDelegate, SMLFetchedResultsControllerDataSourceDelegate>
 
 @property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
 @property (nonatomic) SMLChannel *channel;
+@property (nonatomic) SMLNoDataView *overlayView;
 
 @end
 
 @implementation SMLFeedsTableViewController
 
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    [self updateInterfaceForObjectsCount:self.frcDataSource.fetchedResultsController.fetchedObjects.count];
+}
 
 -(void)dealloc {
     self.frcDataSource.delegate = nil;
@@ -55,6 +63,33 @@
 
 - (NSString*)identifierForCellAtIndexPath:(NSIndexPath *)indexPath {
     return @"Cell";
+}
+
+- (void)updateInterfaceForObjectsCount:(NSInteger)count {
+    
+    if (count == 0) {
+        [self addOverlayViewIfNeeded];
+    } else {
+        if (self.overlayView) {
+            [self.overlayView removeFromSuperview];
+            self.overlayView = nil;
+        }
+    }
+}
+
+
+#pragma mark - helpers
+
+- (void)addOverlayViewIfNeeded {
+    
+    if (!self.overlayView) {
+        self.overlayView = [[SMLNoDataView alloc] initWithFrame:self.view.bounds message:@"You haven't added any feeds yet. Why wait?"];
+        __weak SMLFeedsTableViewController *weakSelf = self;
+        [self.overlayView addActionButtonWithText:@"Add Feeds" actionBlock:^{
+            //            SMLFeedsTableViewController *strongSelf = weakSelf;
+        }];
+        [self.view addSubview:self.overlayView];
+    }
 }
 
 

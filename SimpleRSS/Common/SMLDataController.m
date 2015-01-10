@@ -151,12 +151,13 @@
     return fetchedResultsController;
 }
 
-- (void)addChannelWithName:(NSString*)name {
+- (SMLChannel*)addChannelWithName:(NSString*)name {
     
     NSArray *channels = [SMLChannel channelsInContext:self.managedObjectContext];
     NSNumber *ordinal = @(channels.count);
-    [SMLChannel addChannelWithName:name ordinal:ordinal inContext:self.managedObjectContext];
+    SMLChannel *channel = [SMLChannel addChannelWithName:name ordinal:ordinal inContext:self.managedObjectContext];
     [self saveContext];
+    return channel;
 }
 
 - (void)deleteChannel:(SMLChannel*)channel {

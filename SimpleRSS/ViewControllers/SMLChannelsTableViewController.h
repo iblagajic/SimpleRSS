@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SMLTableViewController.h"
 
-@interface SMLChannelsTableViewController : UITableViewController
+@interface SMLChannelsTableViewController : SMLTableViewController
 
 @end

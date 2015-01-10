@@ -1,0 +1,69 @@
+//
+//  SMLTableViewController.m
+//  SimpleRSS
+//
+//  Created by Ivan Blagajić on 10/01/15.
+//  Copyright (c) 2015 Simple. All rights reserved.
+//
+
+#import "SMLTableViewController.h"
+#import "SMLFetchedResultsControllerDataSource.h"
+#import "SMLNoDataView.h"
+
+@interface SMLTableViewController () <SMLFetchedResultsControllerDataSourceDelegate>
+
+@property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
+
+@end
+
+@implementation SMLTableViewController
+
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self setup];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self updateInterfaceForObjectsCount:self.frcDataSource.fetchedResultsController.fetchedObjects.count];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self tearDown];
+}
+
+- (void)setup {
+    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
+    self.frcDataSource.fetchedResultsController = self.fetchedResultsController;
+    self.frcDataSource.allowReorderingCells = SMLTableViewAllowReorderingAll;
+    self.frcDataSource.delegate = self;
+}
+
+- (void)tearDown {
+    self.frcDataSource.delegate = nil;
+    self.frcDataSource = nil;
+}
+
+
+#pragma mark - SMLFetchedResultsControllerDataSourceDelegate
+
+- (void)configureCell:(UITableViewCell*)cell withObject:(NSManagedObject*)object {
+    NSAssert(YES, @"ERROR: configureCell:withObject: not found");
+}
+
+- (NSString*)identifierForCellAtIndexPath:(NSIndexPath *)indexPath {
+    NSAssert(YES, @"ERROR: identifierForCellAtIndexPath: not found");
+    return nil;
+}
+
+
+#pragma mark - helpers
+
+- (NSFetchedResultsController*)fetchedResultsController {
+    NSAssert(YES, @"ERROR: fetchedResultsController getter not found");
+    return nil;
+}
+
+@end

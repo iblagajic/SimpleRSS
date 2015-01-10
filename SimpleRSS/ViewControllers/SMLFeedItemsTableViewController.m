@@ -13,6 +13,8 @@
 #import "SMLDataController.h"
 #import "SMLArticleViewController.h"
 #import "SMLFeedsTableViewController.h"
+#import "SMLNoDataView.h"
+#import "SMLAddFeedTableViewController.h"
 
 #define kCellPadding         20.0
 #define kCellTextPadding     12.0
@@ -22,11 +24,18 @@
 
 @property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
 @property (nonatomic) SMLChannel *channel;
+@property (nonatomic) SMLNoDataView *overlayView;
 
 @end
 
 @implementation SMLFeedItemsTableViewController
 
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    [self updateInterfaceForObjectsCount:self.frcDataSource.fetchedResultsController.fetchedObjects.count];
+}
 
 - (void)dealloc {
     self.frcDataSource.delegate = nil;
@@ -53,7 +62,7 @@
 }
 
 
-#pragma mark - SMLMasterViewController
+#pragma mark - SMLFetchedResultsControllerDataSourceDelegate
 
 - (void)configureCell:(UITableViewCell*)cell withObject:(id)object {
     
@@ -101,6 +110,18 @@
     return @"Cell";
 }
 
+- (void)updateInterfaceForObjectsCount:(NSInteger)count {
+    
+    if (count == 0) {
+        [self addOverlayViewIfNeeded];
+    } else {
+        if (self.overlayView) {
+            [self.overlayView removeFromSuperview];
+            self.overlayView = nil;
+        }
+    }
+}
+
 
 #pragma mark UITableViewDelegate
 
@@ -142,6 +163,19 @@
     return size;
 }
 
+- (void)addOverlayViewIfNeeded {
+    
+    if (!self.overlayView) {
+        self.overlayView = [[SMLNoDataView alloc] initWithFrame:self.view.bounds message:@"There aren't any news to show at the moment. Please add some feeds to channel."];
+        __weak SMLFeedItemsTableViewController *weakSelf = self;
+        [self.overlayView addActionButtonWithText:@"Add Feeds" actionBlock:^{
+            SMLFeedItemsTableViewController *strongSelf = weakSelf;
+            [strongSelf performSegueWithIdentifier:@"ShowSearch" sender:nil];
+        }];
+        [self.view addSubview:self.overlayView];
+    }
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     if ([segue.identifier isEqualToString:@"ShowArticle"]) {
@@ -156,6 +190,11 @@
     else if ([segue.identifier isEqualToString:@"ShowChannelSettings"]) {
         SMLFeedsTableViewController *destinationViewController = segue.destinationViewController;
         [destinationViewController setupWithChannel:self.channel];
+    }
+    else if ([segue.identifier isEqualToString:@"ShowSearch"]) {
+        UINavigationController *destinationNavigationController = (UINavigationController*)segue.destinationViewController;
+        SMLAddFeedTableViewController *searchViewController = (SMLAddFeedTableViewController*)destinationNavigationController.topViewController;
+        [searchViewController setupWithChannel:self.channel];
     }
 }
 
