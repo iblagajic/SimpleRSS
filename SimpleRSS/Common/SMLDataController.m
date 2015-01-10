@@ -331,10 +331,11 @@
 #pragma mark - helpers
 
 - (PMKPromise*)JSONResponseForSearchTerm:(NSString*)term {
-    
-    NSString *requestUrlString = [@"https://ajax.googleapis.com/ajax/services/feed/find?v=1.0&q=" stringByAppendingString:[term stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSString *urlTerm = [term stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *requestUrlString = [@"https://ajax.googleapis.com/ajax/services/feed/find?v=1.0&q=" stringByAppendingString:urlTerm];
+    NSURL *requestUrl = [NSURL URLWithString:requestUrlString];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    PMKPromise *feedsPromise = [NSURLConnection GET:requestUrlString];
+    PMKPromise *feedsPromise = [NSURLConnection GET:requestUrl];
     self.liveOperationsCounter ++;
     
     return feedsPromise;

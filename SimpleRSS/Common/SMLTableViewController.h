@@ -13,4 +13,6 @@
 
 @property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
 
+- (void)setup;
+
 @end

@@ -25,40 +25,20 @@
 @property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
 @property (nonatomic) SMLChannel *channel;
 @property (nonatomic) SMLNoDataView *overlayView;
+@property (nonatomic, readonly) SMLDataController *dataController;
 
 @end
 
 @implementation SMLNewsTableViewController
 
 
-- (void)viewDidAppear:(BOOL)animated {
-    
-    [super viewDidAppear:animated];
-    [self updateInterfaceForObjectsCount:self.frcDataSource.fetchedResultsController.fetchedObjects.count];
-}
-
-- (void)dealloc {
-    self.frcDataSource.delegate = nil;
-}
-
 - (void)setupWithChannel:(SMLChannel*)channel {
-    
-    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
-    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithItemsForChannel:channel];
-    self.frcDataSource.delegate = self;
-    
     self.title = channel.name;
-    
     self.channel = channel;
 }
 
 - (void)setupWithFeed:(SMLFeed*)feed {
-    
-    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
-    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithItemsForFeed:feed];
-    self.frcDataSource.delegate = self;
-    
-    self.title = feed.title;
+    // TODO: Support one feed as a source
 }
 
 
@@ -175,6 +155,17 @@
         [self.view addSubview:self.overlayView];
     }
 }
+
+- (NSFetchedResultsController*)fetchedResultsController {
+    return [self.dataController frcWithItemsForChannel:self.channel];
+}
+
+- (SMLDataController*)dataController {
+    return [SMLDataController sharedController];
+}
+
+
+#pragma mark - navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     

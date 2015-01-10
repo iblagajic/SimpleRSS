@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SMLTableViewController.h"
 #import "SMLChannel.h"
 
-@interface SMLFeedsTableViewController : UITableViewController
+@interface SMLFeedsTableViewController : SMLTableViewController
 
 - (void)setupWithChannel:(SMLChannel*)channel;
 

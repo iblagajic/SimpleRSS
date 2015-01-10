@@ -32,12 +32,10 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 #pragma mark - UIViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+    
     [super viewDidLoad];
-    
     [self.searchDisplayController.searchResultsTableView registerNib:[UINib nibWithNibName:@"SearchCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
-    
     self.searchDisplayController.displaysSearchBarInNavigationBar = YES;
     self.searchDisplayController.searchBar.searchBarStyle = UISearchBarStyleDefault;
     self.navigationItem.titleView.tintColor = [UIColor blackColor];
@@ -45,15 +43,12 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 - (void)dealloc {
     [self.searchTimer invalidate];
-    self.frcDataSource.delegate = nil;
 }
 
 - (void)setupWithChannel:(SMLChannel *)channel {
-    
     self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:nil];
     self.searchDisplayController.searchResultsDataSource = self.frcDataSource;
     self.frcDataSource.delegate = self;
-    
     self.channel = channel;
 }
 

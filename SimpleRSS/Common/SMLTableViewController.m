@@ -50,11 +50,11 @@
 #pragma mark - SMLFetchedResultsControllerDataSourceDelegate
 
 - (void)configureCell:(UITableViewCell*)cell withObject:(NSManagedObject*)object {
-    NSAssert(YES, @"ERROR: configureCell:withObject: not found");
+    NSAssert(NO, @"ERROR: configureCell:withObject: not found");
 }
 
 - (NSString*)identifierForCellAtIndexPath:(NSIndexPath *)indexPath {
-    NSAssert(YES, @"ERROR: identifierForCellAtIndexPath: not found");
+    NSAssert(NO, @"ERROR: identifierForCellAtIndexPath: not found");
     return nil;
 }
 
@@ -62,7 +62,7 @@
 #pragma mark - helpers
 
 - (NSFetchedResultsController*)fetchedResultsController {
-    NSAssert(YES, @"ERROR: fetchedResultsController getter not found");
+    NSAssert(NO, @"ERROR: fetchedResultsController getter not found");
     return nil;
 }
 
