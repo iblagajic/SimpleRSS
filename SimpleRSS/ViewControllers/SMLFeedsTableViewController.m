@@ -7,7 +7,7 @@
 //
 
 #import "SMLFeedsTableViewController.h"
-#import "SMLFeedItemsTableViewController.h"
+#import "SMLNewsTableViewController.h"
 #import "SMLDataController.h"
 #import "SMLFetchedResultsControllerDataSource.h"
 #import "SMLAddFeedTableViewController.h"
@@ -102,7 +102,7 @@
         UITableViewCell *cell = (UITableViewCell*)sender;
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
         SMLFeed *feed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
-        SMLFeedItemsTableViewController *destinationViewController = (SMLFeedItemsTableViewController*)segue.destinationViewController;
+        SMLNewsTableViewController *destinationViewController = (SMLNewsTableViewController*)segue.destinationViewController;
         [destinationViewController setupWithFeed:feed];
     } else if ([segue.identifier isEqualToString:@"ShowSearch"]) {
         

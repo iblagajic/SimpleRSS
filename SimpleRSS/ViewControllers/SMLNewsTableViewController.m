@@ -1,12 +1,12 @@
 //
-//  SMLFeedItemsTableViewController.m
+//  SMLNewsTableViewController.m
 //  SimpleRSS
 //
 //  Created by Ivan Blagajić on 16/05/14.
 //  Copyright (c) 2014 Simple. All rights reserved.
 //
 
-#import "SMLFeedItemsTableViewController.h"
+#import "SMLNewsTableViewController.h"
 #import "UIViewController+ScrollingNavbar.h"
 #import "SMLItem.h"
 #import "SMLFetchedResultsControllerDataSource.h"
@@ -20,7 +20,7 @@
 #define kCellTextPadding     12.0
 #define kSmallLabelHeight    12.0
 
-@interface SMLFeedItemsTableViewController () <NSFetchedResultsControllerDelegate, SMLFetchedResultsControllerDataSourceDelegate>
+@interface SMLNewsTableViewController () <NSFetchedResultsControllerDelegate, SMLFetchedResultsControllerDataSourceDelegate>
 
 @property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
 @property (nonatomic) SMLChannel *channel;
@@ -28,7 +28,7 @@
 
 @end
 
-@implementation SMLFeedItemsTableViewController
+@implementation SMLNewsTableViewController
 
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -167,9 +167,9 @@
     
     if (!self.overlayView) {
         self.overlayView = [[SMLNoDataView alloc] initWithFrame:self.view.bounds message:@"There aren't any news to show at the moment. Please add some feeds to channel."];
-        __weak SMLFeedItemsTableViewController *weakSelf = self;
+        __weak SMLNewsTableViewController *weakSelf = self;
         [self.overlayView addActionButtonWithText:@"Add Feeds" actionBlock:^{
-            SMLFeedItemsTableViewController *strongSelf = weakSelf;
+            SMLNewsTableViewController *strongSelf = weakSelf;
             [strongSelf performSegueWithIdentifier:@"ShowSearch" sender:nil];
         }];
         [self.view addSubview:self.overlayView];

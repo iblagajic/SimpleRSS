@@ -10,7 +10,7 @@
 #import "SMLFetchedResultsControllerDataSource.h"
 #import "SMLDataController.h"
 #import "SMLFeedsTableViewController.h"
-#import "SMLFeedItemsTableViewController.h"
+#import "SMLNewsTableViewController.h"
 #import "SMLNoDataView.h"
 
 @interface SMLChannelsTableViewController () <SMLFetchedResultsControllerDataSourceDelegate, UIAlertViewDelegate>
@@ -116,7 +116,7 @@
 
 - (void)showChannelNewsViewControllerForChannel:(SMLChannel*)channel {
 
-    SMLFeedItemsTableViewController *channelNewsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"NewsTableViewController"];
+    SMLNewsTableViewController *channelNewsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"NewsTableViewController"];
     [channelNewsViewController setupWithChannel:channel];
     [self.navigationController pushViewController:channelNewsViewController animated:YES];
 }
@@ -139,7 +139,7 @@
     SMLChannel *selectedChannel = [self.frcDataSource.fetchedResultsController objectAtIndexPath:selectedIndexPath];
     
     if ([segue.identifier isEqualToString:@"ShowChannel"]) {
-        SMLFeedItemsTableViewController *destinationViewController = segue.destinationViewController;
+        SMLNewsTableViewController *destinationViewController = segue.destinationViewController;
         [destinationViewController setupWithChannel:selectedChannel];
     }
 }

@@ -1,5 +1,5 @@
 //
-//  SMLFeedItemsTableViewController.h
+//  SMLNewsTableViewController.h
 //  SimpleRSS
 //
 //  Created by Ivan Blagajić on 16/05/14.
@@ -10,7 +10,7 @@
 #import "SMLChannel.h"
 #import "SMLFeed.h"
 
-@interface SMLFeedItemsTableViewController : UITableViewController
+@interface SMLNewsTableViewController : UITableViewController
 
 - (void)setupWithChannel:(SMLChannel*)channel;
 - (void)setupWithFeed:(SMLFeed*)feed;
