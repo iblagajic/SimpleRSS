@@ -24,8 +24,8 @@
     [self setup];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
     [self updateInterfaceForObjectsCount:self.frcDataSource.fetchedResultsController.fetchedObjects.count];
 }
 
@@ -55,6 +55,9 @@
 - (NSString*)identifierForCellAtIndexPath:(NSIndexPath *)indexPath {
     NSAssert(NO, @"ERROR: identifierForCellAtIndexPath: not found");
     return nil;
+}
+
+- (void)updateInterfaceForObjectsCount:(NSInteger)count {
 }
 
 

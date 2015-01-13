@@ -255,7 +255,6 @@
             NSLog(@"%@", error);
             [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
         });
-        self.liveOperationsCounter ++;
     }
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"SMLItem"];
@@ -387,7 +386,7 @@
     for (ONOXMLElement *element in items) {
         NSMutableDictionary *item = [[NSDictionary dictionaryFromXML:element] mutableCopy];
         [item setObject:feed forKey:@"feed"];
-        NSString *title = [[[item objectForKey:@"title"] stringByConvertingHTMLToPlainText] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSString *title = [item objectForKey:@"title"] /*stringByConvertingHTMLToPlainText] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]*/;
         [titles addObject:title];
         [itemsToAdd addObject:item];
     }

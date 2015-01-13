@@ -79,7 +79,7 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 }
 
 - (void)updateInterfaceForObjectsCount:(NSInteger)count {
-    [self.tableView reloadData];
+    
 }
 
 - (NSString*)identifierForCellAtIndexPath:(NSIndexPath *)indexPath {

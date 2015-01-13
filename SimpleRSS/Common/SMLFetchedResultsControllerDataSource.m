@@ -39,7 +39,7 @@
 - (void)dealloc {
     
     self.fetchedResultsController.delegate = nil;
-    self.fetchedResultsController = nil;
+    _fetchedResultsController = nil;
 }
 
 
