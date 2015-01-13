@@ -10,7 +10,7 @@
 #import "SMLNewsTableViewController.h"
 #import "SMLDataController.h"
 #import "SMLFetchedResultsControllerDataSource.h"
-#import "SMLAddFeedTableViewController.h"
+#import "SMLSearchTableViewController.h"
 #import "SMLNoDataView.h"
 
 @interface SMLFeedsTableViewController () <NSFetchedResultsControllerDelegate, SMLFetchedResultsControllerDataSourceDelegate>
@@ -86,16 +86,16 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    if ([segue.identifier isEqualToString:@"ShowFeed"]) {
+    if ([segue.identifier isEqualToString:@"ShowNews"]) {
         UITableViewCell *cell = (UITableViewCell*)sender;
-        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-        SMLFeed *feed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
-        SMLNewsTableViewController *destinationViewController = (SMLNewsTableViewController*)segue.destinationViewController;
-        [destinationViewController setupWithFeed:feed];
+        NSIndexPath *selectedIndexPath = [self.tableView indexPathForCell:cell];
+        SMLFeed *selectedFeed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:selectedIndexPath];
+        SMLNewsTableViewController *destinationViewController = segue.destinationViewController;
+        [destinationViewController setupWithFeed:selectedFeed];
     }
     else if ([segue.identifier isEqualToString:@"ShowSearch"]) {
         UINavigationController *destinationNavigationController = (UINavigationController*)segue.destinationViewController;
-        SMLAddFeedTableViewController *searchViewController = (SMLAddFeedTableViewController*)destinationNavigationController.topViewController;
+        SMLSearchTableViewController *searchViewController = (SMLSearchTableViewController*)destinationNavigationController.topViewController;
         [searchViewController setupWithChannel:self.channel];
     }
 }

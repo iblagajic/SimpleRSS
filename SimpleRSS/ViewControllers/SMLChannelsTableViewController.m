@@ -138,7 +138,7 @@
     NSIndexPath *selectedIndexPath = [self.tableView indexPathForCell:cell];
     SMLChannel *selectedChannel = [self.frcDataSource.fetchedResultsController objectAtIndexPath:selectedIndexPath];
     
-    if ([segue.identifier isEqualToString:@"ShowChannel"]) {
+    if ([segue.identifier isEqualToString:@"ShowNews"]) {
         SMLNewsTableViewController *destinationViewController = segue.destinationViewController;
         [destinationViewController setupWithChannel:selectedChannel];
     }

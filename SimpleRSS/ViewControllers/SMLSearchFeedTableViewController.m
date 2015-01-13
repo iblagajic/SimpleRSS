@@ -1,12 +1,12 @@
 //
-//  SMLAddFeedTableViewController.m
+//  SMLSearchTableViewController.m
 //  SimpleRSS
 //
 //  Created by Ivan Blagajić on 17/05/14.
 //  Copyright (c) 2014 Simple. All rights reserved.
 //
 
-#import "SMLAddFeedTableViewController.h"
+#import "SMLSearchTableViewController.h"
 #import "SMLDataController.h"
 #import "SMLFeed.h"
 #import "SMLFetchedResultsControllerDataSource.h"
@@ -17,28 +17,38 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     UIAlertViewButtonIndexAction
 };
 
-@interface SMLAddFeedTableViewController () <UISearchDisplayDelegate, UIAlertViewDelegate, UITableViewDelegate, SMLFetchedResultsControllerDataSourceDelegate>
+@interface SMLSearchTableViewController () <UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate , UIAlertViewDelegate, UITableViewDelegate, SMLFetchedResultsControllerDataSourceDelegate>
 
 @property (nonatomic) NSIndexPath *selectedIndexPath;
 @property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
-@property (nonatomic) UILabel *searchDisplayControllerLabel;
 @property (nonatomic) NSTimer *searchTimer;
 @property (nonatomic) SMLChannel *channel;
+@property (nonatomic, strong) UISearchController *searchController;
 
 @end
 
-@implementation SMLAddFeedTableViewController
+@implementation SMLSearchTableViewController
 
 
 #pragma mark - UIViewController
 
 - (void)viewDidLoad {
-    
     [super viewDidLoad];
-    [self.searchDisplayController.searchResultsTableView registerNib:[UINib nibWithNibName:@"SearchCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
-    self.searchDisplayController.displaysSearchBarInNavigationBar = YES;
-    self.searchDisplayController.searchBar.searchBarStyle = UISearchBarStyleDefault;
-    self.navigationItem.titleView.tintColor = [UIColor blackColor];
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    self.searchController.searchResultsUpdater = self;
+    self.searchController.delegate = self;
+    [self.searchController.searchBar sizeToFit];
+    self.navigationItem.titleView = self.searchController.searchBar;
+    self.searchController.dimsBackgroundDuringPresentation = NO;
+    self.searchController.searchBar.delegate = self;
+    self.searchController.hidesNavigationBarDuringPresentation = NO;
+    self.searchController.searchBar.showsCancelButton = YES;
+    self.definesPresentationContext = YES;
+    self.searchController.active = NO;
+    [self.tableView registerNib:[UINib nibWithNibName:@"SearchCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
+    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
+    self.frcDataSource.delegate = self;
+    self.searchController.searchBar.searchBarStyle = UISearchBarStyleDefault;
 }
 
 - (void)dealloc {
@@ -46,9 +56,6 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 }
 
 - (void)setupWithChannel:(SMLChannel *)channel {
-    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:nil];
-    self.searchDisplayController.searchResultsDataSource = self.frcDataSource;
-    self.frcDataSource.delegate = self;
     self.channel = channel;
 }
 
@@ -74,8 +81,7 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 }
 
 - (void)updateInterfaceForObjectsCount:(NSInteger)count {
-
-    [self.searchDisplayController.searchResultsTableView reloadData];
+    [self.tableView reloadData];
 }
 
 - (NSString*)identifierForCellAtIndexPath:(NSIndexPath *)indexPath {
@@ -87,32 +93,32 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    self.selectedIndexPath = indexPath;
-    UIAlertView *addAlert = [[UIAlertView alloc] initWithTitle:@"Add Feed to Channel"
-                                                       message:[NSString stringWithFormat:@"Do you want to add feed to \"%@\" channel?", self.channel.name]
+    SMLFeed *selectedFeed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
+    NSString *feedSnippet = [NSString stringWithFormat:@"\"%@\"", selectedFeed.snippet];
+    UIAlertView *addAlert = [[UIAlertView alloc] initWithTitle:@"Add Feed to Channel?"
+                                                       message:feedSnippet
                                                       delegate:self
                                              cancelButtonTitle:@"No"
                                              otherButtonTitles:@"Add", nil];
     [addAlert show];
+    self.selectedIndexPath = indexPath;
 }
 
 
 #pragma mark - UISearchBarDelegate
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-    
     self.frcDataSource = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
-#pragma mark - UISearchDisplayController
+#pragma mark - UISearchResultsUpdating
 
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     
     [self.searchTimer invalidate];
     self.searchTimer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(searchForCurrentTerm) userInfo:nil repeats:NO];
-    return NO;
 }
 
 
@@ -120,16 +126,16 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     
-    [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:self.selectedIndexPath animated:YES];
+    [self.tableView deselectRowAtIndexPath:self.selectedIndexPath animated:YES];
     if (buttonIndex == UIAlertViewButtonIndexAction) {
         SMLFeed *feed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:self.selectedIndexPath];
         [self.dataController addFeed:feed toChannel:self.channel];
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Saved"
-                                                            message:@"Feed Added Successfully."
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"Ok"
-                                                  otherButtonTitles:nil];
-        [alertView show];
+//        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Saved"
+//                                                            message:@"Feed Added Successfully."
+//                                                           delegate:nil
+//                                                  cancelButtonTitle:@"Ok"
+//                                                  otherButtonTitles:nil];
+//        [alertView show];
     }
     self.selectedIndexPath = nil;
 }
@@ -139,9 +145,9 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 - (void)searchForCurrentTerm {
     
-    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithFeedsContainingString:self.searchDisplayController.searchBar.text];
-    self.searchDisplayController.searchResultsDataSource = self.frcDataSource;
-    [self.searchDisplayController.searchResultsTableView reloadData];
+    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithFeedsContainingString:self.searchController.searchBar.text];
+    self.tableView.dataSource = self.frcDataSource;
+    [self.tableView reloadData];
 }
 
 - (SMLDataController*)dataController {

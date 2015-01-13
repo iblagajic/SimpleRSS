@@ -1,5 +1,5 @@
 //
-//  SMLAddFeedTableViewController.h
+//  SMLSearchTableViewController.h
 //  SimpleRSS
 //
 //  Created by Ivan Blagajić on 17/05/14.
@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "SMLChannel.h"
 
-@interface SMLAddFeedTableViewController : UITableViewController
+@interface SMLSearchTableViewController : UITableViewController
 
 - (void)setupWithChannel:(SMLChannel*)channel;
 

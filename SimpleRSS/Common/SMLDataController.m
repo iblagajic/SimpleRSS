@@ -287,7 +287,7 @@
     });
     self.liveOperationsCounter ++;
     
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"RSSItem"];
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"SMLItem"];
     
     NSSortDescriptor *byDate = [NSSortDescriptor sortDescriptorWithKey:@"pubDate" ascending:NO];
     fetchRequest.sortDescriptors = @[byDate];

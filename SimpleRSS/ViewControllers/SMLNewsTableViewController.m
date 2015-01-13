@@ -14,7 +14,7 @@
 #import "SMLArticleViewController.h"
 #import "SMLFeedsTableViewController.h"
 #import "SMLNoDataView.h"
-#import "SMLAddFeedTableViewController.h"
+#import "SMLSearchTableViewController.h"
 
 #define kCellPadding         20.0
 #define kCellTextPadding     12.0
@@ -24,6 +24,7 @@
 
 @property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
 @property (nonatomic) SMLChannel *channel;
+@property (nonatomic) SMLFeed *feed;
 @property (nonatomic) SMLNoDataView *overlayView;
 @property (nonatomic, readonly) SMLDataController *dataController;
 
@@ -38,7 +39,8 @@
 }
 
 - (void)setupWithFeed:(SMLFeed*)feed {
-    // TODO: Support one feed as a source
+    self.title = feed.title;
+    self.feed = feed;
 }
 
 
@@ -157,7 +159,13 @@
 }
 
 - (NSFetchedResultsController*)fetchedResultsController {
-    return [self.dataController frcWithItemsForChannel:self.channel];
+    if (self.channel) {
+        return [self.dataController frcWithItemsForChannel:self.channel];
+    }
+    else if (self.feed) {
+        return [self.dataController frcWithItemsForFeed:self.feed];
+    }
+    return nil;
 }
 
 - (SMLDataController*)dataController {
@@ -184,7 +192,7 @@
     }
     else if ([segue.identifier isEqualToString:@"ShowSearch"]) {
         UINavigationController *destinationNavigationController = (UINavigationController*)segue.destinationViewController;
-        SMLAddFeedTableViewController *searchViewController = (SMLAddFeedTableViewController*)destinationNavigationController.topViewController;
+        SMLSearchTableViewController *searchViewController = (SMLSearchTableViewController*)destinationNavigationController.topViewController;
         [searchViewController setupWithChannel:self.channel];
     }
 }
