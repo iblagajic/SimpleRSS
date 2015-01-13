@@ -127,12 +127,6 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     if (buttonIndex == UIAlertViewButtonIndexAction) {
         SMLFeed *feed = [self.fetchedResultsController objectAtIndexPath:self.selectedIndexPath];
         [self.dataController addFeed:feed toChannel:self.channel];
-//        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Saved"
-//                                                            message:@"Feed Added Successfully."
-//                                                           delegate:nil
-//                                                  cancelButtonTitle:@"Ok"
-//                                                  otherButtonTitles:nil];
-//        [alertView show];
     }
     self.selectedIndexPath = nil;
 }
@@ -143,6 +137,7 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 - (void)searchForCurrentTerm {
     [self.searchTimer invalidate];
     [self setup];
+    [self.tableView reloadData];
 }
 
 - (SMLDataController*)dataController {
@@ -150,7 +145,12 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 }
 
 - (NSFetchedResultsController*)createFetchedResultsController {
-    return [self.dataController frcWithFeedsContainingString:self.searchController.searchBar.text];
+    if ([self.searchController.searchBar.text isEqualToString:@""]) {
+        return nil;
+    }
+    else {
+        return [self.dataController frcWithFeedsContainingString:self.searchController.searchBar.text];
+    }
 }
 
 @end

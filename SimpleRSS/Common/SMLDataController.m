@@ -28,7 +28,6 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedDataController = [[self alloc] init];
-        sharedDataController.liveOperationsCounter = 0;
     });
     return sharedDataController;
 }
@@ -202,6 +201,8 @@
     if (!searchTerm || [searchTerm isEqualToString:@""]) {
         return nil;
     }
+    
+    self.liveOperationsCounter = 0;
     
     PMKPromise *refreshPromise = [self JSONResponseForSearchTerm:searchTerm];
     refreshPromise.then(^(NSDictionary *resultsDictionary) {
