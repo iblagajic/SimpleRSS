@@ -34,6 +34,6 @@ typedef NS_ENUM(NSUInteger, SMLTableViewAllowReordering) {
 @property id<SMLFetchedResultsControllerDataSourceDelegate> delegate;
 @property (nonatomic) SMLTableViewAllowReordering allowReorderingCells;
 
-- (id)initWithTableView:(UITableView*)tableView;
+- (id)initWithTableView:(UITableView*)tableView fetchedResultsController:(NSFetchedResultsController*)frc;
 
 @end

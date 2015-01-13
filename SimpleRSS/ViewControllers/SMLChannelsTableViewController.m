@@ -15,7 +15,6 @@
 
 @interface SMLChannelsTableViewController () <SMLFetchedResultsControllerDataSourceDelegate, UIAlertViewDelegate>
 
-@property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
 @property (nonatomic, readonly) SMLDataController *dataController;
 @property (nonatomic) SMLNoDataView *overlayView;
 
@@ -98,7 +97,7 @@
 
 - (SMLChannel*)channelAtIndexPath:(NSIndexPath*)indexPath {
     
-    return [self.frcDataSource.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row];
+    return [self.fetchedResultsController.fetchedObjects objectAtIndex:indexPath.row];
 }
 
 - (void)addOverlayViewIfNeeded {
@@ -121,7 +120,7 @@
     [self.navigationController pushViewController:channelNewsViewController animated:YES];
 }
 
-- (NSFetchedResultsController*)fetchedResultsController {
+- (NSFetchedResultsController*)createFetchedResultsController {
     return [self.dataController frcWithChannels];
 }
 
@@ -136,7 +135,7 @@
     
     UITableViewCell *cell = (UITableViewCell*)sender;
     NSIndexPath *selectedIndexPath = [self.tableView indexPathForCell:cell];
-    SMLChannel *selectedChannel = [self.frcDataSource.fetchedResultsController objectAtIndexPath:selectedIndexPath];
+    SMLChannel *selectedChannel = [self.fetchedResultsController objectAtIndexPath:selectedIndexPath];
     
     if ([segue.identifier isEqualToString:@"ShowNews"]) {
         SMLNewsTableViewController *destinationViewController = segue.destinationViewController;

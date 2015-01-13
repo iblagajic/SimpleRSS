@@ -158,7 +158,7 @@
     }
 }
 
-- (NSFetchedResultsController*)fetchedResultsController {
+- (NSFetchedResultsController*)createFetchedResultsController {
     if (self.channel) {
         return [self.dataController frcWithItemsForChannel:self.channel];
     }

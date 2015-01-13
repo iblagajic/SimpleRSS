@@ -17,13 +17,13 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     UIAlertViewButtonIndexAction
 };
 
-@interface SMLSearchTableViewController () <UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate , UIAlertViewDelegate, UITableViewDelegate, SMLFetchedResultsControllerDataSourceDelegate>
+@interface SMLSearchTableViewController () <UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate , UIAlertViewDelegate, UITableViewDelegate>
 
 @property (nonatomic) NSIndexPath *selectedIndexPath;
-@property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
 @property (nonatomic) NSTimer *searchTimer;
 @property (nonatomic) SMLChannel *channel;
 @property (nonatomic, strong) UISearchController *searchController;
+@property (nonatomic, readonly) SMLDataController *dataController;
 
 @end
 
@@ -46,8 +46,6 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     self.definesPresentationContext = YES;
     self.searchController.active = NO;
     [self.tableView registerNib:[UINib nibWithNibName:@"SearchCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
-    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
-    self.frcDataSource.delegate = self;
     self.searchController.searchBar.searchBarStyle = UISearchBarStyleDefault;
 }
 
@@ -93,7 +91,7 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    SMLFeed *selectedFeed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
+    SMLFeed *selectedFeed = [self.fetchedResultsController objectAtIndexPath:indexPath];
     NSString *feedSnippet = [NSString stringWithFormat:@"\"%@\"", selectedFeed.snippet];
     UIAlertView *addAlert = [[UIAlertView alloc] initWithTitle:@"Add Feed to Channel?"
                                                        message:feedSnippet
@@ -108,7 +106,7 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 #pragma mark - UISearchBarDelegate
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-    self.frcDataSource = nil;
+    [self.searchTimer invalidate];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -116,7 +114,6 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 #pragma mark - UISearchResultsUpdating
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
-    
     [self.searchTimer invalidate];
     self.searchTimer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(searchForCurrentTerm) userInfo:nil repeats:NO];
 }
@@ -128,7 +125,7 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     
     [self.tableView deselectRowAtIndexPath:self.selectedIndexPath animated:YES];
     if (buttonIndex == UIAlertViewButtonIndexAction) {
-        SMLFeed *feed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:self.selectedIndexPath];
+        SMLFeed *feed = [self.fetchedResultsController objectAtIndexPath:self.selectedIndexPath];
         [self.dataController addFeed:feed toChannel:self.channel];
 //        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Saved"
 //                                                            message:@"Feed Added Successfully."
@@ -144,14 +141,16 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
 #pragma mark - helpers
 
 - (void)searchForCurrentTerm {
-    
-    self.frcDataSource.fetchedResultsController = [[SMLDataController sharedController] frcWithFeedsContainingString:self.searchController.searchBar.text];
-    self.tableView.dataSource = self.frcDataSource;
-    [self.tableView reloadData];
+    [self.searchTimer invalidate];
+    [self setup];
 }
 
 - (SMLDataController*)dataController {
     return [SMLDataController sharedController];
+}
+
+- (NSFetchedResultsController*)createFetchedResultsController {
+    return [self.dataController frcWithFeedsContainingString:self.searchController.searchBar.text];
 }
 
 @end

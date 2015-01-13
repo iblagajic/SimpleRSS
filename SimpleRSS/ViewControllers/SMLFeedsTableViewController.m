@@ -73,7 +73,7 @@
     }
 }
 
-- (NSFetchedResultsController*)fetchedResultsController {
+- (NSFetchedResultsController*)createFetchedResultsController {
     return [self.dataController frcWithFeedsForChannel:self.channel];
 }
 

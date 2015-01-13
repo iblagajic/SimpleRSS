@@ -35,8 +35,7 @@
 }
 
 - (void)setup {
-    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView];
-    self.frcDataSource.fetchedResultsController = self.fetchedResultsController;
+    self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView fetchedResultsController:[self createFetchedResultsController]];
     self.frcDataSource.allowReorderingCells = SMLTableViewAllowReorderingAll;
     self.frcDataSource.delegate = self;
 }
@@ -61,9 +60,13 @@
 
 #pragma mark - helpers
 
-- (NSFetchedResultsController*)fetchedResultsController {
-    NSAssert(NO, @"ERROR: fetchedResultsController getter not found");
+- (NSFetchedResultsController*)createFetchedResultsController {
+    NSAssert(NO, @"ERROR: createFetchedResultsController getter not found");
     return nil;
+}
+
+- (NSFetchedResultsController*)fetchedResultsController {
+    return self.frcDataSource.fetchedResultsController;
 }
 
 @end

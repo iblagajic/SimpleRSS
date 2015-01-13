@@ -18,12 +18,13 @@
 
 @implementation SMLFetchedResultsControllerDataSource
 
-- (id)initWithTableView:(UITableView*)tableView
+- (id)initWithTableView:(UITableView*)tableView fetchedResultsController:(NSFetchedResultsController*)frc
 {
     self = [super init];
     if (self) {
         self.tableView = tableView;
         self.tableView.dataSource = self;
+        self.fetchedResultsController = frc;
     }
     return self;
 }

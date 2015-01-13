@@ -14,5 +14,6 @@
 @property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
 
 - (void)setup;
+- (NSFetchedResultsController*)createFetchedResultsController;
 
 @end
