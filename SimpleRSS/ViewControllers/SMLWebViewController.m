@@ -30,7 +30,7 @@
     self.title = self.item.title;
     NSString *readabilityPath = [NSString stringWithFormat:kReadabilityParserURL, self.item.link, kReadabilityParserAPIKey];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    NSString *encodedPath = [readabilityPath stringWithASCIIStringEncoding];
+    NSString *encodedPath = [readabilityPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     PMKPromise *feedsPromise = [NSURLConnection GET:encodedPath];
     feedsPromise.then(^(NSDictionary *resultsDictionary) {
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
@@ -46,12 +46,6 @@
         return nil;
     }
     return [dict objectForKey:@"content"];
-}
-
-#pragma mark - UIWebViewDelegate
-
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    return NO;
 }
 
 @end
