@@ -8,10 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "SMLTableViewController.h"
-#import "SMLChannel.h"
-#import "SMLFeed.h"
+
+@class SMLDataController;
+@class SMLChannel;
+@class SMLFeed;
 
 @interface SMLNewsTableViewController : SMLTableViewController
+
+@property (nonatomic) SMLDataController *dataController;
 
 - (void)setupWithChannel:(SMLChannel*)channel;
 - (void)setupWithFeed:(SMLFeed*)feed;

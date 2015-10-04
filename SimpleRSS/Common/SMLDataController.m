@@ -23,13 +23,27 @@
 
 @implementation SMLDataController
 
-+ (id)sharedController {
-    static SMLDataController *sharedDataController = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedDataController = [[self alloc] init];
-    });
-    return sharedDataController;
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        [self setupSaveNotification];
+    }
+    return self;
+}
+
+- (void)setupSaveNotification
+{
+    [[NSNotificationCenter defaultCenter] addObserverForName:NSManagedObjectContextDidSaveNotification
+                                                      object:nil
+                                                       queue:nil
+                                                  usingBlock:^(NSNotification* notification) {
+                                                      NSManagedObjectContext *moc = self.managedObjectContext;
+                                                      if (notification.object != moc) {
+                                                          [moc performBlock:^(){
+                                                              [moc mergeChangesFromContextDidSaveNotification:notification];
+                                                          }];
+                                                      }
+                                                  }];
 }
 
 - (void)dealloc {
@@ -143,24 +157,24 @@
     NSSortDescriptor *byOrdinal = [NSSortDescriptor sortDescriptorWithKey:@"ordinal" ascending:YES];
     fetchRequest.sortDescriptors = @[byOrdinal];
     
-    NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                                                                               managedObjectContext:self.managedObjectContext
-                                                                                                 sectionNameKeyPath:nil
-                                                                                                          cacheName:nil];
-    return fetchedResultsController;
+    NSFetchedResultsController *frc = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                          managedObjectContext:self.managedObjectContext
+                                                                            sectionNameKeyPath:nil
+                                                                                     cacheName:nil];
+    return frc;
 }
 
 - (SMLChannel*)addChannelWithName:(NSString*)name {
-    
     NSArray *channels = [SMLChannel channelsInContext:self.managedObjectContext];
     NSNumber *ordinal = @(channels.count);
-    SMLChannel *channel = [SMLChannel addChannelWithName:name ordinal:ordinal inContext:self.managedObjectContext];
+    SMLChannel *channel = [SMLChannel addChannelWithName:name
+                                                 ordinal:ordinal
+                                               inContext:self.managedObjectContext];
     [self saveContext];
     return channel;
 }
 
 - (void)deleteChannel:(SMLChannel*)channel {
-    
     [self.managedObjectContext deleteObject:channel];
     [self saveContext];
 }
@@ -171,7 +185,6 @@
         NSManagedObject *mo = objects[i];
         [mo setValue:@(i) forKey:@"ordinal"];
     }
-    
     [self saveContext];
 }
 
@@ -206,14 +219,15 @@
     
     PMKPromise *refreshPromise = [self JSONResponseForSearchTerm:searchTerm];
     refreshPromise.then(^(NSDictionary *resultsDictionary) {
-        
-        [self parseFeedsJSON:resultsDictionary];
-        self.liveOperationsCounter--;
-        if (self.liveOperationsCounter == 0) {
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        }
+        NSManagedObjectContext * privateContext = [self newPrivateContext];
+        [privateContext performBlockAndWait:^{
+            [self parseFeedsJSON:resultsDictionary inContext:privateContext];
+            self.liveOperationsCounter--;
+            if (self.liveOperationsCounter == 0) {
+                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            }
+        }];
     }).catch(^(NSError *error) {
-        
         NSLog(@"%@", error);
         [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     });
@@ -239,23 +253,25 @@
 
 - (NSFetchedResultsController *)frcWithItemsForChannel:(SMLChannel*)channel {
     
-    for (SMLFeed *feed in channel.feeds) {
-        
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-        
-        [NSURLConnection GET:feed.url].then(^(NSData *itemsData) {
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
+    [privateContext performBlockAndWait:^{
+        for (SMLFeed *feed in channel.feeds) {
             
-            NSError *err;
-            ONOXMLDocument *itemsXML = [ONOXMLDocument XMLDocumentWithData:itemsData
-                                                                     error:&err];
-            [self parseFeedItemsXML:itemsXML forFeed:feed];
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        }).catch(^(NSError *error) {
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
             
-            NSLog(@"%@", error);
-            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        });
-    }
+            [NSURLConnection GET:feed.url].then(^(NSData *itemsData) {
+                
+                NSError *err;
+                ONOXMLDocument *itemsXML = [ONOXMLDocument XMLDocumentWithData:itemsData
+                                                                         error:&err];
+                [self parseFeedItemsXML:itemsXML forFeed:feed inContext:privateContext];
+                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            }).catch(^(NSError *error) {
+                NSLog(@"%@", error);
+                [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+            });
+        }
+    }];
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"SMLItem"];
     
@@ -264,28 +280,30 @@
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"feed.channels CONTAINS[cd] %@", channel];
     fetchRequest.fetchLimit = kSMLFetchLimit;
     
-    NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                                                                               managedObjectContext:self.managedObjectContext
-                                                                                                 sectionNameKeyPath:nil
-                                                                                                          cacheName:nil];
-    return fetchedResultsController;
+    NSFetchedResultsController *frc = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                          managedObjectContext:self.managedObjectContext
+                                                                            sectionNameKeyPath:nil
+                                                                                     cacheName:nil];
+    return frc;
 }
 
 - (NSFetchedResultsController *)frcWithItemsForFeed:(SMLFeed*)feed {
     
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-    [NSURLConnection GET:feed.url].then(^(NSData *itemsData) {
-        NSError *err;
-        ONOXMLDocument *itemsXML = [ONOXMLDocument XMLDocumentWithData:itemsData
-                                                                 error:&err];
-        [self parseFeedItemsXML:itemsXML forFeed:feed];
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    }).catch(^(NSError *error) {
-        
-        NSLog(@"%@", error);
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    });
-    self.liveOperationsCounter ++;
+    NSManagedObjectContext *privateContext = [self newPrivateContext];
+    [privateContext performBlockAndWait:^{
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+        [NSURLConnection GET:feed.url].then(^(NSData *itemsData) {
+            NSError *err;
+            ONOXMLDocument *itemsXML = [ONOXMLDocument XMLDocumentWithData:itemsData
+                                                                     error:&err];
+            [self parseFeedItemsXML:itemsXML forFeed:feed inContext:privateContext];
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        }).catch(^(NSError *error) {
+            NSLog(@"%@", error);
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        });
+        self.liveOperationsCounter ++;
+    }];
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"SMLItem"];
     
@@ -294,11 +312,11 @@
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"feed = %@", feed];
     fetchRequest.fetchLimit = kSMLFetchLimit;
     
-    NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                                                                               managedObjectContext:self.managedObjectContext
-                                                                                                 sectionNameKeyPath:nil
-                                                                                                          cacheName:nil];
-    return fetchedResultsController;
+    NSFetchedResultsController *frc = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                          managedObjectContext:self.managedObjectContext
+                                                                            sectionNameKeyPath:nil
+                                                                                     cacheName:nil];
+    return frc;
 }
 
 - (NSArray*)mySMLFeeds {
@@ -316,15 +334,17 @@
 
 
 - (void)addFeed:(SMLFeed*)feed toChannel:(SMLChannel*)channel {
-    
+    if (![feed.managedObjectContext isEqual:channel.managedObjectContext]) {
+        NSLog(@"err");
+    }
     [feed addChannelsObject:channel];
-    [self saveContext];
+    [feed.managedObjectContext save:nil];
 }
 
 - (void)removeFeed:(SMLFeed*)feed fromChannel:(SMLChannel*)channel {
     
     [feed removeChannelsObject:channel];
-    [self saveContext];
+    [feed.managedObjectContext save:nil];
 }
 
 
@@ -341,7 +361,7 @@
     return feedsPromise;
 }
 
-- (void)parseFeedsJSON:(NSDictionary*)resultsJSON {
+- (void)parseFeedsJSON:(NSDictionary *)resultsJSON inContext:(NSManagedObjectContext *)context {
     
     NSInteger responseStatus = [[resultsJSON objectForKey:@"responseStatus"] integerValue];
     if (responseStatus != 200) return;
@@ -358,7 +378,7 @@
     }
     NSSortDescriptor *byTitle = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
     [feeds sortUsingDescriptors:@[byTitle]];
-    NSArray *feedObjects = [SMLFeed arrayOfExistingFeedsForTitles:titles inContext:self.managedObjectContext];
+    NSArray *feedObjects = [SMLFeed arrayOfExistingFeedsForTitles:titles inContext:context];
     NSInteger i, j;
     for (i = 0, j = 0; i < feeds.count; i++) {
         NSString *title = [[feeds objectAtIndex:i] objectForKey:@"title"];
@@ -368,14 +388,19 @@
         if ([title isEqualToString:feed.title]) {
             j++;
         } else {
-            [SMLFeed insertFeedWithDictionary:[feeds objectAtIndex:i] inContext:self.managedObjectContext];
+            [SMLFeed insertFeedWithDictionary:[feeds objectAtIndex:i] inContext:context];
         }
     }
-    [self saveContext];
+    [context save:nil];
 }
 
-- (void)parseFeedItemsXML:(ONOXMLDocument*)itemsXML forFeed:(SMLFeed*)feed {
+- (void)parseFeedItemsXML:(ONOXMLDocument *)itemsXML
+                  forFeed:(SMLFeed *)feed
+                inContext:(NSManagedObjectContext *)context {
     
+    if (![feed.managedObjectContext isEqual:context]) {
+        feed = [context objectWithID:[feed objectID]];
+    }
     ONOXMLElement *channel = [itemsXML.rootElement firstChildWithTag:@"channel"];
     
     NSArray *items = [channel childrenWithTag:@"item"];
@@ -392,7 +417,7 @@
     }
     NSSortDescriptor *byTitle = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)];
     [itemsToAdd sortUsingDescriptors:@[byTitle]];
-    NSArray *itemObjects = [SMLItem arrayOfExistingItemsForTitles:titles inContext:self.managedObjectContext];
+    NSArray *itemObjects = [SMLItem arrayOfExistingItemsForTitles:titles inContext:context];
     NSInteger i, j;
     for (i = 0, j = 0; i < itemsToAdd.count; i++) {
         NSString *title = [[itemsToAdd objectAtIndex:i] objectForKey:@"title"];
@@ -403,10 +428,19 @@
         if ([[title stringByRemovingNewLinesAndWhitespace] isEqualToString:[item.title stringByRemovingNewLinesAndWhitespace]]) {
             j++;
         } else {
-            [SMLItem insertItemWithDictionary:[itemsToAdd objectAtIndex:i] inContext:self.managedObjectContext];
+            [SMLItem insertItemWithDictionary:[itemsToAdd objectAtIndex:i] inContext:context];
         }
     }
-    [self saveContext];
+    [context save:nil];
+}
+
+#pragma mark - private context
+
+- (NSManagedObjectContext *)newPrivateContext
+{
+    NSManagedObjectContext *context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    context.persistentStoreCoordinator = self.persistentStoreCoordinator;
+    return context;
 }
 
 @end

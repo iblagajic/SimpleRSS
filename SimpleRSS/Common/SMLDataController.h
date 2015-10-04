@@ -14,8 +14,6 @@
 
 @interface SMLDataController : NSObject
 
-+ (id)sharedController;
-
 - (NSFetchedResultsController *)frcWithChannels;
 - (SMLChannel*)addChannelWithName:(NSString*)name;
 - (void)deleteChannel:(SMLChannel*)channel;
@@ -30,5 +28,7 @@
 - (NSFetchedResultsController *)frcWithFeedsContainingString:(NSString*)searchTerm;
 
 - (void)updateOrdinals:(NSArray*)objects;
+
+- (void)saveContext;
 
 @end

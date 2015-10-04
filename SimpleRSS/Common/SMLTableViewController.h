@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
+#import "SMLFetchedResultsControllerDataSource.h"
 
-@interface SMLTableViewController : UITableViewController
+@interface SMLTableViewController : UITableViewController <SMLFetchedResultsControllerDataSourceDelegate>
 
 @property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
 

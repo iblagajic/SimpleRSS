@@ -25,7 +25,7 @@
 
 - (void)applyStyle {
     
-    self.font = [UIFont smlStandardTextFont];
+    self.font = [UIFont sml_body];
     self.textColor = [UIColor darkTextColor];
     self.textAlignment = NSTextAlignmentLeft;
 }

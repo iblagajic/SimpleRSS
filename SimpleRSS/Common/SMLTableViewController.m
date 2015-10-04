@@ -7,10 +7,9 @@
 //
 
 #import "SMLTableViewController.h"
-#import "SMLFetchedResultsControllerDataSource.h"
 #import "SMLNoDataView.h"
 
-@interface SMLTableViewController () <SMLFetchedResultsControllerDataSourceDelegate>
+@interface SMLTableViewController ()
 
 @property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
 
@@ -22,10 +21,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self setup];
-}
-
-- (void)viewWillLayoutSubviews {
-    [super viewWillLayoutSubviews];
     [self updateInterfaceForObjectsCount:self.frcDataSource.fetchedResultsController.fetchedObjects.count];
 }
 
@@ -35,6 +30,10 @@
 }
 
 - (void)setup {
+    if (self.frcDataSource) {
+        self.frcDataSource.delegate = nil;
+        self.frcDataSource = nil;
+    }
     self.frcDataSource = [[SMLFetchedResultsControllerDataSource alloc] initWithTableView:self.tableView fetchedResultsController:[self createFetchedResultsController]];
     self.frcDataSource.allowReorderingCells = SMLTableViewAllowReorderingAll;
     self.frcDataSource.delegate = self;
@@ -58,6 +57,7 @@
 }
 
 - (void)updateInterfaceForObjectsCount:(NSInteger)count {
+    [self.tableView reloadData];
 }
 
 

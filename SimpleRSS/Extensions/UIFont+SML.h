@@ -10,15 +10,11 @@
 
 @interface UIFont (SML)
 
-+ (UIFont*)smlFeedFont;
-+ (UIFont*)smlTitleFont;
-+ (UIFont*)smlCellTitleFont;
-+ (UIFont*)smlMyFeedsCellTitleFont;
-+ (UIFont*)smlDescriptionFont;
-+ (UIFont*)smlDateFont;
-+ (UIFont*)smlBarButtonFont;
-+ (UIFont*)smlBarTitleFont;
-+ (UIFont*)smlArticleTitleFont;
-+ (UIFont*)smlStandardTextFont;
++ (UIFont *)sml_h1;
++ (UIFont *)sml_h1DemiBold;
++ (UIFont *)sml_h2;
++ (UIFont *)sml_body;
++ (UIFont *)sml_micro;
++ (UIFont *)sml_dateFont;
 
 @end

@@ -12,10 +12,12 @@
 #import "SMLFeedsTableViewController.h"
 #import "SMLNewsTableViewController.h"
 #import "SMLNoDataView.h"
+#import "SMLAppDelegate.h"
 
-@interface SMLChannelsTableViewController () <SMLFetchedResultsControllerDataSourceDelegate, UIAlertViewDelegate>
+@interface SMLChannelsTableViewController () <  SMLFetchedResultsControllerDataSourceDelegate,
+                                                UIAlertViewDelegate>
 
-@property (nonatomic, readonly) SMLDataController *dataController;
+@property (nonatomic) SMLDataController *dataController;
 @property (nonatomic) SMLNoDataView *overlayView;
 
 @end
@@ -26,6 +28,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"Channels";
+    SMLAppDelegate *delegate = [UIApplication sharedApplication].delegate;
+    self.dataController = delegate.dataController;
 }
 
 
@@ -65,7 +69,7 @@
 }
 
 - (void)updateInterfaceForObjectsCount:(NSInteger)count {
-    
+    [super updateInterfaceForObjectsCount:count];
     if (count == 0) {
         [self addOverlayViewIfNeeded];
         self.navigationItem.rightBarButtonItem = nil;
@@ -117,15 +121,12 @@
 
     SMLNewsTableViewController *channelNewsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"NewsTableViewController"];
     [channelNewsViewController setupWithChannel:channel];
+    channelNewsViewController.dataController = self.dataController;
     [self.navigationController pushViewController:channelNewsViewController animated:YES];
 }
 
 - (NSFetchedResultsController*)createFetchedResultsController {
     return [self.dataController frcWithChannels];
-}
-
-- (SMLDataController*)dataController {
-    return [SMLDataController sharedController];
 }
 
 
@@ -139,6 +140,7 @@
     
     if ([segue.identifier isEqualToString:@"ShowNews"]) {
         SMLNewsTableViewController *destinationViewController = segue.destinationViewController;
+        destinationViewController.dataController = self.dataController;
         [destinationViewController setupWithChannel:selectedChannel];
     }
 }

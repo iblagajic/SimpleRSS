@@ -13,7 +13,7 @@
 + (UILabel*)cellFeedLabelWithFrame:(CGRect)frame andText:(NSString*)text {
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:frame];
-    titleLabel.font = [UIFont smlFeedFont];
+    titleLabel.font = [UIFont sml_micro];
     titleLabel.adjustsFontSizeToFitWidth = YES;
     titleLabel.minimumScaleFactor = 0.5;
     titleLabel.textColor = [UIColor lightGrayColor];
@@ -26,7 +26,7 @@
 + (UILabel*)cellTitleLabelWithFrame:(CGRect)frame andText:(NSString*)text {
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:frame];
-    titleLabel.font = [UIFont smlTitleFont];
+    titleLabel.font = [UIFont sml_h1];
     titleLabel.textColor = [UIColor smlTintColor];
     titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     titleLabel.numberOfLines = 0;
@@ -38,7 +38,7 @@
 + (UILabel*)cellDescriptionLabelWithFrame:(CGRect)frame andText:(NSString*)text {
     
     UILabel *descriptionLabel = [[UILabel alloc] initWithFrame:frame];
-    descriptionLabel.font = [UIFont smlDescriptionFont];
+    descriptionLabel.font = [UIFont sml_body];
     descriptionLabel.textColor = [UIColor darkGrayColor];
     descriptionLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     descriptionLabel.numberOfLines = 0;
@@ -50,7 +50,7 @@
 + (UILabel*)cellDateLabelWithFrame:(CGRect)frame andText:(NSString*)text {
     
     UILabel *dateLabel = [[UILabel alloc] initWithFrame:frame];
-    dateLabel.font = [UIFont smlDateFont];
+    dateLabel.font = [UIFont sml_dateFont];
     dateLabel.textColor = [UIColor grayColor];
     dateLabel.lineBreakMode = NSLineBreakByWordWrapping;
     dateLabel.numberOfLines = 0;
@@ -69,27 +69,27 @@
 
 + (CGFloat)heightForTitleLabelWithText:(NSString*)text andMaximumSize:(CGSize)maximumSize {
     
-    return [self heightForLabelWithText:text font:[UIFont smlTitleFont] andMaximumSize:maximumSize];
+    return [self heightForLabelWithText:text font:[UIFont sml_h1] andMaximumSize:maximumSize];
 }
 
 + (CGFloat)heightForDescriptionLabelWithText:(NSString*)text andMaximumSize:(CGSize)maximumSize {
     
-    return [self heightForLabelWithText:text font:[UIFont smlDescriptionFont] andMaximumSize:maximumSize];
+    return [self heightForLabelWithText:text font:[UIFont sml_body] andMaximumSize:maximumSize];
 }
 
 + (CGFloat)heightForDateLabelWithText:(NSString*)text andMaximumSize:(CGSize)maximumSize {
     
-    return [self heightForLabelWithText:text font:[UIFont smlDateFont] andMaximumSize:maximumSize];
+    return [self heightForLabelWithText:text font:[UIFont sml_dateFont] andMaximumSize:maximumSize];
 }
 
 + (CGFloat)heightForArticleTitleLabelWithText:(NSString*)text andMaximumSize:(CGSize)maximumSize {
     
-    return [self heightForLabelWithText:text font:[UIFont smlArticleTitleFont] andMaximumSize:maximumSize];
+    return [self heightForLabelWithText:text font:[UIFont sml_h1] andMaximumSize:maximumSize];
 }
 
 + (CGFloat)heightForArticleTextLabelWithText:(NSString*)text andMaximumSize:(CGSize)maximumSize {
     
-    return [self heightForLabelWithText:text font:[UIFont smlStandardTextFont] andMaximumSize:maximumSize];
+    return [self heightForLabelWithText:text font:[UIFont sml_body] andMaximumSize:maximumSize];
 }
 
 @end

@@ -37,7 +37,7 @@
 
 - (void)addActionButtonWithText:(NSString*)buttonText actionBlock:(ActionBlock)actionBlock {
     
-    UIFont *font = [UIFont smlStandardTextFont];
+    UIFont *font = [UIFont sml_body];
     CGFloat width = CGRectGetWidth(self.containerView.frame);
     CGFloat height = [UILabel heightForLabelWithText:buttonText font:font andMaximumSize:CGSizeMake(width, MAXFLOAT)];
     CGRect frame = CGRectMake(0, 0, width, height);
@@ -77,7 +77,7 @@
 
 - (void)addNoDataLabelWithText:(NSString*)text {
     
-    UIFont *font = [UIFont smlStandardTextFont];
+    UIFont *font = [UIFont sml_body];
     CGFloat width = CGRectGetWidth(self.containerView.frame);
     CGFloat height = [UILabel heightForLabelWithText:text font:font andMaximumSize:CGSizeMake(width, MAXFLOAT)];
     CGRect frame = CGRectMake(0, 0, width, height);

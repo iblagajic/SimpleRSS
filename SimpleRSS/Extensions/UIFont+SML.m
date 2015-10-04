@@ -10,51 +10,35 @@
 
 @implementation UIFont (SML)
 
-+ (UIFont*)smlFeedFont {
-    return [self avenirNextOfSize:11.0];
-}
-
-+ (UIFont*)smlTitleFont {
++ (UIFont *)sml_h1 {
     return [self avenirNextOfSize:17.0];
 }
 
-+ (UIFont*)smlCellTitleFont {
-    return [self avenirNextOfSize:15.0];
-}
-
-+ (UIFont*)smlMyFeedsCellTitleFont {
-    return [self avenirNextDemiBoldOfSize:15.0];
-}
-
-+ (UIFont*)smlDescriptionFont {
-    return [self avenirNextOfSize:15.0];
-}
-
-+ (UIFont*)smlDateFont {
-    return [UIFont fontWithName:@"Trebuchet MS" size:11.0];
-}
-
-+ (UIFont*)smlBarButtonFont {
-    return [self avenirNextOfSize:18.0];
-}
-
-+ (UIFont*)smlBarTitleFont {
++ (UIFont *)sml_h1DemiBold {
     return [self avenirNextDemiBoldOfSize:18.0];
 }
 
-+ (UIFont*)smlArticleTitleFont {
-    return [self avenirNextDemiBoldOfSize:20.0];
++ (UIFont *)sml_h2 {
+    return [self avenirNextDemiBoldOfSize:15.0];
 }
 
-+ (UIFont*)smlStandardTextFont {
-    return [self avenirNextOfSize:17.0];
++ (UIFont *)sml_body {
+    return [self avenirNextOfSize:15.0];
 }
 
-+ (UIFont*)avenirNextOfSize:(CGFloat)size {
++ (UIFont *)sml_micro {
+    return [self avenirNextOfSize:13.0];
+}
+
++ (UIFont *)sml_dateFont {
+    return [UIFont fontWithName:@"Trebuchet MS" size:11.0];
+}
+
++ (UIFont *)avenirNextOfSize:(CGFloat)size {
     return [UIFont fontWithName:@"AvenirNext-Regular" size:size];
 }
 
-+ (UIFont*)avenirNextDemiBoldOfSize:(CGFloat)size {
++ (UIFont *)avenirNextDemiBoldOfSize:(CGFloat)size {
     return [UIFont fontWithName:@"AvenirNext-DemiBold" size:size];
 }
 

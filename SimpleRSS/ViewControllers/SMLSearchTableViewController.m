@@ -9,6 +9,7 @@
 #import "SMLSearchTableViewController.h"
 #import "SMLDataController.h"
 #import "SMLFeed.h"
+#import "SMLChannel.h"
 #import "SMLFetchedResultsControllerDataSource.h"
 #import <PromiseKit/Promise.h>
 
@@ -17,13 +18,16 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     UIAlertViewButtonIndexAction
 };
 
-@interface SMLSearchTableViewController () <UISearchControllerDelegate, UISearchResultsUpdating, UISearchBarDelegate , UIAlertViewDelegate, UITableViewDelegate>
+@interface SMLSearchTableViewController () <UISearchControllerDelegate,
+                                            UISearchResultsUpdating,
+                                            UISearchBarDelegate,
+                                            UIAlertViewDelegate,
+                                            UITableViewDelegate>
 
 @property (nonatomic) NSIndexPath *selectedIndexPath;
 @property (nonatomic) NSTimer *searchTimer;
 @property (nonatomic) SMLChannel *channel;
 @property (nonatomic, strong) UISearchController *searchController;
-@property (nonatomic, readonly) SMLDataController *dataController;
 
 @end
 
@@ -70,16 +74,15 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
         }
     }];
     if (contains) {
-        cell.textLabel.font = [UIFont smlMyFeedsCellTitleFont];
+        cell.textLabel.font = [UIFont sml_h2];
     } else {
-        cell.textLabel.font = [UIFont smlCellTitleFont];
+        cell.textLabel.font = [UIFont sml_body];
     }
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.textLabel.text = object.title;
 }
 
 - (void)updateInterfaceForObjectsCount:(NSInteger)count {
-    
 }
 
 - (NSString*)identifierForCellAtIndexPath:(NSIndexPath *)indexPath {
@@ -138,10 +141,6 @@ typedef NS_ENUM(NSInteger, UIAlertViewButtonIndex) {
     [self.searchTimer invalidate];
     [self setup];
     [self.tableView reloadData];
-}
-
-- (SMLDataController*)dataController {
-    return [SMLDataController sharedController];
 }
 
 - (NSFetchedResultsController*)createFetchedResultsController {

@@ -1,5 +1,5 @@
 #import "SMLItem.h"
-
+#import "SMLFeed.h"
 
 @interface SMLItem ()
 
@@ -25,6 +25,9 @@
     item.pubDate = date;
     item.link = [dictionary objectForKey:@"link"];
     item.feed = [dictionary objectForKey:@"feed"];
+    if (![item.feed.managedObjectContext isEqual:item.managedObjectContext]) {
+        NSLog(@"errr");
+    }
 }
 
 + (NSArray*)arrayOfExistingItemsForTitles:(NSArray*)titles inContext:(NSManagedObjectContext*)context {

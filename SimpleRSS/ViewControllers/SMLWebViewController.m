@@ -7,8 +7,10 @@
 //
 
 #import "SMLWebViewController.h"
+#import "SMLItem.h"
+#import <PromiseKit.h>
 
-#define kReadabilityToken @"ddd2fc89a569f7d858b8bb3163b5c1a260225e73"
+#define kReadabilityParserURL @"https://readability.com/api/content/v1/parser?url=%@&token=%@"
 
 @interface SMLWebViewController () <UIWebViewDelegate>
 
@@ -18,24 +20,38 @@
 
 @implementation SMLWebViewController
 
-- (void)viewDidAppear:(BOOL)animated {
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self loadArticleJSON];
+}
 
-    [super viewDidAppear:animated];
+- (void)loadArticleJSON {
     
-    NSString *urlString = [NSString stringWithFormat:@"https://readability.com/m?url=%@", self.item.link];
-    NSURL *url = [NSURL URLWithString:urlString];
-    [self loadUrl:url];
     self.title = self.item.title;
+    NSString *readabilityPath = [NSString stringWithFormat:kReadabilityParserURL, self.item.link, kReadabilityParserAPIKey];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    NSString *encodedPath = [readabilityPath stringWithASCIIStringEncoding];
+    PMKPromise *feedsPromise = [NSURLConnection GET:encodedPath];
+    feedsPromise.then(^(NSDictionary *resultsDictionary) {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        NSString *htmlString = [self articleContentFromDictionary:resultsDictionary];
+        [self.webView loadHTMLString:htmlString baseURL:nil];
+    }).catch(^(NSError *err) {
+        NSLog(@"%@", err.description);
+    });
 }
 
-- (void)loadUrl:(NSURL*)url {
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    [self.webView loadRequest:request];
-    [self.webView reload];
+- (NSString*)articleContentFromDictionary:(NSDictionary *)dict {
+    if (![[dict objectForKey:@"content"] isKindOfClass:NSString.class]) {
+        return nil;
+    }
+    return [dict objectForKey:@"content"];
 }
 
-- (IBAction)close:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
+#pragma mark - UIWebViewDelegate
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    return NO;
 }
 
 @end

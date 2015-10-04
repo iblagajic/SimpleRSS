@@ -8,9 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "SMLTableViewController.h"
-#import "SMLChannel.h"
+
+@class SMLDataController;
+@class SMLChannel;
 
 @interface SMLSearchTableViewController : SMLTableViewController
+
+@property (nonatomic) SMLDataController *dataController;
 
 - (void)setupWithChannel:(SMLChannel*)channel;
 

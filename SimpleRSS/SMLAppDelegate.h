@@ -8,7 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+@class SMLDataController;
+
 @interface SMLAppDelegate : UIResponder <UIApplicationDelegate>
+
+@property (nonatomic, readonly) SMLDataController *dataController;
 
 @property (strong, nonatomic) UIWindow *window;
 

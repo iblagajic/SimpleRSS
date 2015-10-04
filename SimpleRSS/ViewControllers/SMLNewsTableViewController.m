@@ -7,11 +7,12 @@
 //
 
 #import "SMLNewsTableViewController.h"
-#import "UIViewController+ScrollingNavbar.h"
 #import "SMLItem.h"
+#import "SMLChannel.h"
+#import "SMLFeed.h"
 #import "SMLFetchedResultsControllerDataSource.h"
 #import "SMLDataController.h"
-#import "SMLArticleViewController.h"
+#import "SMLWebViewController.h"
 #import "SMLFeedsTableViewController.h"
 #import "SMLNoDataView.h"
 #import "SMLSearchTableViewController.h"
@@ -26,7 +27,6 @@
 @property (nonatomic) SMLChannel *channel;
 @property (nonatomic) SMLFeed *feed;
 @property (nonatomic) SMLNoDataView *overlayView;
-@property (nonatomic, readonly) SMLDataController *dataController;
 
 @end
 
@@ -93,7 +93,7 @@
 }
 
 - (void)updateInterfaceForObjectsCount:(NSInteger)count {
-    
+    [super updateInterfaceForObjectsCount:count];
     if (count == 0) {
         [self addOverlayViewIfNeeded];
     } else {
@@ -168,10 +168,6 @@
     return nil;
 }
 
-- (SMLDataController*)dataController {
-    return [SMLDataController sharedController];
-}
-
 
 #pragma mark - navigation
 
@@ -182,17 +178,18 @@
         UITableViewCell *cell = (UITableViewCell*)sender;
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
         SMLItem *item = [self.frcDataSource.fetchedResultsController objectAtIndexPath:indexPath];
-        UINavigationController *destinationNavigationController = segue.destinationViewController;
-        SMLArticleViewController *destinationViewController = (SMLArticleViewController*)destinationNavigationController.topViewController;
-        [destinationViewController generateArticleJSONForURLString:item.link andFeedName:item.feed.title];
+        SMLWebViewController *destinationViewController = (SMLWebViewController *)segue.destinationViewController;
+        destinationViewController.item = item;
     }
     else if ([segue.identifier isEqualToString:@"ShowChannelSettings"]) {
         SMLFeedsTableViewController *destinationViewController = segue.destinationViewController;
+        destinationViewController.dataController = self.dataController;
         [destinationViewController setupWithChannel:self.channel];
     }
     else if ([segue.identifier isEqualToString:@"ShowSearch"]) {
         UINavigationController *destinationNavigationController = (UINavigationController*)segue.destinationViewController;
         SMLSearchTableViewController *searchViewController = (SMLSearchTableViewController*)destinationNavigationController.topViewController;
+        searchViewController.dataController = self.dataController;
         [searchViewController setupWithChannel:self.channel];
     }
 }

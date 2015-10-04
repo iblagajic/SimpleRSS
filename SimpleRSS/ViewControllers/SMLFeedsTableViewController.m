@@ -12,18 +12,18 @@
 #import "SMLFetchedResultsControllerDataSource.h"
 #import "SMLSearchTableViewController.h"
 #import "SMLNoDataView.h"
+#import "SMLChannel.h"
 
-@interface SMLFeedsTableViewController () <NSFetchedResultsControllerDelegate, SMLFetchedResultsControllerDataSourceDelegate>
+@interface SMLFeedsTableViewController () < NSFetchedResultsControllerDelegate,
+                                            SMLFetchedResultsControllerDataSourceDelegate>
 
 @property (nonatomic) SMLFetchedResultsControllerDataSource *frcDataSource;
 @property (nonatomic) SMLChannel *channel;
 @property (nonatomic) SMLNoDataView *overlayView;
-@property (nonatomic, readonly) SMLDataController *dataController;
 
 @end
 
 @implementation SMLFeedsTableViewController
-
 
 - (void)setupWithChannel:(SMLChannel*)channel {
     self.title = @"Edit Channel";
@@ -38,7 +38,7 @@
 }
 
 - (void)deleteObject:(id)object {
-    [[SMLDataController sharedController] removeFeed:object fromChannel:self.channel];
+    [self.dataController removeFeed:object fromChannel:self.channel];
 }
 
 - (NSString*)identifierForCellAtIndexPath:(NSIndexPath *)indexPath {
@@ -46,7 +46,7 @@
 }
 
 - (void)updateInterfaceForObjectsCount:(NSInteger)count {
-    
+    [super updateInterfaceForObjectsCount:count];
     if (count == 0) {
         [self addOverlayViewIfNeeded];
     } else {
@@ -70,15 +70,12 @@
             [strongSelf performSegueWithIdentifier:@"ShowSearch" sender:nil];
         }];
         [self.view addSubview:self.overlayView];
+        self.overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     }
 }
 
 - (NSFetchedResultsController*)createFetchedResultsController {
     return [self.dataController frcWithFeedsForChannel:self.channel];
-}
-
-- (SMLDataController*)dataController {
-    return [SMLDataController sharedController];
 }
 
 
@@ -91,11 +88,13 @@
         NSIndexPath *selectedIndexPath = [self.tableView indexPathForCell:cell];
         SMLFeed *selectedFeed = [self.frcDataSource.fetchedResultsController objectAtIndexPath:selectedIndexPath];
         SMLNewsTableViewController *destinationViewController = segue.destinationViewController;
+        destinationViewController.dataController = self.dataController;
         [destinationViewController setupWithFeed:selectedFeed];
     }
     else if ([segue.identifier isEqualToString:@"ShowSearch"]) {
         UINavigationController *destinationNavigationController = (UINavigationController*)segue.destinationViewController;
         SMLSearchTableViewController *searchViewController = (SMLSearchTableViewController*)destinationNavigationController.topViewController;
+        searchViewController.dataController = self.dataController;
         [searchViewController setupWithChannel:self.channel];
     }
 }

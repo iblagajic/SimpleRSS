@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SMLItem.h"
+
+@class SMLItem;
 
 @interface SMLWebViewController : UIViewController
 
-@property (nonatomic, strong) SMLItem *item;
+@property (nonatomic) SMLItem *item;
 
 @end

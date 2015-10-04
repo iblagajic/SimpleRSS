@@ -20,4 +20,9 @@
     #import "NSDictionary+SML.h"
     #import "UIColor+SML.h"
     #import "NSString+SML.h"
+
+    #define IS_IOS8() ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f)
+
+    #define kReadabilityParserAPIKey @"READABILITY_API_KEY_HERE"
+
 #endif
